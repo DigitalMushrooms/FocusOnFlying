@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj", "{61B57919-F409-4CA9-8417-B0F83AA60A68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI", "WebUI\WebUI.csproj", "{61B57919-F409-4CA9-8417-B0F83AA60A68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{A50CDB44-D993-4475-B78D-AACE5C0356C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{A50CDB44-D993-4475-B78D-AACE5C0356C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{D071C2A3-9C06-4FE5-87A4-D466E3C3F761}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{D071C2A3-9C06-4FE5-87A4-D466E3C3F761}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{F59DB857-278A-4E46-B66C-E7E8343877A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{F59DB857-278A-4E46-B66C-E7E8343877A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.IDP", "Infrastructure.IDP\Infrastructure.IDP.csproj", "{7E58BE58-1ABB-4C9A-A19D-6E064A6763DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F59DB857-278A-4E46-B66C-E7E8343877A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F59DB857-278A-4E46-B66C-E7E8343877A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F59DB857-278A-4E46-B66C-E7E8343877A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E58BE58-1ABB-4C9A-A19D-6E064A6763DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E58BE58-1ABB-4C9A-A19D-6E064A6763DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E58BE58-1ABB-4C9A-A19D-6E064A6763DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E58BE58-1ABB-4C9A-A19D-6E064A6763DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
