@@ -21,13 +21,13 @@ namespace FocusOnFlying.Infrastructure.IDP
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
-                new ApiResource("ApiOne")
+                new ApiResource("FocusOnFlyingAPI")
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
-                new ApiScope("ApiOne")
+                new ApiScope("FocusOnFlyingAPI")
             };
 
         public static IEnumerable<Client> Clients =>
@@ -49,10 +49,11 @@ namespace FocusOnFlying.Infrastructure.IDP
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "ApiOne"
+                        "FocusOnFlyingAPI"
                     },
 
                     AllowAccessTokensViaBrowser = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
                     RequireConsent = false
                 }
             };
