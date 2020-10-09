@@ -11,7 +11,7 @@ export class AppComponent {
     this.configureSingesSignOn();
   }
 
-  configureSingesSignOn() {
+  configureSingesSignOn(): void {
     const authCodeFlowConfig: AuthConfig = {
       // Url of the Identity Provider
       issuer: 'https://localhost:44318',
