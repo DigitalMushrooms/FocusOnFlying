@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +8,13 @@ import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  items: MenuItem[] = [{
+    label: 'Usługi',
+    items: [
+      { label: 'Nowa usługa', icon: 'pi pi-fw pi-plus' },
+    ]
+  }];
+
   constructor(private oauthService: OAuthService) {
     this.configureSingesSignOn();
   }

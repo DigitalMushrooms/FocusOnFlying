@@ -56,6 +56,8 @@ namespace FocusOnFlying.WebUI
                 app.UseSpaStaticFiles();
             }
 
+            app.UseWebSockets();
+
             app.UseRouting();
 
             app.UseAuthentication();
