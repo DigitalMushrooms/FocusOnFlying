@@ -4,19 +4,25 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { AppComponent } from './pages/app/app.component';
+import { HomeComponent } from './pages/home/home.component';
+import { NowaUslugaComponent } from './pages/uslugi/nowa-usluga/nowa-usluga.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent,
+    NowaUslugaComponent
   ],
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
     ButtonModule,
+    CardModule,
     HttpClientModule,
     MenuModule,
     OAuthModule.forRoot({
