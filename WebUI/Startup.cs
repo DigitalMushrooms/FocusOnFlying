@@ -1,3 +1,4 @@
+using FocusOnFlying.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +19,8 @@ namespace FocusOnFlying.WebUI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddInfrastructure();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, config => 
                 {
