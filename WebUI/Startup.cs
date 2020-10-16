@@ -36,6 +36,11 @@ namespace FocusOnFlying.WebUI
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddOpenApiDocument(configure =>
+            {
+                configure.Title = "FocusOnFlying API";
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -57,9 +62,15 @@ namespace FocusOnFlying.WebUI
                 app.UseSpaStaticFiles();
             }
 
-            app.UseWebSockets();
+            app.UseSwaggerUi3(settings =>
+            {
+                settings.Path = "/api";
+                settings.DocumentPath = "/api/specification.json";
+            });
 
             app.UseRouting();
+
+            //app.UseWebSockets();
 
             app.UseAuthentication();
             app.UseAuthorization();

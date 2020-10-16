@@ -27,7 +27,6 @@ import { NowaUslugaComponent } from './pages/uslugi/nowa-usluga/nowa-usluga.comp
     MenuModule,
     OAuthModule.forRoot({
       resourceServer: {
-        allowedUrls: ['https://localhost:44389//api'],
         sendAccessToken: true
       }
     })

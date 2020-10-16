@@ -1,0 +1,115 @@
+{
+  "x-generator": "NSwag v13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "FocusOnFlying API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/Klienci": {
+      "get": {
+        "tags": [
+          "Klienci"
+        ],
+        "operationId": "Klienci_PobierzKlientow",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KlienciDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "KlienciDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "imie": {
+            "type": "string",
+            "nullable": true
+          },
+          "nazwisko": {
+            "type": "string",
+            "nullable": true
+          },
+          "pesel": {
+            "type": "string",
+            "nullable": true
+          },
+          "regon": {
+            "type": "string",
+            "nullable": true
+          },
+          "nip": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerPaszportu": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerTelefonu": {
+            "type": "string",
+            "nullable": true
+          },
+          "kodPocztowy": {
+            "type": "string",
+            "nullable": true
+          },
+          "miejscowosc": {
+            "type": "string",
+            "nullable": true
+          },
+          "gmina": {
+            "type": "string",
+            "nullable": true
+          },
+          "dzielnica": {
+            "type": "string",
+            "nullable": true
+          },
+          "ulica": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerDomu": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerLokalu": {
+            "type": "string",
+            "nullable": true
+          },
+          "symbolPanstwa": {
+            "type": "string",
+            "nullable": true
+          },
+          "zagranicznyKodPocztowy": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      }
+    }
+  }
+}
