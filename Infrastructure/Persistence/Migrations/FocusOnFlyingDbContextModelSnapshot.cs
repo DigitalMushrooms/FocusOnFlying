@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FocusOnFlying.Infrastructure.Persistence.Migrations
 {
-    [DbContext(typeof(FocusOnFlyingDbContext))]
+    [DbContext(typeof(FocusOnFlyingContext))]
     partial class FocusOnFlyingDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

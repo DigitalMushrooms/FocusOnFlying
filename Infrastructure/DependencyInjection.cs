@@ -10,7 +10,7 @@ namespace FocusOnFlying.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddScoped<IAppSettingsService, AppSettingsService>();
-            services.AddDbContext<FocusOnFlyingDbContext>();
+            services.AddDbContext<IFocusOnFlyingContext, FocusOnFlyingContext>();
 
             return services;
         }

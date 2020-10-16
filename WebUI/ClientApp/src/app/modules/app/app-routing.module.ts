@@ -6,7 +6,7 @@ import { NowaUslugaComponent } from './pages/uslugi/nowa-usluga/nowa-usluga.comp
 const routes: Routes = [
   { path: "home", component: HomeComponent },
   { path: "uslugi/nowa-usluga", component: NowaUslugaComponent },
-  { path: "**", component: HomeComponent }
+  { path: "**", redirectTo: "home" }
 ];
 
 @NgModule({

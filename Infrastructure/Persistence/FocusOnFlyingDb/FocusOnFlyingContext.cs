@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
 {
-    public class FocusOnFlyingDbContext : DbContext
+    public class FocusOnFlyingContext : DbContext, IFocusOnFlyingContext
     {
         private readonly IAppSettingsService _appSettingsService;
 
-        public FocusOnFlyingDbContext(DbContextOptions options, IAppSettingsService appSettingsService) 
+        public FocusOnFlyingContext(DbContextOptions options, IAppSettingsService appSettingsService) 
             : base(options)
         {
             _appSettingsService = appSettingsService;

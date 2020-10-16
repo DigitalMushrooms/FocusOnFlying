@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FocusOnFlying.Infrastructure.Persistence.Migrations
 {
-    [DbContext(typeof(FocusOnFlyingDbContext))]
+    [DbContext(typeof(FocusOnFlyingContext))]
     [Migration("20201014200718_DodanieTabeliKlienta")]
     partial class DodanieTabeliKlienta
     {

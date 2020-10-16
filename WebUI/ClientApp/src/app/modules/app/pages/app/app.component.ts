@@ -62,14 +62,4 @@ export class AppComponent {
   ngOnInit() {
 
   }
-
-  login() {
-    this.oauthService.initCodeFlow();
-  }
-
-  callApi() {
-    const token = this.oauthService.getIdentityClaims();
-    const at = this.oauthService.getAccessToken();
-    debugger;
-  }
 }
