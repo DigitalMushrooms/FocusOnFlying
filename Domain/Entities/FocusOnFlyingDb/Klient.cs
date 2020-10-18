@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
 {
     public class Klient
     {
+        public Klient()
+        {
+            Uslugi = new List<Usluga>();
+        }
+
         public Guid Id { get; set; }
         public string Imie { get; set; }
         public string Nazwisko { get; set; }
@@ -22,5 +28,6 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public string SymbolPanstwa { get; set; }
         public string ZagranicznyKodPocztowy { get; set; }
         public string Email { get; set; }
+        public List<Usluga> Uslugi { get; set; }
     }
 }
