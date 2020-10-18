@@ -20,13 +20,10 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public string NumerTelefonu { get; set; }
         public string KodPocztowy { get; set; }
         public string Miejscowosc { get; set; }
-        public string Gmina { get; set; }
-        public string Dzielnica { get; set; }
         public string Ulica { get; set; }
         public string NumerDomu { get; set; }
         public string NumerLokalu { get; set; }
         public string SymbolPanstwa { get; set; }
-        public string ZagranicznyKodPocztowy { get; set; }
         public string Email { get; set; }
         public List<Usluga> Uslugi { get; set; }
     }

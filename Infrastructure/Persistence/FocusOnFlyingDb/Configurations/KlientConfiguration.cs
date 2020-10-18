@@ -18,13 +18,10 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb.Configuration
             builder.Property(p => p.NumerTelefonu).IsRequired().HasMaxLength(20);
             builder.Property(p => p.KodPocztowy).HasMaxLength(20);
             builder.Property(p => p.Miejscowosc).IsRequired().HasMaxLength(100);
-            builder.Property(p => p.Gmina).IsRequired().HasMaxLength(100);
-            builder.Property(p => p.Dzielnica).IsRequired().HasMaxLength(100);
             builder.Property(p => p.Ulica).IsRequired().HasMaxLength(100);
             builder.Property(p => p.NumerDomu).IsRequired().HasMaxLength(10);
             builder.Property(p => p.NumerLokalu).IsRequired().HasMaxLength(10);
             builder.Property(p => p.SymbolPanstwa).IsRequired().HasMaxLength(3);
-            builder.Property(p => p.ZagranicznyKodPocztowy).IsRequired().HasMaxLength(3);
             builder.Property(p => p.Email).IsRequired().HasMaxLength(256);
         }
     }

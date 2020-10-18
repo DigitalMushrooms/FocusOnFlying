@@ -1,0 +1,60 @@
+<p-card header="Dodanie nowego klienta">
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-4">
+            <label for="imie">Imię</label>
+            <input id="imie" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="nazwisko">Nazwisko</label>
+            <input id="nazwisko" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="kraj">Kraj</label>
+            <p-dropdown id="kraj" [options]="kraje" [showClear]="true" emptyFilterMessage="Brak wyników."></p-dropdown>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="pesel">PESEL</label>
+            <p-inputNumber inputId="pesel" mode="decimal" [useGrouping]="false"></p-inputNumber>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="regon">REGON</label>
+            <p-inputNumber inputId="regon" mode="decimal" [useGrouping]="false"></p-inputNumber>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="nip">NIP</label>
+            <p-inputNumber inputId="nip" mode="decimal" [useGrouping]="false"></p-inputNumber>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="numerPaszportu">Numer paszportu</label>
+            <input id="numerPaszportu" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="numerTelefonu">Numer telefonu</label>
+            <p-inputNumber inputId="numerTelefonu" mode="decimal" [useGrouping]="false"></p-inputNumber>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="kodPocztowy">Kod pocztowy</label>
+            <input id="kodPocztowy" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="ulica">Ulica</label>
+            <input id="ulica" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="numerDomu">Nr domu</label>
+            <input id="numerDomu" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="numerLokalu">Nr lokalu</label>
+            <input id="numerLokalu" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="miejscowosc">Miejscowosc</label>
+            <input id="miejscowosc" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-4">
+            <label for="email">Email</label>
+            <input id="email" type="text" pInputText>
+        </div>
+    </div>
+</p-card>
