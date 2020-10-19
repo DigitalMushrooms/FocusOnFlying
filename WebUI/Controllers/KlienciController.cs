@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace FocusOnFlying.WebUI.Controllers
 {
+    [Route("/api/klienci")]
     public class KlienciController : ApiController
     {
         [HttpGet]

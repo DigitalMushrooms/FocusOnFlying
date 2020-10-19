@@ -6,7 +6,7 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/Klienci": {
+    "/api/klienci": {
       "get": {
         "tags": [
           "Klienci"
@@ -21,6 +21,29 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/KlienciDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/kraje": {
+      "get": {
+        "tags": [
+          "Kraje"
+        ],
+        "operationId": "Kraje_PobierzKraje",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KrajDto"
                   }
                 }
               }
@@ -105,6 +128,24 @@
             "nullable": true
           },
           "email": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "KrajDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwaKraju": {
+            "type": "string",
+            "nullable": true
+          },
+          "skrot": {
             "type": "string",
             "nullable": true
           }

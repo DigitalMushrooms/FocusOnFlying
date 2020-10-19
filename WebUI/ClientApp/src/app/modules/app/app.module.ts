@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OAuthModule } from 'angular-oauth2-oidc';
@@ -31,10 +31,12 @@ import { NowaUslugaComponent } from './pages/uslugi/nowa-usluga/nowa-usluga.comp
     CardModule,
     DropdownModule,
     FormsModule,
+    FormsModule,
     HttpClientModule,
     InputNumberModule,
     InputTextModule,
     MenuModule,
+    ReactiveFormsModule,
     OAuthModule.forRoot({
       resourceServer: {
         sendAccessToken: true

@@ -23,8 +23,10 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public string Ulica { get; set; }
         public string NumerDomu { get; set; }
         public string NumerLokalu { get; set; }
-        public string SymbolPanstwa { get; set; }
+        public Guid IdKraju { get; set; }
         public string Email { get; set; }
-        public List<Usluga> Uslugi { get; set; }
+
+        public Kraj Kraj { get; set; }
+        public ICollection<Usluga> Uslugi { get; set; }
     }
 }

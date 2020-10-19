@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Persistence\Migrations\20201019180429_DodanieTabeliKraje.cs" />
+    <Compile Remove="Persistence\Migrations\20201019180429_DodanieTabeliKraje.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
   </ItemGroup>
 

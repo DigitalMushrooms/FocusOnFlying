@@ -7,7 +7,6 @@ namespace FocusOnFlying.WebUI.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/[controller]")]
     public abstract class ApiController : ControllerBase
     {
         private IMediator _mediator;

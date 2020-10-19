@@ -17,6 +17,7 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
 
         public DbSet<Klient> Klienci { get; set; }
         public DbSet<Usluga> Uslugi { get; set; }
+        public DbSet<Kraj> Kraje { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -28,6 +29,7 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
         {
             modelBuilder.ApplyConfiguration(new KlientConfiguration());
             modelBuilder.ApplyConfiguration(new UslugaConfiguration());
+            modelBuilder.ApplyConfiguration(new KrajConfiguration());
         }
     }
 }

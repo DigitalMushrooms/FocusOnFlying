@@ -21,8 +21,13 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb.Configuration
             builder.Property(p => p.Ulica).IsRequired().HasMaxLength(100);
             builder.Property(p => p.NumerDomu).IsRequired().HasMaxLength(10);
             builder.Property(p => p.NumerLokalu).IsRequired().HasMaxLength(10);
-            builder.Property(p => p.SymbolPanstwa).IsRequired().HasMaxLength(3);
+            builder.Property(p => p.IdKraju);
             builder.Property(p => p.Email).IsRequired().HasMaxLength(256);
+
+            builder
+                .HasOne(x => x.Kraj)
+                .WithMany(x => x.Klienci)
+                .HasForeignKey(x => x.IdKraju);
         }
     }
 }
