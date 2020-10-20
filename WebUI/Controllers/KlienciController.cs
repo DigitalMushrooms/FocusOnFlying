@@ -1,4 +1,5 @@
-﻿using FocusOnFlying.Application.Klienci.Queries.PobierzKlientow;
+﻿using FocusOnFlying.Application.Klienci.Commands.UtworzKlienta;
+using FocusOnFlying.Application.Klienci.Queries.PobierzKlientow;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,6 +16,12 @@ namespace FocusOnFlying.WebUI.Controllers
             var klienci = await Mediator.Send(query);
 
             return klienci;
+        }
+
+        [HttpPost]
+        public async Task UtworzKlienta(UtworzKlientaCommand command)
+        {
+            await Mediator.Send(command);
         }
     }
 }

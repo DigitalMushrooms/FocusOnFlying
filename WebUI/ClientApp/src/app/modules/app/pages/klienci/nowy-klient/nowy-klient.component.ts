@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 import { map } from 'rxjs/operators';
 import { KrajeClient } from 'src/app/web-api-client';
@@ -12,7 +12,20 @@ import { KrajeClient } from 'src/app/web-api-client';
 export class NowyKlientComponent implements OnInit {
   kraje: SelectItem[] = [];
   nowyKlientForm = this.fb.group({
-    kraj: ['']
+    imie: [null],
+    nazwisko: [null],
+    kraj: [null, Validators.required],
+    pesel: [null],
+    regon: [null],
+    nip: [null],
+    numerPaszportu: [null],
+    numerTelefonu: [null],
+    kodPocztowy: [null],
+    ulica: [null],
+    numerDomu: [null],
+    numerLokalu: [null],
+    miejscowosc: [null],
+    email: [null]
   });
   controls = this.nowyKlientForm.controls;
 
