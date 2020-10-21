@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 import { map } from 'rxjs/operators';
-import { KrajeClient } from 'src/app/web-api-client';
+import { KlienciClient, KrajeClient, UtworzKlientaCommand } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-nowy-klient',
@@ -30,8 +30,9 @@ export class NowyKlientComponent implements OnInit {
   controls = this.nowyKlientForm.controls;
 
   constructor(
+    private fb: FormBuilder,
     private krajeClient: KrajeClient,
-    private fb: FormBuilder
+    private klienciClient: KlienciClient
   ) { }
 
   ngOnInit(): void {
@@ -44,5 +45,16 @@ export class NowyKlientComponent implements OnInit {
       .subscribe(
         (kraje) => this.kraje = kraje
       );
+  }
+
+  zapiszOnClick(): void {
+    const command = {
+      imie: this.controls['imie'].value,
+      nazwisko: this.controls['nazwisko'].value,
+      idKraju: this.controls['kraj'].value ? (this.controls['kraj'].value.id) : null,
+      pesel: this.controls['pesel'].value ? (this.controls['pesel'].value as number).toString() : null
+    } as UtworzKlientaCommand;
+    this.klienciClient.utworzKlienta(command).subscribe(
+      () => { });
   }
 }

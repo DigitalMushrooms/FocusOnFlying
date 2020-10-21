@@ -16,6 +16,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IKlienciClient {
     pobierzKlientow(): Observable<KlienciDto[]>;
+    utworzKlienta(command: UtworzKlientaCommand): Observable<void>;
 }
 
 @Injectable({
@@ -81,6 +82,54 @@ export class KlienciClient implements IKlienciClient {
             }));
         }
         return _observableOf<KlienciDto[]>(<any>null);
+    }
+
+    utworzKlienta(command: UtworzKlientaCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/klienci";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUtworzKlienta(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUtworzKlienta(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUtworzKlienta(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -255,6 +304,94 @@ export interface IKlienciDto {
     numerLokalu?: string | undefined;
     symbolPanstwa?: string | undefined;
     zagranicznyKodPocztowy?: string | undefined;
+    email?: string | undefined;
+}
+
+export class UtworzKlientaCommand implements IUtworzKlientaCommand {
+    imie?: string | undefined;
+    nazwisko?: string | undefined;
+    idKraju?: string;
+    pesel?: string | undefined;
+    regon?: string | undefined;
+    nip?: string | undefined;
+    numerPaszportu?: string | undefined;
+    numerTelefonu?: string | undefined;
+    kodPocztowy?: string | undefined;
+    ulica?: string | undefined;
+    numerDomu?: string | undefined;
+    numerLokalu?: string | undefined;
+    miejscowos?: string | undefined;
+    email?: string | undefined;
+
+    constructor(data?: IUtworzKlientaCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.imie = _data["imie"];
+            this.nazwisko = _data["nazwisko"];
+            this.idKraju = _data["idKraju"];
+            this.pesel = _data["pesel"];
+            this.regon = _data["regon"];
+            this.nip = _data["nip"];
+            this.numerPaszportu = _data["numerPaszportu"];
+            this.numerTelefonu = _data["numerTelefonu"];
+            this.kodPocztowy = _data["kodPocztowy"];
+            this.ulica = _data["ulica"];
+            this.numerDomu = _data["numerDomu"];
+            this.numerLokalu = _data["numerLokalu"];
+            this.miejscowos = _data["miejscowos"];
+            this.email = _data["email"];
+        }
+    }
+
+    static fromJS(data: any): UtworzKlientaCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UtworzKlientaCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["imie"] = this.imie;
+        data["nazwisko"] = this.nazwisko;
+        data["idKraju"] = this.idKraju;
+        data["pesel"] = this.pesel;
+        data["regon"] = this.regon;
+        data["nip"] = this.nip;
+        data["numerPaszportu"] = this.numerPaszportu;
+        data["numerTelefonu"] = this.numerTelefonu;
+        data["kodPocztowy"] = this.kodPocztowy;
+        data["ulica"] = this.ulica;
+        data["numerDomu"] = this.numerDomu;
+        data["numerLokalu"] = this.numerLokalu;
+        data["miejscowos"] = this.miejscowos;
+        data["email"] = this.email;
+        return data; 
+    }
+}
+
+export interface IUtworzKlientaCommand {
+    imie?: string | undefined;
+    nazwisko?: string | undefined;
+    idKraju?: string;
+    pesel?: string | undefined;
+    regon?: string | undefined;
+    nip?: string | undefined;
+    numerPaszportu?: string | undefined;
+    numerTelefonu?: string | undefined;
+    kodPocztowy?: string | undefined;
+    ulica?: string | undefined;
+    numerDomu?: string | undefined;
+    numerLokalu?: string | undefined;
+    miejscowos?: string | undefined;
     email?: string | undefined;
 }
 

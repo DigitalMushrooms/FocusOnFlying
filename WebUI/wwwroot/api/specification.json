@@ -27,6 +27,29 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Klienci"
+        ],
+        "operationId": "Klienci_UtworzKlienta",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtworzKlientaCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
       }
     },
     "/api/kraje": {
@@ -124,6 +147,68 @@
             "nullable": true
           },
           "zagranicznyKodPocztowy": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UtworzKlientaCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "imie": {
+            "type": "string",
+            "nullable": true
+          },
+          "nazwisko": {
+            "type": "string",
+            "nullable": true
+          },
+          "idKraju": {
+            "type": "string",
+            "format": "guid"
+          },
+          "pesel": {
+            "type": "string",
+            "nullable": true
+          },
+          "regon": {
+            "type": "string",
+            "nullable": true
+          },
+          "nip": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerPaszportu": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerTelefonu": {
+            "type": "string",
+            "nullable": true
+          },
+          "kodPocztowy": {
+            "type": "string",
+            "nullable": true
+          },
+          "ulica": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerDomu": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerLokalu": {
+            "type": "string",
+            "nullable": true
+          },
+          "miejscowos": {
             "type": "string",
             "nullable": true
           },

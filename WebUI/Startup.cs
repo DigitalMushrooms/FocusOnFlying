@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using FocusOnFlying.Application;
 using FocusOnFlying.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,7 +31,8 @@ namespace FocusOnFlying.WebUI
                     config.Audience = "https://localhost:44318/resources";
                 });
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation();
 
             services.AddSpaStaticFiles(configuration =>
             {

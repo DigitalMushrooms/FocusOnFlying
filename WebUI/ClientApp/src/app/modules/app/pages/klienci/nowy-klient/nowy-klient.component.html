@@ -16,15 +16,15 @@
             </div>
             <div class="p-field p-col-4">
                 <label for="pesel">PESEL</label>
-                <p-inputNumber formControlName="pesel" inputId="pesel" mode="decimal" [useGrouping]="false"></p-inputNumber>
+                <input formControlName="pesel" id="pesel" type="text" pInputText>
             </div>
             <div class="p-field p-col-4">
                 <label for="regon">REGON</label>
-                <p-inputNumber formControlName="regon" inputId="regon" mode="decimal" [useGrouping]="false"></p-inputNumber>
+                <input formControlName="regon" id="regon" type="text" pInputText>
             </div>
             <div class="p-field p-col-4">
                 <label for="nip">NIP</label>
-                <p-inputNumber formControlName="nip" inputId="nip" mode="decimal" [useGrouping]="false"></p-inputNumber>
+                <input formControlName="nip" id="nip" type="text" pInputText>
             </div>
             <div class="p-field p-col-4">
                 <label for="numerPaszportu">Numer paszportu</label>
@@ -60,7 +60,7 @@
             </div>
         </div>
         <div class="p-d-flex">
-            <button pButton type="button" icon="pi pi-check" class="p-ml-auto" label="Zapisz"></button>
+            <button pButton type="button" icon="pi pi-check" class="p-ml-auto" label="Zapisz" (click)="zapiszOnClick()"></button>
         </div>
     </form>
 </p-card>
