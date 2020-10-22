@@ -208,7 +208,7 @@
             "type": "string",
             "nullable": true
           },
-          "miejscowos": {
+          "miejscowosc": {
             "type": "string",
             "nullable": true
           },

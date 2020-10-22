@@ -320,7 +320,7 @@ export class UtworzKlientaCommand implements IUtworzKlientaCommand {
     ulica?: string | undefined;
     numerDomu?: string | undefined;
     numerLokalu?: string | undefined;
-    miejscowos?: string | undefined;
+    miejscowosc?: string | undefined;
     email?: string | undefined;
 
     constructor(data?: IUtworzKlientaCommand) {
@@ -346,7 +346,7 @@ export class UtworzKlientaCommand implements IUtworzKlientaCommand {
             this.ulica = _data["ulica"];
             this.numerDomu = _data["numerDomu"];
             this.numerLokalu = _data["numerLokalu"];
-            this.miejscowos = _data["miejscowos"];
+            this.miejscowosc = _data["miejscowosc"];
             this.email = _data["email"];
         }
     }
@@ -372,7 +372,7 @@ export class UtworzKlientaCommand implements IUtworzKlientaCommand {
         data["ulica"] = this.ulica;
         data["numerDomu"] = this.numerDomu;
         data["numerLokalu"] = this.numerLokalu;
-        data["miejscowos"] = this.miejscowos;
+        data["miejscowosc"] = this.miejscowosc;
         data["email"] = this.email;
         return data; 
     }
@@ -391,7 +391,7 @@ export interface IUtworzKlientaCommand {
     ulica?: string | undefined;
     numerDomu?: string | undefined;
     numerLokalu?: string | undefined;
-    miejscowos?: string | undefined;
+    miejscowosc?: string | undefined;
     email?: string | undefined;
 }
 

@@ -23,7 +23,7 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
         public string Ulica { get; set; }
         public string NumerDomu { get; set; }
         public string NumerLokalu { get; set; }
-        public string Miejscowos { get; set; }
+        public string Miejscowosc { get; set; }
         public string Email { get; set; }
     }
 
