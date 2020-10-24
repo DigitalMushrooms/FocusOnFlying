@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { KlienciClient } from 'src/app/web-api-client';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
   selector: 'app-home',
@@ -9,19 +8,19 @@ import { KlienciClient } from 'src/app/web-api-client';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private oauthService: OAuthService, private klienciClient: KlienciClient) { }
+  constructor(public oidcSecurityService: OidcSecurityService) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.oidcSecurityService
+      .checkAuth()
+      .subscribe((auth) => console.log('is authenticated', auth));
+  }
+
+  login() {
+    this.oidcSecurityService.authorize();
   }
 
   callApi() {
-    // const token = this.oauthService.getIdentityClaims();
-    // const at = this.oauthService.getAccessToken();
-    // debugger;
-    this.klienciClient.pobierzKlientow()
-      .subscribe(
-        (klienci) => { debugger; },
-        () => { debugger; }
-      )
+    
   }
 }
