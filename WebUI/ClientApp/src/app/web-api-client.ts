@@ -15,7 +15,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IKlienciClient {
-    pobierzKlientow(): Observable<KlienciDto[]>;
+    pobierzKlientow(): Observable<KlientDto[]>;
     utworzKlienta(command: UtworzKlientaCommand): Observable<void>;
 }
 
@@ -32,7 +32,7 @@ export class KlienciClient implements IKlienciClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    pobierzKlientow(): Observable<KlienciDto[]> {
+    pobierzKlientow(): Observable<KlientDto[]> {
         let url_ = this.baseUrl + "/api/klienci";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -51,14 +51,14 @@ export class KlienciClient implements IKlienciClient {
                 try {
                     return this.processPobierzKlientow(<any>response_);
                 } catch (e) {
-                    return <Observable<KlienciDto[]>><any>_observableThrow(e);
+                    return <Observable<KlientDto[]>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<KlienciDto[]>><any>_observableThrow(response_);
+                return <Observable<KlientDto[]>><any>_observableThrow(response_);
         }));
     }
 
-    protected processPobierzKlientow(response: HttpResponseBase): Observable<KlienciDto[]> {
+    protected processPobierzKlientow(response: HttpResponseBase): Observable<KlientDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -72,7 +72,7 @@ export class KlienciClient implements IKlienciClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(KlienciDto.fromJS(item));
+                    result200!.push(KlientDto.fromJS(item));
             }
             return _observableOf(result200);
             }));
@@ -81,7 +81,7 @@ export class KlienciClient implements IKlienciClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<KlienciDto[]>(<any>null);
+        return _observableOf<KlientDto[]>(<any>null);
     }
 
     utworzKlienta(command: UtworzKlientaCommand): Observable<void> {
@@ -203,7 +203,7 @@ export class KrajeClient implements IKrajeClient {
     }
 }
 
-export class KlienciDto implements IKlienciDto {
+export class KlientDto implements IKlientDto {
     id?: string;
     imie?: string | undefined;
     nazwisko?: string | undefined;
@@ -219,11 +219,11 @@ export class KlienciDto implements IKlienciDto {
     ulica?: string | undefined;
     numerDomu?: string | undefined;
     numerLokalu?: string | undefined;
-    symbolPanstwa?: string | undefined;
+    kraj?: KrajDto | undefined;
     zagranicznyKodPocztowy?: string | undefined;
     email?: string | undefined;
 
-    constructor(data?: IKlienciDto) {
+    constructor(data?: IKlientDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -249,15 +249,15 @@ export class KlienciDto implements IKlienciDto {
             this.ulica = _data["ulica"];
             this.numerDomu = _data["numerDomu"];
             this.numerLokalu = _data["numerLokalu"];
-            this.symbolPanstwa = _data["symbolPanstwa"];
+            this.kraj = _data["kraj"] ? KrajDto.fromJS(_data["kraj"]) : <any>undefined;
             this.zagranicznyKodPocztowy = _data["zagranicznyKodPocztowy"];
             this.email = _data["email"];
         }
     }
 
-    static fromJS(data: any): KlienciDto {
+    static fromJS(data: any): KlientDto {
         data = typeof data === 'object' ? data : {};
-        let result = new KlienciDto();
+        let result = new KlientDto();
         result.init(data);
         return result;
     }
@@ -279,14 +279,14 @@ export class KlienciDto implements IKlienciDto {
         data["ulica"] = this.ulica;
         data["numerDomu"] = this.numerDomu;
         data["numerLokalu"] = this.numerLokalu;
-        data["symbolPanstwa"] = this.symbolPanstwa;
+        data["kraj"] = this.kraj ? this.kraj.toJSON() : <any>undefined;
         data["zagranicznyKodPocztowy"] = this.zagranicznyKodPocztowy;
         data["email"] = this.email;
         return data; 
     }
 }
 
-export interface IKlienciDto {
+export interface IKlientDto {
     id?: string;
     imie?: string | undefined;
     nazwisko?: string | undefined;
@@ -302,9 +302,53 @@ export interface IKlienciDto {
     ulica?: string | undefined;
     numerDomu?: string | undefined;
     numerLokalu?: string | undefined;
-    symbolPanstwa?: string | undefined;
+    kraj?: KrajDto | undefined;
     zagranicznyKodPocztowy?: string | undefined;
     email?: string | undefined;
+}
+
+export class KrajDto implements IKrajDto {
+    id?: string;
+    nazwaKraju?: string | undefined;
+    skrot?: string | undefined;
+
+    constructor(data?: IKrajDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwaKraju = _data["nazwaKraju"];
+            this.skrot = _data["skrot"];
+        }
+    }
+
+    static fromJS(data: any): KrajDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new KrajDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwaKraju"] = this.nazwaKraju;
+        data["skrot"] = this.skrot;
+        return data; 
+    }
+}
+
+export interface IKrajDto {
+    id?: string;
+    nazwaKraju?: string | undefined;
+    skrot?: string | undefined;
 }
 
 export class UtworzKlientaCommand implements IUtworzKlientaCommand {
@@ -393,50 +437,6 @@ export interface IUtworzKlientaCommand {
     numerLokalu?: string | undefined;
     miejscowosc?: string | undefined;
     email?: string | undefined;
-}
-
-export class KrajDto implements IKrajDto {
-    id?: string;
-    nazwaKraju?: string | undefined;
-    skrot?: string | undefined;
-
-    constructor(data?: IKrajDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.nazwaKraju = _data["nazwaKraju"];
-            this.skrot = _data["skrot"];
-        }
-    }
-
-    static fromJS(data: any): KrajDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new KrajDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["nazwaKraju"] = this.nazwaKraju;
-        data["skrot"] = this.skrot;
-        return data; 
-    }
-}
-
-export interface IKrajDto {
-    id?: string;
-    nazwaKraju?: string | undefined;
-    skrot?: string | undefined;
 }
 
 export class SwaggerException extends Error {

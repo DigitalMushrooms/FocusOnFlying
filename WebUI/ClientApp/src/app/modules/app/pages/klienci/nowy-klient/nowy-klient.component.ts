@@ -65,6 +65,8 @@ export class NowyKlientComponent implements OnInit {
       email: this.controls['email'].value ? this.controls['email'].value : null
     } as UtworzKlientaCommand;
     this.klienciClient.utworzKlienta(command).subscribe(
-      () => { });
+      () => { },
+      (e) => { debugger; }
+    );
   }
 }

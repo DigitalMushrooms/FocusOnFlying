@@ -10,7 +10,7 @@ namespace FocusOnFlying.WebUI.Controllers
     public class KlienciController : ApiController
     {
         [HttpGet]
-        public async Task<List<KlienciDto>> PobierzKlientow()
+        public async Task<List<KlientDto>> PobierzKlientow()
         {
             var query = new PobierzKlientowQuery();
             var klienci = await Mediator.Send(query);

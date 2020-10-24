@@ -1,10 +1,11 @@
 ﻿using FocusOnFlying.Application.Common.Mappings;
+using FocusOnFlying.Application.Kraje.Queries.PobierzKraje;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using System;
 
 namespace FocusOnFlying.Application.Klienci.Queries.PobierzKlientow
 {
-    public class KlienciDto : IMapFrom<Klient>
+    public class KlientDto : IMapFrom<Klient>
     {
         public Guid Id { get; set; }
         public string Imie { get; set; }
@@ -21,7 +22,7 @@ namespace FocusOnFlying.Application.Klienci.Queries.PobierzKlientow
         public string Ulica { get; set; }
         public string NumerDomu { get; set; }
         public string NumerLokalu { get; set; }
-        public string SymbolPanstwa { get; set; }
+        public KrajDto Kraj { get; set; }
         public string ZagranicznyKodPocztowy { get; set; }
         public string Email { get; set; }
     }

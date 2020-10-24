@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace FocusOnFlying.Application.Klienci.Queries.PobierzKlientow
 {
-    public class PobierzKlientowQuery : IRequest<List<KlienciDto>>
+    public class PobierzKlientowQuery : IRequest<List<KlientDto>>
     {
     }
 
-    public class PobierzKlientowQueryHandler : IRequestHandler<PobierzKlientowQuery, List<KlienciDto>>
+    public class PobierzKlientowQueryHandler : IRequestHandler<PobierzKlientowQuery, List<KlientDto>>
     {
         private readonly IFocusOnFlyingContext _focusOnFlyingContext;
         private readonly IMapper _mapper;
@@ -24,10 +24,10 @@ namespace FocusOnFlying.Application.Klienci.Queries.PobierzKlientow
             _mapper = mapper;
         }
 
-        public async Task<List<KlienciDto>> Handle(PobierzKlientowQuery request, CancellationToken cancellationToken)
+        public async Task<List<KlientDto>> Handle(PobierzKlientowQuery request, CancellationToken cancellationToken)
         {
-            var klienci = await _focusOnFlyingContext.Klienci
-                .ProjectTo<KlienciDto>(_mapper.ConfigurationProvider)
+            var klienci = await _focusOnFlyingContext.Klienci.Include(x => x.Kraj)
+                .ProjectTo<KlientDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return klienci;

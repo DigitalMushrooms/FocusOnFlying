@@ -25,6 +25,12 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
         public string NumerLokalu { get; set; }
         public string Miejscowosc { get; set; }
         public string Email { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<UtworzKlientaCommand, Klient>();
+            profile.CreateMap<Klient, UtworzKlientaCommand>();
+        }
     }
 
     public class UtworzKlientaCommandHandler : IRequestHandler<UtworzKlientaCommand>

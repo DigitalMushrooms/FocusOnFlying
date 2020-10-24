@@ -39,7 +39,8 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
                 .WithMessage("Pesel musi składać się z samych cyfr.")
                 .Must(PeselMusiPosiadacPoprawnaSumeKontrolna)
                 .WithMessage("Pesel posiada błędną sumę kontrolną.")
-                .When(x => !string.IsNullOrEmpty(x.Imie));
+                .MustAsync(PeselNieMozeIstniecWBazieDanych)
+                .When(x => string.IsNullOrEmpty(x.Imie));
             RuleFor(x => x.Regon)
                 .NotEmpty()
                 .WithMessage("Regon jest polem obowiązkowym.")
@@ -53,7 +54,7 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
                 .WithMessage("Regon musi składać się z samych cyfr.")
                 .Must(RegonMusiPosiadacPoprawnaSumeKontrolna)
                 .WithMessage("Regon posiada błędną sumę kontrolną.")
-                .When(x => !string.IsNullOrEmpty(x.Pesel));
+                .When(x => string.IsNullOrEmpty(x.Pesel));
             RuleFor(x => x.Nip)
                 .NotEmpty()
                 .WithMessage("Nip jest polem obowiązkowym.")
@@ -63,11 +64,11 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
                 .WithMessage("Nip musi składać się z samych cyfr.")
                 .Must(NipMusiPosiadacPoprawnaSumeKontrolna)
                 .WithMessage("Nip posiada błędną sumę kontrolną.")
-                .When(x => !string.IsNullOrEmpty(x.Pesel));
+                .When(x => string.IsNullOrEmpty(x.Pesel));
             RuleFor(x => x.NumerPaszportu)
                 .NotEmpty()
                 .WithMessage("Numer paszportu jest polem obowiązkowym.")
-                .WhenAsync(GdyKrajNieJestPolska);
+                .WhenAsync(NumerPaszportuObowiazkowyGdyKrajInnyNizPolska);
             RuleFor(x => x.NumerTelefonu)
                 .NotEmpty()
                 .WithMessage("Numer telefonu jest polem obowiązkowym.")
@@ -91,7 +92,12 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
                 .When(x => string.IsNullOrEmpty(x.NumerTelefonu));
         }
 
-        private async Task<bool> GdyKrajNieJestPolska(UtworzKlientaCommand klient, CancellationToken cancellationToken)
+        private async Task<bool> PeselNieMozeIstniecWBazieDanych(string pesel, CancellationToken cancellationToken)
+        {
+            return (await _focusOnFlyingContext.Klienci.SingleOrDefaultAsync(x => x.Pesel == pesel)) == null;
+        }
+
+        private async Task<bool> NumerPaszportuObowiazkowyGdyKrajInnyNizPolska(UtworzKlientaCommand klient, CancellationToken cancellationToken)
         {
             return (await _focusOnFlyingContext.Kraje.SingleOrDefaultAsync(x => x.Id == klient.IdKraju)).Skrot != "PL";
         }

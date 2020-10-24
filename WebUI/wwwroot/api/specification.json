@@ -20,7 +20,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/KlienciDto"
+                    "$ref": "#/components/schemas/KlientDto"
                   }
                 }
               }
@@ -78,7 +78,7 @@
   },
   "components": {
     "schemas": {
-      "KlienciDto": {
+      "KlientDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -142,15 +142,37 @@
             "type": "string",
             "nullable": true
           },
-          "symbolPanstwa": {
-            "type": "string",
-            "nullable": true
+          "kraj": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/KrajDto"
+              }
+            ]
           },
           "zagranicznyKodPocztowy": {
             "type": "string",
             "nullable": true
           },
           "email": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "KrajDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwaKraju": {
+            "type": "string",
+            "nullable": true
+          },
+          "skrot": {
             "type": "string",
             "nullable": true
           }
@@ -213,24 +235,6 @@
             "nullable": true
           },
           "email": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "KrajDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "nazwaKraju": {
-            "type": "string",
-            "nullable": true
-          },
-          "skrot": {
             "type": "string",
             "nullable": true
           }
