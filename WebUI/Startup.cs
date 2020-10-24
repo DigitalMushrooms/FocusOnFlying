@@ -1,6 +1,8 @@
 using FluentValidation.AspNetCore;
 using FocusOnFlying.Application;
+using FocusOnFlying.Application.Common.Interfaces;
 using FocusOnFlying.Infrastructure;
+using FocusOnFlying.WebUI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,8 +26,10 @@ namespace FocusOnFlying.WebUI
             services.AddApplication();
             services.AddInfrastructure();
 
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, config => 
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, config =>
                 {
                     config.Authority = "https://localhost:44318/";
                     config.Audience = "https://localhost:44318/resources";
