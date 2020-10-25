@@ -18,7 +18,7 @@ import { NowyKlientComponent } from './pages/klienci/nowy-klient/nowy-klient.com
 import { NowaUslugaComponent } from './pages/uslugi/nowa-usluga/nowa-usluga.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
-  return () =>
+  return (): Promise<unknown> =>
     oidcConfigService.withConfig({
       stsServer: 'https://localhost:44318',
       responseType: 'code',

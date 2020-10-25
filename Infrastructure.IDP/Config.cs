@@ -28,7 +28,8 @@ namespace FocusOnFlying.Infrastructure.IDP
                     {
                         JwtClaimTypes.GivenName,
                         JwtClaimTypes.FamilyName,
-                        JwtClaimTypes.Address
+                        JwtClaimTypes.Address,
+                        JwtClaimTypes.Role
                     },
                     Scopes =
                     {

@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FocusOnFlying.WebUI.Controllers
 {
     [ApiController]
-    [Authorize]
     public abstract class ApiController : ControllerBase
     {
         private IMediator _mediator;
