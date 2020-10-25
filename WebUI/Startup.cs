@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 
 namespace FocusOnFlying.WebUI
 {
@@ -29,10 +30,12 @@ namespace FocusOnFlying.WebUI
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, config =>
+                .AddIdentityServerAuthentication(options =>
                 {
-                    config.Authority = "https://localhost:44318/";
-                    config.Audience = "https://localhost:44318/resources";
+                    options.Authority = "https://localhost:44318";
+                    options.RequireHttpsMetadata = true;
+
+                    options.ApiName = "FocusOnFlyingAPI";
                 });
 
             services.AddControllers()

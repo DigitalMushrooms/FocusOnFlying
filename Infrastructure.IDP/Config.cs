@@ -16,12 +16,27 @@ namespace FocusOnFlying.Infrastructure.IDP
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResources.Address()
             };
 
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
                 new ApiResource("FocusOnFlyingAPI")
+                {
+                    UserClaims =
+                    {
+                        JwtClaimTypes.GivenName,
+                        JwtClaimTypes.FamilyName,
+                        JwtClaimTypes.Address
+                    },
+                    Scopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Address
+                    }
+                }
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
@@ -49,12 +64,13 @@ namespace FocusOnFlying.Infrastructure.IDP
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Address,
                         "FocusOnFlyingAPI"
                     },
 
                     AllowAccessTokensViaBrowser = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
-                    RequireConsent = false
+                    AlwaysSendClientClaims = true
                 }
             };
     }
