@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -5,8 +6,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthModule, LogLevel, OidcConfigService } from 'angular-auth-oidc-client';
 import { ButtonModule } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
@@ -14,6 +17,7 @@ import { HttpTokenInterceptor } from 'src/app/core/interceptors/http.token.inter
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './pages/app/app.component';
 import { HomeComponent } from './pages/home/home.component';
+import { KlienciComponent } from './pages/klienci/klienci/klienci.component';
 import { NowyKlientComponent } from './pages/klienci/nowy-klient/nowy-klient.component';
 import { NowaUslugaComponent } from './pages/uslugi/nowa-usluga/nowa-usluga.component';
 
@@ -35,15 +39,20 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     AppComponent,
     HomeComponent,
     NowaUslugaComponent,
-    NowyKlientComponent
+    NowyKlientComponent,
+    KlienciComponent
   ],
   imports: [
     AppRoutingModule,
+    AuthModule.forRoot(),
     BrowserAnimationsModule,
     BrowserModule,
     ButtonModule,
+    CalendarModule,
     CardModule,
+    CommonModule,
     DropdownModule,
+    DynamicDialogModule,
     FormsModule,
     FormsModule,
     HttpClientModule,
@@ -51,7 +60,6 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     InputTextModule,
     MenuModule,
     ReactiveFormsModule,
-    AuthModule.forRoot(),
   ],
   providers: [
     OidcConfigService,

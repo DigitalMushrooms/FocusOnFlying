@@ -11,7 +11,7 @@ import { KlienciClient, KrajeClient, UtworzKlientaCommand } from 'src/app/web-ap
 })
 export class NowyKlientComponent implements OnInit {
   kraje: SelectItem[] = [];
-  nowyKlientForm = this.fb.group({
+  nowyKlientForm = this.formBuilder.group({
     imie: [null],
     nazwisko: [null],
     kraj: [null, Validators.required],
@@ -30,7 +30,7 @@ export class NowyKlientComponent implements OnInit {
   controls = this.nowyKlientForm.controls;
 
   constructor(
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     private krajeClient: KrajeClient,
     private klienciClient: KlienciClient
   ) { }

@@ -1,3 +1,15 @@
 <p-card header="Dodanie nowej usługi">
-    Tutaj pojawi się formularz
+    <form [formGroup]="nowaUslugaForm">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col-2">
+                <label for="dataPrzyjeciaZalecenia">Data przyjęcia zlecenia</label>
+                <p-calendar formControlName="dataPrzyjeciaZalecenia" [showIcon]="true" [locale]="pl" [dateFormat]="null" inputId="dataPrzyjeciaZalecenia">
+                </p-calendar>
+            </div>
+            <div class="p-field p-col-2"></div>
+        </div>
+        <div class="p-d-flex">
+            <button pButton type="button" icon="pi pi-users" class="p-ml-auto" label="Pokaż klientów" (click)="pokazKlientowOnClick()"></button>
+        </div>
+    </form>
 </p-card>
