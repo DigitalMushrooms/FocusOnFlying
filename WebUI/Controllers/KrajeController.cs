@@ -11,9 +11,8 @@ namespace FocusOnFlying.WebUI.Controllers
     public class KrajeController : ApiController
     {
         [HttpGet]
-        public async Task<List<KrajDto>> PobierzKraje()
+        public async Task<List<KrajDto>> PobierzKraje([FromQuery] PobierzKrajeQuery query)
         {
-            var query = new PobierzKrajeQuery();
             List<KrajDto> kraje = await Mediator.Send(query);
             return kraje;
         }

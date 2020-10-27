@@ -13,6 +13,7 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public Guid Id { get; set; }
         public string Imie { get; set; }
         public string Nazwisko { get; set; }
+        public string Nazwa { get; set; }
         public string Pesel { get; set; }
         public string Regon { get; set; }
         public string Nip { get; set; }

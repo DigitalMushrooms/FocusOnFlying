@@ -13,6 +13,7 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
+import { TableModule } from 'primeng/table';
 import { HttpTokenInterceptor } from 'src/app/core/interceptors/http.token.interceptor';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './pages/app/app.component';
@@ -60,6 +61,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     InputTextModule,
     MenuModule,
     ReactiveFormsModule,
+    TableModule,
   ],
   providers: [
     OidcConfigService,

@@ -1,1 +1,12 @@
-<p>klienci works!</p>
+<p-table [value]="klienci">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Nazwa</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+        <tr>
+            <td>Nazwa</td>
+        </tr>
+    </ng-template>
+</p-table>

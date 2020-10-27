@@ -134,7 +134,7 @@ export class KlienciClient implements IKlienciClient {
 }
 
 export interface IKrajeClient {
-    pobierzKraje(): Observable<KrajDto[]>;
+    pobierzKraje(sortField: string | null | undefined, sortOrder: number | undefined): Observable<KrajDto[]>;
 }
 
 @Injectable({
@@ -150,8 +150,14 @@ export class KrajeClient implements IKrajeClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    pobierzKraje(): Observable<KrajDto[]> {
-        let url_ = this.baseUrl + "/api/kraje";
+    pobierzKraje(sortField: string | null | undefined, sortOrder: number | undefined): Observable<KrajDto[]> {
+        let url_ = this.baseUrl + "/api/kraje?";
+        if (sortField !== undefined && sortField !== null)
+            url_ += "SortField=" + encodeURIComponent("" + sortField) + "&";
+        if (sortOrder === null)
+            throw new Error("The parameter 'sortOrder' cannot be null.");
+        else if (sortOrder !== undefined)
+            url_ += "SortOrder=" + encodeURIComponent("" + sortOrder) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -207,6 +213,7 @@ export class KlientDto implements IKlientDto {
     id?: string;
     imie?: string | undefined;
     nazwisko?: string | undefined;
+    nazwa?: string | undefined;
     pesel?: string | undefined;
     regon?: string | undefined;
     nip?: string | undefined;
@@ -237,6 +244,7 @@ export class KlientDto implements IKlientDto {
             this.id = _data["id"];
             this.imie = _data["imie"];
             this.nazwisko = _data["nazwisko"];
+            this.nazwa = _data["nazwa"];
             this.pesel = _data["pesel"];
             this.regon = _data["regon"];
             this.nip = _data["nip"];
@@ -267,6 +275,7 @@ export class KlientDto implements IKlientDto {
         data["id"] = this.id;
         data["imie"] = this.imie;
         data["nazwisko"] = this.nazwisko;
+        data["nazwa"] = this.nazwa;
         data["pesel"] = this.pesel;
         data["regon"] = this.regon;
         data["nip"] = this.nip;
@@ -290,6 +299,7 @@ export interface IKlientDto {
     id?: string;
     imie?: string | undefined;
     nazwisko?: string | undefined;
+    nazwa?: string | undefined;
     pesel?: string | undefined;
     regon?: string | undefined;
     nip?: string | undefined;
@@ -354,6 +364,7 @@ export interface IKrajDto {
 export class UtworzKlientaCommand implements IUtworzKlientaCommand {
     imie?: string | undefined;
     nazwisko?: string | undefined;
+    nazwa?: string | undefined;
     idKraju?: string;
     pesel?: string | undefined;
     regon?: string | undefined;
@@ -380,6 +391,7 @@ export class UtworzKlientaCommand implements IUtworzKlientaCommand {
         if (_data) {
             this.imie = _data["imie"];
             this.nazwisko = _data["nazwisko"];
+            this.nazwa = _data["nazwa"];
             this.idKraju = _data["idKraju"];
             this.pesel = _data["pesel"];
             this.regon = _data["regon"];
@@ -406,6 +418,7 @@ export class UtworzKlientaCommand implements IUtworzKlientaCommand {
         data = typeof data === 'object' ? data : {};
         data["imie"] = this.imie;
         data["nazwisko"] = this.nazwisko;
+        data["nazwa"] = this.nazwa;
         data["idKraju"] = this.idKraju;
         data["pesel"] = this.pesel;
         data["regon"] = this.regon;
@@ -425,6 +438,7 @@ export class UtworzKlientaCommand implements IUtworzKlientaCommand {
 export interface IUtworzKlientaCommand {
     imie?: string | undefined;
     nazwisko?: string | undefined;
+    nazwa?: string | undefined;
     idKraju?: string;
     pesel?: string | undefined;
     regon?: string | undefined;

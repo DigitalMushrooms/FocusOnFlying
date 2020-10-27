@@ -58,6 +58,26 @@
           "Kraje"
         ],
         "operationId": "Kraje_PobierzKraje",
+        "parameters": [
+          {
+            "name": "SortField",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "SortOrder",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -91,6 +111,10 @@
             "nullable": true
           },
           "nazwisko": {
+            "type": "string",
+            "nullable": true
+          },
+          "nazwa": {
             "type": "string",
             "nullable": true
           },
@@ -187,6 +211,10 @@
             "nullable": true
           },
           "nazwisko": {
+            "type": "string",
+            "nullable": true
+          },
+          "nazwa": {
             "type": "string",
             "nullable": true
           },

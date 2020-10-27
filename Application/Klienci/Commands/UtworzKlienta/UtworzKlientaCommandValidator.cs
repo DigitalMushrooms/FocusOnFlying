@@ -22,11 +22,15 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
             RuleFor(x => x.Imie)
                 .NotEmpty()
                 .WithMessage("Imię jest polem obowiązkowym.")
-                .When(x => !string.IsNullOrEmpty(x.Pesel));
+                .When(x => !string.IsNullOrWhiteSpace(x.Pesel));
             RuleFor(x => x.Nazwisko)
                 .NotEmpty()
                 .WithMessage("Nazwisko jest polem obowiązkowym.")
-                .When(x => !string.IsNullOrEmpty(x.Pesel));
+                .When(x => !string.IsNullOrWhiteSpace(x.Pesel));
+            RuleFor(x => x.Nazwa)
+                .NotEmpty()
+                .WithMessage("Nazwisko jest polem obowiązkowym.")
+                .When(x => !string.IsNullOrWhiteSpace(x.Imie));
             RuleFor(x => x.IdKraju)
                 .MustAsync(IdKrajuMusiIstniecWBazieDanych)
                 .WithMessage("IdKraju nie istnieje w bazie danych.");
@@ -40,7 +44,7 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
                 .Must(PeselMusiPosiadacPoprawnaSumeKontrolna)
                 .WithMessage("Pesel posiada błędną sumę kontrolną.")
                 .MustAsync(PeselNieMozeIstniecWBazieDanych)
-                .When(x => string.IsNullOrEmpty(x.Imie));
+                .When(x => string.IsNullOrWhiteSpace(x.Imie));
             RuleFor(x => x.Regon)
                 .NotEmpty()
                 .WithMessage("Regon jest polem obowiązkowym.")
@@ -54,7 +58,7 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
                 .WithMessage("Regon musi składać się z samych cyfr.")
                 .Must(RegonMusiPosiadacPoprawnaSumeKontrolna)
                 .WithMessage("Regon posiada błędną sumę kontrolną.")
-                .When(x => string.IsNullOrEmpty(x.Pesel));
+                .When(x => string.IsNullOrWhiteSpace(x.Pesel));
             RuleFor(x => x.Nip)
                 .NotEmpty()
                 .WithMessage("Nip jest polem obowiązkowym.")
@@ -64,7 +68,7 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
                 .WithMessage("Nip musi składać się z samych cyfr.")
                 .Must(NipMusiPosiadacPoprawnaSumeKontrolna)
                 .WithMessage("Nip posiada błędną sumę kontrolną.")
-                .When(x => string.IsNullOrEmpty(x.Pesel));
+                .When(x => string.IsNullOrWhiteSpace(x.Pesel));
             RuleFor(x => x.NumerPaszportu)
                 .NotEmpty()
                 .WithMessage("Numer paszportu jest polem obowiązkowym.")
@@ -72,7 +76,7 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
             RuleFor(x => x.NumerTelefonu)
                 .NotEmpty()
                 .WithMessage("Numer telefonu jest polem obowiązkowym.")
-                .When(x => string.IsNullOrEmpty(x.Email));
+                .When(x => string.IsNullOrWhiteSpace(x.Email));
             RuleFor(x => x.KodPocztowy)
                 .NotEmpty()
                 .WithMessage("Kod pocztowy jest polem obowiązkowym.");
@@ -89,7 +93,7 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
                 .WithMessage("Email jest polem obowiązkowym.")
                 .EmailAddress()
                 .WithMessage("Email jest niepoprawny.")
-                .When(x => string.IsNullOrEmpty(x.NumerTelefonu));
+                .When(x => string.IsNullOrWhiteSpace(x.NumerTelefonu));
         }
 
         private async Task<bool> PeselNieMozeIstniecWBazieDanych(string pesel, CancellationToken cancellationToken)

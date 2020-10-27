@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { KlienciClient, KlientDto } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-klienci',
@@ -6,10 +7,19 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./klienci.component.css']
 })
 export class KlienciComponent implements OnInit {
+  klienci: KlientDto[];
 
-  constructor() { }
+  constructor(
+    private klienciClient: KlienciClient
+  ) { }
 
   ngOnInit(): void {
+    this.klienciClient.pobierzKlientow()
+      .subscribe(
+        (klienci) => {
+          this.klienci = klienci;
+        }
+      );
   }
 
 }

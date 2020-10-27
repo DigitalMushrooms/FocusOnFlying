@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FocusOnFlying.Application.Common.Interfaces;
+using FocusOnFlying.Application.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -9,8 +10,10 @@ using System.Threading.Tasks;
 
 namespace FocusOnFlying.Application.Kraje.Queries.PobierzKraje
 {
-    public class PobierzKrajeQuery : IRequest<List<KrajDto>>
+    public class PobierzKrajeQuery : IRequest<List<KrajDto>>, ISortowalne
     {
+        public string SortField { get; set; }
+        public int SortOrder { get; set; }
     }
 
     public class PobierzKrajeQueryHandler : IRequestHandler<PobierzKrajeQuery, List<KrajDto>>
@@ -28,6 +31,7 @@ namespace FocusOnFlying.Application.Kraje.Queries.PobierzKraje
         {
             List<KrajDto> kraje = await _focusOnFlyingContext.Kraje
                 .ProjectTo<KrajDto>(_mapper.ConfigurationProvider)
+                .GetSorted(request.SortField, request.SortOrder)
                 .ToListAsync(cancellationToken);
 
             return kraje;

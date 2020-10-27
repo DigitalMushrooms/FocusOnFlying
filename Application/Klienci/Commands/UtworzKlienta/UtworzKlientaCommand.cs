@@ -13,6 +13,7 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
     {
         public string Imie { get; set; }
         public string Nazwisko { get; set; }
+        public string Nazwa { get; set; }
         public Guid IdKraju { get; set; }
         public string Pesel { get; set; }
         public string Regon { get; set; }

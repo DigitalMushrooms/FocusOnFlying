@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import * as _ from 'lodash';
 import { SelectItem } from 'primeng/api';
 import { map } from 'rxjs/operators';
 import { KlienciClient, KrajeClient, UtworzKlientaCommand } from 'src/app/web-api-client';
@@ -14,6 +15,7 @@ export class NowyKlientComponent implements OnInit {
   nowyKlientForm = this.formBuilder.group({
     imie: [null],
     nazwisko: [null],
+    nazwa: [null],
     kraj: [null, Validators.required],
     pesel: [null],
     regon: [null],
@@ -40,10 +42,14 @@ export class NowyKlientComponent implements OnInit {
   }
 
   pobierzKraje(): void {
-    this.krajeClient.pobierzKraje()
+    this.krajeClient.pobierzKraje('nazwaKraju', 1)
       .pipe(map(kraje => kraje.map((k => ({ label: k.nazwaKraju, value: { id: k.id, skrot: k.skrot } } as SelectItem)))))
       .subscribe(
-        (kraje) => this.kraje = kraje
+        (kraje) => {
+          this.kraje = kraje;
+          const polska = _.find(this.kraje, x => x.value.skrot === 'PL').value;
+          this.controls['kraj'].setValue(polska);
+        }
       );
   }
 
@@ -51,6 +57,7 @@ export class NowyKlientComponent implements OnInit {
     const command = {
       imie: this.controls['imie'].value,
       nazwisko: this.controls['nazwisko'].value,
+      nazwa: this.controls['nazwa'].value,
       idKraju: this.controls['kraj'].value ? (this.controls['kraj'].value.id) : null,
       pesel: this.controls['pesel'].value ? this.controls['pesel'].value : null,
       regon: this.controls['regon'].value ? this.controls['regon'].value : null,
@@ -65,8 +72,12 @@ export class NowyKlientComponent implements OnInit {
       email: this.controls['email'].value ? this.controls['email'].value : null
     } as UtworzKlientaCommand;
     this.klienciClient.utworzKlienta(command).subscribe(
-      () => { },
-      (e) => { debugger; }
+      () => {
+        //TODO: Dorobić powiadomienie i wyczyścić pola.
+      },
+      (e) => {
+        //TODO: Dorobić powiadomienia
+      }
     );
   }
 }
