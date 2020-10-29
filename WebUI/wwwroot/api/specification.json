@@ -12,16 +12,51 @@
           "Klienci"
         ],
         "operationId": "Klienci_PobierzKlientow",
+        "parameters": [
+          {
+            "name": "Offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "Rows",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "SortField",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "SortOrder",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 4
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/KlientDto"
-                  }
+                  "$ref": "#/components/schemas/PagedResultOfKlientDto"
                 }
               }
             }
@@ -98,6 +133,26 @@
   },
   "components": {
     "schemas": {
+      "PagedResultOfKlientDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PagedResultBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "results": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/KlientDto"
+                }
+              }
+            }
+          }
+        ]
+      },
       "KlientDto": {
         "type": "object",
         "additionalProperties": false,
@@ -199,6 +254,16 @@
           "skrot": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "PagedResultBase": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rowCount": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

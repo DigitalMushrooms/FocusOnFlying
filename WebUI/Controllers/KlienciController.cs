@@ -1,8 +1,8 @@
 ﻿using FocusOnFlying.Application.Klienci.Commands.UtworzKlienta;
 using FocusOnFlying.Application.Klienci.Queries.PobierzKlientow;
+using FocusOnFlying.Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FocusOnFlying.WebUI.Controllers
@@ -12,11 +12,9 @@ namespace FocusOnFlying.WebUI.Controllers
     public class KlienciController : ApiController
     {
         [HttpGet]
-        public async Task<List<KlientDto>> PobierzKlientow()
+        public async Task<PagedResult<KlientDto>> PobierzKlientow([FromQuery] PobierzKlientowQuery query)
         {
-            var query = new PobierzKlientowQuery();
             var klienci = await Mediator.Send(query);
-
             return klienci;
         }
 

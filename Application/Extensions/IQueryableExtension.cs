@@ -1,4 +1,5 @@
 ﻿using FocusOnFlying.Application.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,8 +9,20 @@ namespace FocusOnFlying.Application.Extensions
 {
     public static class IQueryableExtension
     {
-        public static Task<PaginatedList<TDestination>> PaginatedListAsync<TDestination>(this IQueryable<TDestination> queryable, int pageNumber, int pageSize)
-            => PaginatedList<TDestination>.CreateAsync(queryable, pageNumber, pageSize);
+        public static async Task<PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query, int offset, int rows) where T : class
+        {
+            var result = new PagedResult<T>();
+            result.RowCount = await query.CountAsync();
+            if (rows == 0)
+            {
+                result.Results = await query.ToListAsync();
+            }
+            else
+            {
+                result.Results = await query.Skip(offset).Take(rows).ToListAsync();
+            }
+            return result;
+        }
 
         public static IQueryable<T> GetSorted<T>(this IQueryable<T> query, string sortField, int sortOrder) where T : class
         {

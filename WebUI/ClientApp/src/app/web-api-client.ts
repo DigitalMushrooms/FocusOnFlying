@@ -15,7 +15,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IKlienciClient {
-    pobierzKlientow(): Observable<KlientDto[]>;
+    pobierzKlientow(offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfKlientDto>;
     utworzKlienta(command: UtworzKlientaCommand): Observable<void>;
 }
 
@@ -32,8 +32,22 @@ export class KlienciClient implements IKlienciClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    pobierzKlientow(): Observable<KlientDto[]> {
-        let url_ = this.baseUrl + "/api/klienci";
+    pobierzKlientow(offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfKlientDto> {
+        let url_ = this.baseUrl + "/api/klienci?";
+        if (offset === null)
+            throw new Error("The parameter 'offset' cannot be null.");
+        else if (offset !== undefined)
+            url_ += "Offset=" + encodeURIComponent("" + offset) + "&";
+        if (rows === null)
+            throw new Error("The parameter 'rows' cannot be null.");
+        else if (rows !== undefined)
+            url_ += "Rows=" + encodeURIComponent("" + rows) + "&";
+        if (sortField !== undefined && sortField !== null)
+            url_ += "SortField=" + encodeURIComponent("" + sortField) + "&";
+        if (sortOrder === null)
+            throw new Error("The parameter 'sortOrder' cannot be null.");
+        else if (sortOrder !== undefined)
+            url_ += "SortOrder=" + encodeURIComponent("" + sortOrder) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -51,14 +65,14 @@ export class KlienciClient implements IKlienciClient {
                 try {
                     return this.processPobierzKlientow(<any>response_);
                 } catch (e) {
-                    return <Observable<KlientDto[]>><any>_observableThrow(e);
+                    return <Observable<PagedResultOfKlientDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<KlientDto[]>><any>_observableThrow(response_);
+                return <Observable<PagedResultOfKlientDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processPobierzKlientow(response: HttpResponseBase): Observable<KlientDto[]> {
+    protected processPobierzKlientow(response: HttpResponseBase): Observable<PagedResultOfKlientDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -69,11 +83,7 @@ export class KlienciClient implements IKlienciClient {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(KlientDto.fromJS(item));
-            }
+            result200 = PagedResultOfKlientDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -81,7 +91,7 @@ export class KlienciClient implements IKlienciClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<KlientDto[]>(<any>null);
+        return _observableOf<PagedResultOfKlientDto>(<any>null);
     }
 
     utworzKlienta(command: UtworzKlientaCommand): Observable<void> {
@@ -207,6 +217,83 @@ export class KrajeClient implements IKrajeClient {
         }
         return _observableOf<KrajDto[]>(<any>null);
     }
+}
+
+export class PagedResultBase implements IPagedResultBase {
+    rowCount?: number;
+
+    constructor(data?: IPagedResultBase) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.rowCount = _data["rowCount"];
+        }
+    }
+
+    static fromJS(data: any): PagedResultBase {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultBase();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["rowCount"] = this.rowCount;
+        return data; 
+    }
+}
+
+export interface IPagedResultBase {
+    rowCount?: number;
+}
+
+export class PagedResultOfKlientDto extends PagedResultBase implements IPagedResultOfKlientDto {
+    results?: KlientDto[] | undefined;
+
+    constructor(data?: IPagedResultOfKlientDto) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(KlientDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfKlientDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfKlientDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IPagedResultOfKlientDto extends IPagedResultBase {
+    results?: KlientDto[] | undefined;
 }
 
 export class KlientDto implements IKlientDto {
