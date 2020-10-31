@@ -1,0 +1,17 @@
+<form [formGroup]="nowaMisjaForm">
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-4">
+            <label for="nazwa">Nazwa</label>
+            <input formControlName="nazwa" id="nazwa" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-3">
+            <label for="typ">Typ</label>
+            <p-dropdown formControlName="typ" id="typ" [options]="typ" [showClear]="true" [autoDisplayFirst]="false" placeholder="Wybierz typ">
+            </p-dropdown>
+        </div>
+        <div class="p-field p-col-12">
+            <label for="opis">Opis</label>
+            <textarea formControlName="opis" id="opis" rows="4" pInputTextarea></textarea>
+        </div>
+    </div>
+</form>

@@ -9,8 +9,8 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb.Configuration
         public void Configure(EntityTypeBuilder<Klient> builder)
         {
             builder.ToTable("Klienci");
-            builder.Property(p => p.Imie).IsRequired().HasMaxLength(100);
-            builder.Property(p => p.Nazwisko).IsRequired().HasMaxLength(100);
+            builder.Property(p => p.Imie).HasMaxLength(100);
+            builder.Property(p => p.Nazwisko).HasMaxLength(100);
             builder.Property(p => p.Pesel).HasMaxLength(11);
             builder.Property(p => p.Regon).HasMaxLength(14);
             builder.Property(p => p.Nip).HasMaxLength(10);
@@ -23,6 +23,7 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb.Configuration
             builder.Property(p => p.NumerLokalu).HasMaxLength(10);
             builder.Property(p => p.IdKraju);
             builder.Property(p => p.Email).IsRequired().HasMaxLength(256);
+            builder.Property(p => p.Nazwa);
 
             builder
                 .HasOne(x => x.Kraj)

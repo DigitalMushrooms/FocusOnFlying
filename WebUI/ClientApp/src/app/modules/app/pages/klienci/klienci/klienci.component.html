@@ -3,6 +3,8 @@
         <tr>
             <th>Imie i nazwisko</th>
             <th>PESEL</th>
+            <th>Nazwa</th>
+            <th>REGON</th>
             <th>NIP</th>
             <th>Adres</th>
             <th>Kraj</th>
@@ -12,8 +14,10 @@
         <tr [pSelectableRow]="klient">
             <td>{{klient.imie}} {{klient.nazwisko}}</td>
             <td>{{klient.pesel}}</td>
+            <td>{{klient.nazwa}}</td>
+            <td>{{klient.regon}}</td>
             <td>{{klient.nip}}</td>
-            <td>{{klient.ulica}} {{klient.numerDomu}} {{klient.numerLokalu ? '/' + klient.numerLokalu : null}}, {{klient.kodPocztowy}} {{klient.miejscowosc}}</td>
+            <td>{{klient.ulica}} {{klient.numerDomu}}{{klient.numerLokalu ? '/' + klient.numerLokalu : null}}, {{klient.kodPocztowy}} {{klient.miejscowosc}}</td>
             <td>{{klient.kraj.nazwaKraju}}</td>
         </tr>
     </ng-template>
