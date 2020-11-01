@@ -1,28 +1,35 @@
 ﻿using FocusOnFlying.Application.Common.Interfaces;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb.Configurations;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
 {
     public class FocusOnFlyingContext : DbContext, IFocusOnFlyingContext
     {
         private readonly IAppSettingsService _appSettingsService;
+        private readonly IWebHostEnvironment _environment;
 
-        public FocusOnFlyingContext(DbContextOptions options, IAppSettingsService appSettingsService) 
+        public FocusOnFlyingContext(DbContextOptions options, IAppSettingsService appSettingsService, IWebHostEnvironment environment) 
             : base(options)
         {
             _appSettingsService = appSettingsService;
+            _environment = environment;
         }
 
         public DbSet<Klient> Klienci { get; set; }
         public DbSet<Usluga> Uslugi { get; set; }
         public DbSet<Kraj> Kraje { get; set; }
+        public DbSet<Misja> Misje { get; set; }
+        public DbSet<TypMisji> TypyMisji { get; set; }
+        public DbSet<StatusMisji> StatusyMisji { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_appSettingsService.FocusOnFlyingConnectionString);
-            optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.EnableSensitiveDataLogging(!_environment.IsProduction());
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,6 +37,9 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
             modelBuilder.ApplyConfiguration(new KlientConfiguration());
             modelBuilder.ApplyConfiguration(new UslugaConfiguration());
             modelBuilder.ApplyConfiguration(new KrajConfiguration());
+            modelBuilder.ApplyConfiguration(new MisjaConfiguration());
+            modelBuilder.ApplyConfiguration(new TypMisjiConfiguration());
+            modelBuilder.ApplyConfiguration(new StatusMisjiConfiguration());
         }
     }
 }
