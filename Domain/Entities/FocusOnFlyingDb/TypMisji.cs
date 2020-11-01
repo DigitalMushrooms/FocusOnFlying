@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
 {
@@ -7,6 +8,6 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public Guid Id { get; set; }
         public string Nazwa { get; set; }
 
-        public Misja Misja { get; set; }
+        public List<Misja> Misje { get; set; }
     }
 }

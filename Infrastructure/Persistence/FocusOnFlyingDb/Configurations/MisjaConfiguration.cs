@@ -21,13 +21,13 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb.Configuration
 
             builder
                 .HasOne(x => x.TypMisji)
-                .WithOne(x => x.Misja)
-                .HasForeignKey<Misja>(x => x.IdTypuMisji);
+                .WithMany(x => x.Misje)
+                .HasForeignKey(x => x.IdTypuMisji);
 
             builder
                 .HasOne(x => x.StatusMisji)
-                .WithOne(x => x.Misja)
-                .HasForeignKey<Misja>(x => x.IdStatusuMisji);
+                .WithMany(x => x.Misje)
+                .HasForeignKey(x => x.IdStatusuMisji);
         }
     }
 }

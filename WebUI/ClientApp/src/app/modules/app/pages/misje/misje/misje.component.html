@@ -6,8 +6,12 @@
         </div>
         <div class="p-field p-col-3">
             <label for="typ">Typ</label>
-            <p-dropdown formControlName="typ" id="typ" [options]="typ" [showClear]="true" [autoDisplayFirst]="false" placeholder="Wybierz typ">
+            <p-dropdown formControlName="typ" id="typ" [options]="typyMisji" [showClear]="true" [autoDisplayFirst]="false" placeholder="Wybierz typ">
             </p-dropdown>
+        </div>
+        <div class="p-field p-col-2">
+            <label for="status">Status</label>
+            <input formControlName="status" id="status" type="text" pInputText>
         </div>
         <div class="p-field p-col-12">
             <label for="opis">Opis</label>

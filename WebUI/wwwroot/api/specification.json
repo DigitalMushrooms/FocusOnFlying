@@ -129,6 +129,84 @@
           }
         }
       }
+    },
+    "/api/statusymisji": {
+      "get": {
+        "tags": [
+          "StatusyMisji"
+        ],
+        "operationId": "StatusyMisji_PobierzStatusyMisji",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StatusMisjiDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/statusymisji/{nazwa}": {
+      "get": {
+        "tags": [
+          "StatusyMisji"
+        ],
+        "operationId": "StatusyMisji_PobierzStatusMisji",
+        "parameters": [
+          {
+            "name": "nazwa",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusMisjiDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/typymisji": {
+      "get": {
+        "tags": [
+          "TypyMisji"
+        ],
+        "operationId": "TypyMisji_PobierzTypyMisji",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TypMisjiDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -328,6 +406,34 @@
             "nullable": true
           },
           "email": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "StatusMisjiDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwa": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "TypMisjiDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwa": {
             "type": "string",
             "nullable": true
           }

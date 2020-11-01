@@ -219,6 +219,198 @@ export class KrajeClient implements IKrajeClient {
     }
 }
 
+export interface IStatusyMisjiClient {
+    pobierzStatusyMisji(): Observable<StatusMisjiDto[]>;
+    pobierzStatusMisji(nazwa: string | null): Observable<StatusMisjiDto>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class StatusyMisjiClient implements IStatusyMisjiClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    pobierzStatusyMisji(): Observable<StatusMisjiDto[]> {
+        let url_ = this.baseUrl + "/api/statusymisji";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPobierzStatusyMisji(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPobierzStatusyMisji(<any>response_);
+                } catch (e) {
+                    return <Observable<StatusMisjiDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatusMisjiDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPobierzStatusyMisji(response: HttpResponseBase): Observable<StatusMisjiDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(StatusMisjiDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatusMisjiDto[]>(<any>null);
+    }
+
+    pobierzStatusMisji(nazwa: string | null): Observable<StatusMisjiDto> {
+        let url_ = this.baseUrl + "/api/statusymisji/{nazwa}";
+        if (nazwa === undefined || nazwa === null)
+            throw new Error("The parameter 'nazwa' must be defined.");
+        url_ = url_.replace("{nazwa}", encodeURIComponent("" + nazwa));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPobierzStatusMisji(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPobierzStatusMisji(<any>response_);
+                } catch (e) {
+                    return <Observable<StatusMisjiDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatusMisjiDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPobierzStatusMisji(response: HttpResponseBase): Observable<StatusMisjiDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StatusMisjiDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatusMisjiDto>(<any>null);
+    }
+}
+
+export interface ITypyMisjiClient {
+    pobierzTypyMisji(): Observable<TypMisjiDto[]>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class TypyMisjiClient implements ITypyMisjiClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    pobierzTypyMisji(): Observable<TypMisjiDto[]> {
+        let url_ = this.baseUrl + "/api/typymisji";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPobierzTypyMisji(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPobierzTypyMisji(<any>response_);
+                } catch (e) {
+                    return <Observable<TypMisjiDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<TypMisjiDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPobierzTypyMisji(response: HttpResponseBase): Observable<TypMisjiDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(TypMisjiDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TypMisjiDto[]>(<any>null);
+    }
+}
+
 export class PagedResultBase implements IPagedResultBase {
     rowCount?: number;
 
@@ -538,6 +730,86 @@ export interface IUtworzKlientaCommand {
     numerLokalu?: string | undefined;
     miejscowosc?: string | undefined;
     email?: string | undefined;
+}
+
+export class StatusMisjiDto implements IStatusMisjiDto {
+    id?: string;
+    nazwa?: string | undefined;
+
+    constructor(data?: IStatusMisjiDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwa = _data["nazwa"];
+        }
+    }
+
+    static fromJS(data: any): StatusMisjiDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatusMisjiDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwa"] = this.nazwa;
+        return data; 
+    }
+}
+
+export interface IStatusMisjiDto {
+    id?: string;
+    nazwa?: string | undefined;
+}
+
+export class TypMisjiDto implements ITypMisjiDto {
+    id?: string;
+    nazwa?: string | undefined;
+
+    constructor(data?: ITypMisjiDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwa = _data["nazwa"];
+        }
+    }
+
+    static fromJS(data: any): TypMisjiDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TypMisjiDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwa"] = this.nazwa;
+        return data; 
+    }
+}
+
+export interface ITypMisjiDto {
+    id?: string;
+    nazwa?: string | undefined;
 }
 
 export class SwaggerException extends Error {
