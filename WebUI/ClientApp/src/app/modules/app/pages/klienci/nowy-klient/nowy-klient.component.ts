@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import * as _ from 'lodash';
 import { SelectItem } from 'primeng/api';
 import { map } from 'rxjs/operators';
 import { KlienciClient, KrajeClient, UtworzKlientaCommand } from 'src/app/web-api-client';
@@ -47,7 +46,7 @@ export class NowyKlientComponent implements OnInit {
       .subscribe(
         (kraje) => {
           this.kraje = kraje;
-          const polska = _.find(this.kraje, x => x.value.skrot === 'PL').value;
+          const polska = this.kraje.find(x => x.value.skrot === 'PL').value;
           this.controls['kraj'].setValue(polska);
         }
       );

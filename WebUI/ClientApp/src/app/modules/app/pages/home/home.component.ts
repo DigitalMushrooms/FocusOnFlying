@@ -10,17 +10,15 @@ export class HomeComponent implements OnInit {
 
   constructor(public oidcSecurityService: OidcSecurityService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.oidcSecurityService
       .checkAuth()
-      .subscribe((auth) => console.log('is authenticated', auth));
-  }
-
-  login() {
-    this.oidcSecurityService.authorize();
-  }
-
-  callApi() {
-    
+      .subscribe(
+        (isAuthenticated) => {
+          if(!isAuthenticated) {
+            this.oidcSecurityService.authorize();
+          }
+        }
+      );
   }
 }

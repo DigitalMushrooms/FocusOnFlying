@@ -1,10 +1,10 @@
 <form [formGroup]="nowaMisjaForm">
     <div class="p-fluid p-formgrid p-grid">
-        <div class="p-field p-col-4">
+        <div class="p-field p-col-3">
             <label for="nazwa">Nazwa</label>
             <input formControlName="nazwa" id="nazwa" type="text" pInputText>
         </div>
-        <div class="p-field p-col-3">
+        <div class="p-field p-col-2">
             <label for="typ">Typ</label>
             <p-dropdown formControlName="typ" id="typ" [options]="typyMisji" [showClear]="true" [autoDisplayFirst]="false" placeholder="Wybierz typ">
             </p-dropdown>
@@ -13,9 +13,27 @@
             <label for="status">Status</label>
             <input formControlName="status" id="status" type="text" pInputText>
         </div>
+        <div class="p-field p-col-2">
+            <label for="maksymalnaWysokoscLotu">Maksymalna wysokość lotu</label>
+            <p-inputNumber formControlName="maksymalnaWysokoscLotu" min="1" inputId="maksymalnaWysokoscLotu" suffix=" m">
+            </p-inputNumber>
+        </div>
+    </div>
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-2">
+            <label for="dataRozpoczecia">Data rozpoczecia</label>
+            <p-calendar formControlName="dataRozpoczecia" [maxDate]="this.controls['dataZakonczenia']?.value" appendTo="body" [showTime]="true" inputId="dataRozpoczecia">
+            </p-calendar>
+        </div>
+        <div class="p-field p-col-2">
+            <label for="dataZakonczenia">Data zakończenia</label>
+            <p-calendar formControlName="dataZakonczenia" [minDate]="this.controls['dataRozpoczecia']?.value" appendTo="body" [showTime]="true" inputId="dataZakonczenia">
+            </p-calendar>
+        </div>
         <div class="p-field p-col-12">
             <label for="opis">Opis</label>
             <textarea formControlName="opis" id="opis" rows="4" pInputTextarea></textarea>
         </div>
     </div>
+    <p-gmap [options]="opcjeMapy" [style]="{'width':'100%','height':'320px'}" ></p-gmap>
 </form>

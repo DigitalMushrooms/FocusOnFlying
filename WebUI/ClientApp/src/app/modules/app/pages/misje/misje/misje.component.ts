@@ -14,11 +14,18 @@ export class MisjeComponent implements OnInit {
     nazwa: [null],
     opis: [null],
     typ: [null],
-    status: [{ value: null, disabled: true }]
+    status: [{ value: null, disabled: true }],
+    maksymalnaWysokoscLotu: [null],
+    dataRozpoczecia: [null],
+    dataZakonczenia: [null],
   });
   controls = this.nowaMisjaForm.controls;
   typyMisji: SelectItem<TypMisjiDto>[] = [];
   statusMisji: StatusMisjiDto;
+  opcjeMapy = {
+    center: { lat: 52.2334836, lng: 21.0122257 },
+    zoom: 12
+  };
 
   constructor(
     private formBuilder: FormBuilder,

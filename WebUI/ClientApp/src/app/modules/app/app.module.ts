@@ -10,11 +10,12 @@ import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { GMapModule } from 'primeng/gmap';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { RadioButtonModule } from 'primeng/radiobutton';
 import { MenuModule } from 'primeng/menu';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { TableModule } from 'primeng/table';
 import { HttpTokenInterceptor } from 'src/app/core/interceptors/http.token.interceptor';
 import { AppRoutingModule } from './app-routing.module';
@@ -60,6 +61,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     DynamicDialogModule,
     FormsModule,
     FormsModule,
+    GMapModule,
     HttpClientModule,
     InputNumberModule,
     InputTextareaModule,
