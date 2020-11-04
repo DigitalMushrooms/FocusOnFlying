@@ -1,3 +1,4 @@
+/// <reference types="@types/googlemaps" />
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
@@ -12,12 +13,15 @@ import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from
 export class MisjeComponent implements OnInit {
   nowaMisjaForm = this.formBuilder.group({
     nazwa: [null],
+    dataRozpoczecia: [null],
+    dataZakonczenia: [null],
     opis: [null],
     typ: [null],
     status: [{ value: null, disabled: true }],
     maksymalnaWysokoscLotu: [null],
-    dataRozpoczecia: [null],
-    dataZakonczenia: [null],
+    szerokoscGeograficzna: [{ value: null, disabled: true }],
+    dlugoscGeograficzna: [{ value: null, disabled: true }],
+    promien: [200]
   });
   controls = this.nowaMisjaForm.controls;
   typyMisji: SelectItem<TypMisjiDto>[] = [];
@@ -26,6 +30,7 @@ export class MisjeComponent implements OnInit {
     center: { lat: 52.2334836, lng: 21.0122257 },
     zoom: 12
   };
+  nakladkiNaMape: google.maps.Circle[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -36,6 +41,7 @@ export class MisjeComponent implements OnInit {
   ngOnInit(): void {
     this.pobierzTypyMisji();
     this.pobierzStatusMisji();
+    this.promienOnChange();
   }
 
   pobierzTypyMisji(): void {
@@ -53,5 +59,35 @@ export class MisjeComponent implements OnInit {
           this.controls['status'].setValue(statusMisji.nazwa);
           this.statusMisji = statusMisji;
         });
+  }
+
+  promienOnChange(): void {
+    this.controls['promien'].valueChanges
+      .subscribe(
+        (value: string) => this.nakladkiNaMape[0].setRadius(+value)
+      );
+  }
+
+  mapaOnClick(event: { latLng: { lat: () => number; lng: () => number; } }): void {
+    this.nakladkiNaMape = [
+      new google.maps.Circle({
+        center: {
+          lat: event.latLng.lat(),
+          lng: event.latLng.lng()
+        },
+        fillColor: '#c286d8',
+        fillOpacity: 0.35,
+        strokeWeight: 1,
+        radius: +this.controls['promien'].value
+      })
+    ];
+    this.controls['szerokoscGeograficzna'].setValue(event.latLng.lat());
+    this.controls['dlugoscGeograficzna'].setValue(event.latLng.lng());
+  }
+
+  wyczyscMapeOnClick(): void {
+    this.nakladkiNaMape = [];
+    this.controls['szerokoscGeograficzna'].reset();
+    this.controls['dlugoscGeograficzna'].reset();
   }
 }

@@ -5,6 +5,18 @@
             <input formControlName="nazwa" id="nazwa" type="text" pInputText>
         </div>
         <div class="p-field p-col-2">
+            <label for="dataRozpoczecia">Data rozpoczecia</label>
+            <p-calendar formControlName="dataRozpoczecia" [maxDate]="this.controls['dataZakonczenia']?.value" appendTo="body" [showTime]="true" inputId="dataRozpoczecia">
+            </p-calendar>
+        </div>
+        <div class="p-field p-col-2">
+            <label for="dataZakonczenia">Data zakończenia</label>
+            <p-calendar formControlName="dataZakonczenia" [minDate]="this.controls['dataRozpoczecia']?.value" appendTo="body" [showTime]="true" inputId="dataZakonczenia">
+            </p-calendar>
+        </div>
+    </div>
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-2">
             <label for="typ">Typ</label>
             <p-dropdown formControlName="typ" id="typ" [options]="typyMisji" [showClear]="true" [autoDisplayFirst]="false" placeholder="Wybierz typ">
             </p-dropdown>
@@ -18,22 +30,28 @@
             <p-inputNumber formControlName="maksymalnaWysokoscLotu" min="1" inputId="maksymalnaWysokoscLotu" suffix=" m">
             </p-inputNumber>
         </div>
-    </div>
-    <div class="p-fluid p-formgrid p-grid">
-        <div class="p-field p-col-2">
-            <label for="dataRozpoczecia">Data rozpoczecia</label>
-            <p-calendar formControlName="dataRozpoczecia" [maxDate]="this.controls['dataZakonczenia']?.value" appendTo="body" [showTime]="true" inputId="dataRozpoczecia">
-            </p-calendar>
-        </div>
-        <div class="p-field p-col-2">
-            <label for="dataZakonczenia">Data zakończenia</label>
-            <p-calendar formControlName="dataZakonczenia" [minDate]="this.controls['dataRozpoczecia']?.value" appendTo="body" [showTime]="true" inputId="dataZakonczenia">
-            </p-calendar>
-        </div>
         <div class="p-field p-col-12">
             <label for="opis">Opis</label>
             <textarea formControlName="opis" id="opis" rows="4" pInputTextarea></textarea>
         </div>
     </div>
-    <p-gmap [options]="opcjeMapy" [style]="{'width':'100%','height':'320px'}" ></p-gmap>
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-2">
+            <label for="szerokoscGeograficzna">Szerokość geograficzna</label>
+            <input formControlName="szerokoscGeograficzna" id="szerokoscGeograficzna" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-2">
+            <label for="dlugoscGeograficzna">Długość geograficzna</label>
+            <input formControlName="dlugoscGeograficzna" id="dlugoscGeograficzna" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-2">
+            <label for="promien">Promień</label>
+            <p-inputNumber formControlName="promien" min="1" inputId="promien" suffix=" m">
+            </p-inputNumber>
+        </div>
+        <div class="p-d-flex p-col-2 p-as-end p-mb-3">
+            <button pButton type="button" icon="pi pi-times" label="Wyczyść mapę" (click)="wyczyscMapeOnClick()"></button>
+        </div>
+    </div>
+    <p-gmap [options]="opcjeMapy" [style]="{'width':'100%','height':'400px'}" [overlays]="nakladkiNaMape" (onMapClick)="mapaOnClick($event)"></p-gmap>
 </form>
