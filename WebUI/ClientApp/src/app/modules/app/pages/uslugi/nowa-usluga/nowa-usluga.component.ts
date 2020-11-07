@@ -13,9 +13,9 @@ import { MisjeComponent } from '../../misje/misje/misje.component';
   styleUrls: ['./nowa-usluga.component.css'],
   providers: [DialogService]
 })
-export class NowaUslugaComponent implements OnInit {
+export class NowaUslugaComponent {
   nowaUslugaForm = this.formBuilder.group({
-    dataPrzyjeciaZalecenia: [null]
+    dataPrzyjeciaZalecenia: [this.dzisiaj()]
   });
   controls = this.nowaUslugaForm.controls;
   pl = Kalendarz.pl;
@@ -28,9 +28,9 @@ export class NowaUslugaComponent implements OnInit {
     public dialogService: DialogService
   ) { }
 
-  ngOnInit(): void {
+  dzisiaj(): Date {
     const dzisiaj = moment().startOf('day').toDate();
-    this.controls['dataPrzyjeciaZalecenia'].setValue(dzisiaj);
+    return dzisiaj;
   }
 
   wybierzKlientaOnClick(): void {
@@ -57,5 +57,11 @@ export class NowaUslugaComponent implements OnInit {
       header: 'Dodaj misje',
       width: '80%'
     });
+
+    dialog.onClose.subscribe(
+      (misja) => {
+
+      }
+    );
   }
 }

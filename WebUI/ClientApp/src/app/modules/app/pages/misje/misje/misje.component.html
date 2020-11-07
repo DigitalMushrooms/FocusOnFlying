@@ -55,3 +55,11 @@
     </div>
     <p-gmap [options]="opcjeMapy" [style]="{'width':'100%','height':'400px'}" [overlays]="nakladkiNaMape" (onMapClick)="mapaOnClick($event)"></p-gmap>
 </form>
+<div class="p-grid p-fluid p-jc-end p-mt-2">
+    <div class="p-col-2">
+        <button pButton type="button" icon="pi pi-check" label="Dodaj misję" [disabled]="nowaMisjaForm.invalid" (click)="dodajMisjeOnClick()"></button>
+    </div>
+    <div class="p-col-2">
+        <button pButton type="button" icon="pi pi-times" label="Anuluj" (click)="anulujOnClick()"></button>
+    </div>
+</div>

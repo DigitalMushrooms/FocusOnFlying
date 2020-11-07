@@ -1,7 +1,8 @@
 /// <reference types="@types/googlemaps" />
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { map } from 'rxjs/operators';
 import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
 
@@ -12,16 +13,16 @@ import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from
 })
 export class MisjeComponent implements OnInit {
   nowaMisjaForm = this.formBuilder.group({
-    nazwa: [null],
-    dataRozpoczecia: [null],
+    nazwa: [null, Validators.required],
+    dataRozpoczecia: [null, Validators.required],
     dataZakonczenia: [null],
-    opis: [null],
-    typ: [null],
+    opis: [null, Validators.required],
+    typ: [null, Validators.required],
     status: [{ value: null, disabled: true }],
-    maksymalnaWysokoscLotu: [null],
+    maksymalnaWysokoscLotu: [null, Validators.required],
     szerokoscGeograficzna: [{ value: null, disabled: true }],
     dlugoscGeograficzna: [{ value: null, disabled: true }],
-    promien: [200]
+    promien: [200, Validators.required]
   });
   controls = this.nowaMisjaForm.controls;
   typyMisji: SelectItem<TypMisjiDto>[] = [];
@@ -34,6 +35,7 @@ export class MisjeComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private dynamicDialogRef: DynamicDialogRef,
     private typyMisjiClient: TypyMisjiClient,
     private statusyMisjiClient: StatusyMisjiClient
   ) { }
@@ -89,5 +91,15 @@ export class MisjeComponent implements OnInit {
     this.nakladkiNaMape = [];
     this.controls['szerokoscGeograficzna'].reset();
     this.controls['dlugoscGeograficzna'].reset();
+  }
+
+  dodajMisjeOnClick(): void {
+    const abc = this.nowaMisjaForm;
+    debugger;
+    this.dynamicDialogRef.close(null);
+  }
+
+  anulujOnClick(): void {
+    this.dynamicDialogRef.destroy();
   }
 }

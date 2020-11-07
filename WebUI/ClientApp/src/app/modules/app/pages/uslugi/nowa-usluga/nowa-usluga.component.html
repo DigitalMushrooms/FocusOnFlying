@@ -16,9 +16,9 @@
             Email: {{klient.email ? klient.email : 'brak'}}<br />
             Numer telefonu: {{ klient.numerTelefonu ? klient.numerTelefonu : 'brak' }}
 
-            <p-footer>
+            <ng-template pTemplate="footer">
                 <p-button label="Zmień klienta" icon="pi pi-user-edit" (click)="wybierzKlientaOnClick()"></p-button>
-            </p-footer>
+            </ng-template>
         </p-card>
         <button *ngIf="!!klient" pButton type="button" icon="pi pi-star-o" class="p-mt-3" label="Dodaj misje" (click)="dodajMisjeOnClick()"></button>
     </form>
