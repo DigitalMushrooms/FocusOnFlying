@@ -13,6 +13,11 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public DateTime DataRozpoczecia { get; set; }
         public DateTime DataZakonczenia { get; set; }
 
+        public string NazwaLokalizacji { get; set; }
+        public decimal SzerokoscGeograficzna { get; set; }
+        public decimal DlugoscGeograficzna { get; set; }
+        public int Promien { get; set; }
+
         public TypMisji TypMisji { get; set; }
         public StatusMisji StatusMisji { get; set; }
     }

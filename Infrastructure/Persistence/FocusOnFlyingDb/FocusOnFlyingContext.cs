@@ -1,22 +1,18 @@
 ﻿using FocusOnFlying.Application.Common.Interfaces;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb.Configurations;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 
 namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
 {
     public class FocusOnFlyingContext : DbContext, IFocusOnFlyingContext
     {
         private readonly IAppSettingsService _appSettingsService;
-        private readonly IWebHostEnvironment _environment;
 
-        public FocusOnFlyingContext(DbContextOptions options, IAppSettingsService appSettingsService, IWebHostEnvironment environment) 
+        public FocusOnFlyingContext(DbContextOptions options, IAppSettingsService appSettingsService) 
             : base(options)
         {
             _appSettingsService = appSettingsService;
-            _environment = environment;
         }
 
         public DbSet<Klient> Klienci { get; set; }
@@ -29,7 +25,6 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_appSettingsService.FocusOnFlyingConnectionString);
-            optionsBuilder.EnableSensitiveDataLogging(!_environment.IsProduction());
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
