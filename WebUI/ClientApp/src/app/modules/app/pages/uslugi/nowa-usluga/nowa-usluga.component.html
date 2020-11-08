@@ -1,25 +1,49 @@
 <p-card header="Dodanie nowej usługi">
     <form [formGroup]="nowaUslugaForm">
-        <div class="p-fluid p-formgrid p-grid">
-            <div class="p-field p-col-2">
+        <div class="p-fluid p-formgrid p-grid p-nogutter">
+            <div class="p-field p-col-2 p-nogutter">
                 <label for="dataPrzyjeciaZalecenia">Data przyjęcia zlecenia</label>
                 <p-calendar formControlName="dataPrzyjeciaZalecenia" [showIcon]="true" [locale]="pl" [dateFormat]="null" inputId="dataPrzyjeciaZalecenia">
                 </p-calendar>
             </div>
         </div>
-        <button *ngIf="!klient" pButton type="button" icon="pi pi-users" class="p-mb-3" label="Wybierz klienta" (click)="wybierzKlientaOnClick()"></button>
-        <p-card *ngIf="!!klient" [header]="nazwaKlienta" subheader="{{tekstIdentyfikacyjnyKlienta}}" [style]="{width: '400px', backgroundColor: 'rgb(32 38 46)'}"
-            class="p-card-shadow">
-
-            Adres: {{klient.ulica}} {{klient.numerDomu}}{{klient.numerLokalu ? '/' + klient.numerLokalu : null}},
-            {{klient.kodPocztowy}} {{klient.miejscowosc}}<br />
-            Email: {{klient.email ? klient.email : 'brak'}}<br />
-            Numer telefonu: {{ klient.numerTelefonu ? klient.numerTelefonu : 'brak' }}
-
-            <ng-template pTemplate="footer">
-                <p-button label="Zmień klienta" icon="pi pi-user-edit" (click)="wybierzKlientaOnClick()"></p-button>
-            </ng-template>
-        </p-card>
-        <button *ngIf="!!klient" pButton type="button" icon="pi pi-star-o" class="p-mt-3" label="Dodaj misje" (click)="dodajMisjeOnClick()"></button>
     </form>
+    <button *ngIf="!klient" pButton type="button" icon="pi pi-users" class="p-mb-3" label="Wybierz klienta" (click)="wybierzKlientaOnClick()"></button>
+    <h2 *ngIf="klient" class="p-mt-0">Klient</h2>
+    <p-card *ngIf="klient" [header]="nazwaKlienta" subheader="{{tekstIdentyfikacyjnyKlienta}}" [style]="{width: '400px'}" class="p-card-shadow">
+        Adres: {{klient.ulica}} {{klient.numerDomu}}{{klient.numerLokalu ? '/' + klient.numerLokalu : null}},
+        {{klient.kodPocztowy}} {{klient.miejscowosc}}<br />
+        Email: {{klient.email ? klient.email : 'brak'}}<br />
+        Numer telefonu: {{ klient.numerTelefonu ? klient.numerTelefonu : 'brak' }}
+        <ng-template pTemplate="footer">
+            <div class="p-d-flex p-jc-end">
+                <div>
+                    <p-button label="Zmień klienta" icon="pi pi-user-edit" (click)="wybierzKlientaOnClick()"></p-button>
+                </div>
+            </div>
+        </ng-template>
+    </p-card>
+    <div *ngIf="misje.length > 0">
+        <h2>Misje</h2>
+        <div class="p-d-flex">
+            <div *ngFor="let misja of misje; index as i;" class="p-mb-3 p-mr-3">
+                <p-card [header]="misja.nazwa" [subheader]="'Typ: ' + misja.typ.nazwa">
+                    Maksymalna wysokość lotu: {{misja.maksymalnaWysokoscLotu}} m<br />
+                    Data rozpoczęcia: {{misja.dataRozpoczecia | dateFormat: 'llll'}}<br />
+                    Data zakończenia: {{misja.dataZakonczenia ? (misja.dataZakonczenia | dateFormat: 'llll') : 'nd.'}}
+                    <ng-template pTemplate="footer">
+                        <div class="p-d-flex p-jc-end">
+                            <div>
+                                <p-button label="Edytuj misję" icon="pi pi-pencil" (onClick)="edytujMisje(i)"></p-button>
+                            </div>
+                            <div class="p-ml-2">
+                                <p-button label="Usuń misję" icon="pi pi-times" (onClick)="usunMisje(i)"></p-button>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+        </div>
+    </div>
+    <button *ngIf="!!klient" pButton type="button" icon="pi pi-star-o" class="p-mt-3" label="Dodaj misje" (click)="dodajMisjeOnClick()"></button>
 </p-card>

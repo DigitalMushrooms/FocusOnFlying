@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import * as moment from 'moment';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -26,12 +27,12 @@ export class AppComponent {
         { label: 'Nowa usługa', icon: 'pi pi-fw pi-plus', routerLink: '/uslugi/nowa-usluga' },
       ]
     }
-];
+  ];
 
   constructor() {
   }
 
   ngOnInit() {
-
+    moment.locale('pl');
   }
 }

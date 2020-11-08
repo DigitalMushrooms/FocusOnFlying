@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import * as moment from 'moment';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -22,6 +22,7 @@ export class NowaUslugaComponent {
   klient: KlientDto;
   nazwaKlienta: string;
   tekstIdentyfikacyjnyKlienta: string;
+  misje: { nazwa: string, typ: { id: string, nazwa: string }, dataRozpoczecia: Date, dataZakonczenia: Date, maksymalnaWysokoscLotu: number }[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -41,7 +42,9 @@ export class NowaUslugaComponent {
 
     dialog.onClose.subscribe(
       (klient: KlientDto) => {
-        if (klient?.pesel) {
+        if (!klient)
+          return;
+        if (klient.pesel) {
           this.nazwaKlienta = `${klient.imie} ${klient.nazwisko}`;
           this.tekstIdentyfikacyjnyKlienta = `PESEL: ${klient.pesel}`;
         } else {
@@ -54,14 +57,38 @@ export class NowaUslugaComponent {
 
   dodajMisjeOnClick(): void {
     const dialog = this.dialogService.open(MisjeComponent, {
-      header: 'Dodaj misje',
+      header: 'Dodanie misji',
       width: '80%'
     });
 
     dialog.onClose.subscribe(
       (misja) => {
-
+        if (!misja)
+          return;
+        this.misje.push(misja);
       }
     );
+  }
+
+  edytujMisje(index: number): void {
+    const misja = this.misje[index];
+
+    const dialog = this.dialogService.open(MisjeComponent, {
+      header: 'Edycja misji',
+      width: '80%',
+      data: misja
+    });
+
+    dialog.onClose.subscribe(
+      (misja) => {
+        if (!misja)
+          return;
+        this.misje[index] = misja;
+      }
+    );
+  }
+
+  usunMisje(index: number): void {
+    this.misje.splice(index, 1);
   }
 }

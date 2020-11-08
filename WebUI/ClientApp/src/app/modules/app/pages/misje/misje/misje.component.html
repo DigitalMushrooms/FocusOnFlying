@@ -6,12 +6,12 @@
         </div>
         <div class="p-field p-col-2">
             <label for="dataRozpoczecia">Data rozpoczecia</label>
-            <p-calendar formControlName="dataRozpoczecia" [maxDate]="this.controls['dataZakonczenia']?.value" appendTo="body" [showTime]="true" inputId="dataRozpoczecia">
+            <p-calendar formControlName="dataRozpoczecia" [maxDate]="controls['dataZakonczenia']?.value" [locale]="pl" [dateFormat]="null" appendTo="body" [showTime]="true" inputId="dataRozpoczecia">
             </p-calendar>
         </div>
         <div class="p-field p-col-2">
             <label for="dataZakonczenia">Data zakończenia</label>
-            <p-calendar formControlName="dataZakonczenia" [minDate]="this.controls['dataRozpoczecia']?.value" appendTo="body" [showTime]="true" inputId="dataZakonczenia">
+            <p-calendar formControlName="dataZakonczenia" [minDate]="controls['dataRozpoczecia']?.value" [locale]="pl" [dateFormat]="null" appendTo="body" [showTime]="true" inputId="dataZakonczenia">
             </p-calendar>
         </div>
     </div>
@@ -57,7 +57,7 @@
 </form>
 <div class="p-grid p-fluid p-jc-end p-mt-2">
     <div class="p-col-2">
-        <button pButton type="button" icon="pi pi-check" label="Dodaj misję" [disabled]="nowaMisjaForm.invalid" (click)="dodajMisjeOnClick()"></button>
+        <button pButton type="button" icon="pi pi-check" [label]="nazwaPrzycisku()" [disabled]="nowaMisjaForm.invalid" (click)="dodajMisjeOnClick()"></button>
     </div>
     <div class="p-col-2">
         <button pButton type="button" icon="pi pi-times" label="Anuluj" (click)="anulujOnClick()"></button>

@@ -18,6 +18,7 @@ import { MenuModule } from 'primeng/menu';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { TableModule } from 'primeng/table';
 import { HttpTokenInterceptor } from 'src/app/core/interceptors/http.token.interceptor';
+import { MomentPipe } from 'src/app/shared/pipes/moment.pipe';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './pages/app/app.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -45,8 +46,9 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     HomeComponent,
     KlienciComponent,
     MisjeComponent,
+    MomentPipe,
     NowaUslugaComponent,
-    NowyKlientComponent,
+    NowyKlientComponent
   ],
   imports: [
     AppRoutingModule,

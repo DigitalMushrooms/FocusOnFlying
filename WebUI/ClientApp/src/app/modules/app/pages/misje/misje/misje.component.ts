@@ -2,8 +2,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { map } from 'rxjs/operators';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { finalize, map } from 'rxjs/operators';
+import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
 
 @Component({
@@ -32,12 +33,14 @@ export class MisjeComponent implements OnInit {
     zoom: 12
   };
   nakladkiNaMape: google.maps.Circle[];
+  pl = Kalendarz.pl;
 
   constructor(
     private formBuilder: FormBuilder,
     private dynamicDialogRef: DynamicDialogRef,
     private typyMisjiClient: TypyMisjiClient,
-    private statusyMisjiClient: StatusyMisjiClient
+    private statusyMisjiClient: StatusyMisjiClient,
+    private dynamicDialogConfig: DynamicDialogConfig
   ) { }
 
   ngOnInit(): void {
@@ -48,10 +51,32 @@ export class MisjeComponent implements OnInit {
 
   pobierzTypyMisji(): void {
     this.typyMisjiClient.pobierzTypyMisji()
-      .pipe(map(typyMisji => typyMisji.map(tm => ({ label: tm.nazwa, value: tm }) as SelectItem<TypMisjiDto>)))
+      .pipe(
+        map(typyMisji => typyMisji.map(tm => ({ label: tm.nazwa, value: tm }) as SelectItem<TypMisjiDto>)),
+        finalize(() => this.wczytajPolaDoFormularza())
+      )
       .subscribe(
         typyMisji => this.typyMisji = typyMisji
       );
+  }
+
+  wczytajPolaDoFormularza(): void {
+    const misja = this.dynamicDialogConfig.data;
+    if (!misja)
+      return;
+    this.nakladkiNaMape = [
+      new google.maps.Circle({
+        center: {
+          lat: misja.szerokoscGeograficzna,
+          lng: misja.dlugoscGeograficzna
+        },
+        fillColor: '#c286d8',
+        fillOpacity: 0.35,
+        strokeWeight: 1,
+        radius: +this.controls['promien'].value
+      })
+    ];
+    this.nowaMisjaForm.setValue(misja);
   }
 
   pobierzStatusMisji(): void {
@@ -66,7 +91,7 @@ export class MisjeComponent implements OnInit {
   promienOnChange(): void {
     this.controls['promien'].valueChanges
       .subscribe(
-        (value: string) => this.nakladkiNaMape[0].setRadius(+value)
+        (value: string) => this.nakladkiNaMape[0]?.setRadius(+value)
       );
   }
 
@@ -94,12 +119,19 @@ export class MisjeComponent implements OnInit {
   }
 
   dodajMisjeOnClick(): void {
-    const abc = this.nowaMisjaForm;
-    debugger;
-    this.dynamicDialogRef.close(null);
+    const misja = this.nowaMisjaForm.getRawValue();
+    this.dynamicDialogRef.close(misja);
   }
 
   anulujOnClick(): void {
     this.dynamicDialogRef.destroy();
+  }
+
+  nazwaPrzycisku(): string {
+    if (this.dynamicDialogConfig.data) {
+      return 'Zaktualizuj misję'
+    } else {
+      return 'Dodaj misję';
+    }
   }
 }
