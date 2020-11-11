@@ -19,7 +19,6 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb.Configuration
             builder.Property(x => x.DataRozpoczecia);
             builder.Property(x => x.DataZakonczenia);
 
-            builder.Property(x => x.NazwaLokalizacji).IsRequired();
             builder.Property(x => x.SzerokoscGeograficzna).HasColumnType("decimal(8,6)");
             builder.Property(x => x.DlugoscGeograficzna).HasColumnType("decimal(9,6)");
             builder.Property(x => x.Promien);

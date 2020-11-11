@@ -4,14 +4,16 @@ using FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FocusOnFlying.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(FocusOnFlyingContext))]
-    partial class FocusOnFlyingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201110212126_DodanieNowegoStatusuMisji")]
+    partial class DodanieNowegoStatusuMisji
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,6 +199,10 @@ namespace FocusOnFlying.Infrastructure.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Nazwa")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NazwaLokalizacji")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

@@ -1,23 +1,21 @@
-﻿using System;
+﻿using FocusOnFlying.Application.Common.Mappings;
+using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
+using System;
 
-namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
+namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
 {
-    public class Misja
+    public class UtworzonaMisjaCommand : IMapFrom<Misja>
     {
-        public Guid Id { get; set; }
         public string Nazwa { get; set; }
         public string Opis { get; set; }
         public Guid IdTypuMisji { get; set; }
         public int MaksymalnaWysokoscLotu { get; set; }
         public Guid IdStatusuMisji { get; set; }
-        public DateTime DataRozpoczecia { get; set; }
-        public DateTime DataZakonczenia { get; set; }
+        public long DataRozpoczecia { get; set; }
+        public long DataZakonczenia { get; set; }
 
         public decimal SzerokoscGeograficzna { get; set; }
         public decimal DlugoscGeograficzna { get; set; }
         public int Promien { get; set; }
-
-        public TypMisji TypMisji { get; set; }
-        public StatusMisji StatusMisji { get; set; }
     }
 }

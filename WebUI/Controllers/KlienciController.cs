@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FocusOnFlying.WebUI.Controllers
 {
-    [Route("/api/klienci")]
+    [Route("api/klienci")]
     [Authorize(Roles = "Pracownik")]
     public class KlienciController : ApiController
     {

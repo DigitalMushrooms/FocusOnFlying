@@ -3,7 +3,8 @@ import { FormBuilder } from '@angular/forms';
 import * as moment from 'moment';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
-import { KlientDto } from 'src/app/web-api-client';
+import { NowaUslugaForm } from 'src/app/shared/models/nowa-usluga/nowa-usluga-form.model';
+import { KlientDto, UslugiClient, UtworzonaMisjaCommand, UtworzonaUslugaCommand } from 'src/app/web-api-client';
 import { KlienciComponent } from '../../klienci/klienci/klienci.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
@@ -22,11 +23,12 @@ export class NowaUslugaComponent {
   klient: KlientDto;
   nazwaKlienta: string;
   tekstIdentyfikacyjnyKlienta: string;
-  misje: { nazwa: string, typ: { id: string, nazwa: string }, dataRozpoczecia: Date, dataZakonczenia: Date, maksymalnaWysokoscLotu: number }[] = [];
+  misje: NowaUslugaForm[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
-    public dialogService: DialogService
+    private dialogService: DialogService,
+    private uslugiClient: UslugiClient
   ) { }
 
   dzisiaj(): Date {
@@ -90,5 +92,28 @@ export class NowaUslugaComponent {
 
   usunMisje(index: number): void {
     this.misje.splice(index, 1);
+  }
+
+  zapiszUsluge(): void {
+    const command = {
+      dataPrzyjeciaZlecenia: this.controls['dataPrzyjeciaZalecenia'].value,
+      idKlienta: this.klient.id,
+      misje: this.misje.map(misja => ({
+        nazwa: misja.nazwa,
+        opis: misja.opis,
+        idTypuMisji: misja.typ.id,
+        maksymalnaWysokoscLotu: misja.maksymalnaWysokoscLotu,
+        idStatusuMisji: misja.statusId,
+        dataRozpoczecia: misja.dataRozpoczecia.getTime(),
+        dataZakonczenia: misja.dataZakonczenia?.getTime(),
+        szerokoscGeograficzna: misja.szerokoscGeograficzna,
+        dlugoscGeograficzna: misja.dlugoscGeograficzna,
+        promien: misja.promien
+      } as UtworzonaMisjaCommand))
+    } as UtworzonaUslugaCommand;
+    this.uslugiClient.utworzUsluge(command)
+      .subscribe(
+
+      );
   }
 }

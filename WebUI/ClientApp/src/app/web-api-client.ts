@@ -411,6 +411,72 @@ export class TypyMisjiClient implements ITypyMisjiClient {
     }
 }
 
+export interface IUslugiClient {
+    utworzUsluge(command: UtworzonaUslugaCommand): Observable<void>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class UslugiClient implements IUslugiClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    utworzUsluge(command: UtworzonaUslugaCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/uslugi";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUtworzUsluge(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUtworzUsluge(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUtworzUsluge(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+}
+
 export class PagedResultBase implements IPagedResultBase {
     rowCount?: number;
 
@@ -810,6 +876,130 @@ export class TypMisjiDto implements ITypMisjiDto {
 export interface ITypMisjiDto {
     id?: string;
     nazwa?: string | undefined;
+}
+
+export class UtworzonaUslugaCommand implements IUtworzonaUslugaCommand {
+    dataPrzyjeciaZlecenia?: number;
+    idKlienta?: string;
+    misje?: UtworzonaMisjaCommand[] | undefined;
+
+    constructor(data?: IUtworzonaUslugaCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.dataPrzyjeciaZlecenia = _data["dataPrzyjeciaZlecenia"];
+            this.idKlienta = _data["idKlienta"];
+            if (Array.isArray(_data["misje"])) {
+                this.misje = [] as any;
+                for (let item of _data["misje"])
+                    this.misje!.push(UtworzonaMisjaCommand.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UtworzonaUslugaCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UtworzonaUslugaCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["dataPrzyjeciaZlecenia"] = this.dataPrzyjeciaZlecenia;
+        data["idKlienta"] = this.idKlienta;
+        if (Array.isArray(this.misje)) {
+            data["misje"] = [];
+            for (let item of this.misje)
+                data["misje"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IUtworzonaUslugaCommand {
+    dataPrzyjeciaZlecenia?: number;
+    idKlienta?: string;
+    misje?: UtworzonaMisjaCommand[] | undefined;
+}
+
+export class UtworzonaMisjaCommand implements IUtworzonaMisjaCommand {
+    nazwa?: string | undefined;
+    opis?: string | undefined;
+    idTypuMisji?: string;
+    maksymalnaWysokoscLotu?: number;
+    idStatusuMisji?: string;
+    dataRozpoczecia?: number;
+    dataZakonczenia?: number;
+    szerokoscGeograficzna?: number;
+    dlugoscGeograficzna?: number;
+    promien?: number;
+
+    constructor(data?: IUtworzonaMisjaCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.nazwa = _data["nazwa"];
+            this.opis = _data["opis"];
+            this.idTypuMisji = _data["idTypuMisji"];
+            this.maksymalnaWysokoscLotu = _data["maksymalnaWysokoscLotu"];
+            this.idStatusuMisji = _data["idStatusuMisji"];
+            this.dataRozpoczecia = _data["dataRozpoczecia"];
+            this.dataZakonczenia = _data["dataZakonczenia"];
+            this.szerokoscGeograficzna = _data["szerokoscGeograficzna"];
+            this.dlugoscGeograficzna = _data["dlugoscGeograficzna"];
+            this.promien = _data["promien"];
+        }
+    }
+
+    static fromJS(data: any): UtworzonaMisjaCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UtworzonaMisjaCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["nazwa"] = this.nazwa;
+        data["opis"] = this.opis;
+        data["idTypuMisji"] = this.idTypuMisji;
+        data["maksymalnaWysokoscLotu"] = this.maksymalnaWysokoscLotu;
+        data["idStatusuMisji"] = this.idStatusuMisji;
+        data["dataRozpoczecia"] = this.dataRozpoczecia;
+        data["dataZakonczenia"] = this.dataZakonczenia;
+        data["szerokoscGeograficzna"] = this.szerokoscGeograficzna;
+        data["dlugoscGeograficzna"] = this.dlugoscGeograficzna;
+        data["promien"] = this.promien;
+        return data; 
+    }
+}
+
+export interface IUtworzonaMisjaCommand {
+    nazwa?: string | undefined;
+    opis?: string | undefined;
+    idTypuMisji?: string;
+    maksymalnaWysokoscLotu?: number;
+    idStatusuMisji?: string;
+    dataRozpoczecia?: number;
+    dataZakonczenia?: number;
+    szerokoscGeograficzna?: number;
+    dlugoscGeograficzna?: number;
+    promien?: number;
 }
 
 export class SwaggerException extends Error {

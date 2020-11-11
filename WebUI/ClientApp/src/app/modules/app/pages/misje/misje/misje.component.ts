@@ -1,10 +1,12 @@
 /// <reference types="@types/googlemaps" />
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { SelectItem } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { finalize, map } from 'rxjs/operators';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
+import { NowaUslugaForm } from 'src/app/shared/models/nowa-usluga/nowa-usluga-form.model';
 import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
 
 @Component({
@@ -13,19 +15,8 @@ import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from
   styleUrls: ['./misje.component.css']
 })
 export class MisjeComponent implements OnInit {
-  nowaMisjaForm = this.formBuilder.group({
-    nazwa: [null, Validators.required],
-    dataRozpoczecia: [null, Validators.required],
-    dataZakonczenia: [null],
-    opis: [null, Validators.required],
-    typ: [null, Validators.required],
-    status: [{ value: null, disabled: true }],
-    maksymalnaWysokoscLotu: [null, Validators.required],
-    szerokoscGeograficzna: [{ value: null, disabled: true }],
-    dlugoscGeograficzna: [{ value: null, disabled: true }],
-    promien: [200, Validators.required]
-  });
-  controls = this.nowaMisjaForm.controls;
+  nowaMisjaForm: IFormGroup<NowaUslugaForm>;
+  formBuilder: IFormBuilder;
   typyMisji: SelectItem<TypMisjiDto>[] = [];
   statusMisji: StatusMisjiDto;
   opcjeMapy = {
@@ -36,14 +27,30 @@ export class MisjeComponent implements OnInit {
   pl = Kalendarz.pl;
 
   constructor(
-    private formBuilder: FormBuilder,
+    formBuilder: FormBuilder,
     private dynamicDialogRef: DynamicDialogRef,
     private typyMisjiClient: TypyMisjiClient,
     private statusyMisjiClient: StatusyMisjiClient,
     private dynamicDialogConfig: DynamicDialogConfig
-  ) { }
+  ) {
+    this.formBuilder = formBuilder;
+  }
 
   ngOnInit(): void {
+    this.nowaMisjaForm = this.formBuilder.group<NowaUslugaForm>({
+      nazwa: [null, Validators.required],
+      dataRozpoczecia: [null, Validators.required],
+      dataZakonczenia: [null],
+      opis: [null, Validators.required],
+      typ: [null, Validators.required],
+      status: [{ value: null, disabled: true }],
+      statusId: [null],
+      maksymalnaWysokoscLotu: [null, Validators.required],
+      szerokoscGeograficzna: [{ value: null, disabled: true }],
+      dlugoscGeograficzna: [{ value: null, disabled: true }],
+      promien: [200, Validators.required]
+    });
+
     this.pobierzTypyMisji();
     this.pobierzStatusMisji();
     this.promienOnChange();
@@ -73,25 +80,26 @@ export class MisjeComponent implements OnInit {
         fillColor: '#c286d8',
         fillOpacity: 0.35,
         strokeWeight: 1,
-        radius: +this.controls['promien'].value
+        radius: +this.nowaMisjaForm.controls.promien.value
       })
     ];
     this.nowaMisjaForm.setValue(misja);
   }
 
   pobierzStatusMisji(): void {
-    this.statusyMisjiClient.pobierzStatusMisji("Zaplanowana")
+    this.statusyMisjiClient.pobierzStatusMisji("Utworzona")
       .subscribe(
         statusMisji => {
-          this.controls['status'].setValue(statusMisji.nazwa);
+          this.nowaMisjaForm.controls.status.setValue(statusMisji.nazwa);
+          this.nowaMisjaForm.controls.statusId.setValue(statusMisji.id);
           this.statusMisji = statusMisji;
         });
   }
 
   promienOnChange(): void {
-    this.controls['promien'].valueChanges
+    this.nowaMisjaForm.controls.promien.valueChanges
       .subscribe(
-        (value: string) => this.nakladkiNaMape[0]?.setRadius(+value)
+        (promien: number) => this.nakladkiNaMape[0]?.setRadius(promien)
       );
   }
 
@@ -105,17 +113,17 @@ export class MisjeComponent implements OnInit {
         fillColor: '#c286d8',
         fillOpacity: 0.35,
         strokeWeight: 1,
-        radius: +this.controls['promien'].value
+        radius: +this.nowaMisjaForm.controls.promien.value
       })
     ];
-    this.controls['szerokoscGeograficzna'].setValue(event.latLng.lat());
-    this.controls['dlugoscGeograficzna'].setValue(event.latLng.lng());
+    this.nowaMisjaForm.controls.szerokoscGeograficzna.setValue(event.latLng.lat());
+    this.nowaMisjaForm.controls.dlugoscGeograficzna.setValue(event.latLng.lng());
   }
 
   wyczyscMapeOnClick(): void {
     this.nakladkiNaMape = [];
-    this.controls['szerokoscGeograficzna'].reset();
-    this.controls['dlugoscGeograficzna'].reset();
+    this.nowaMisjaForm.controls.szerokoscGeograficzna.reset();
+    this.nowaMisjaForm.controls.dlugoscGeograficzna.reset();
   }
 
   dodajMisjeOnClick(): void {

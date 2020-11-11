@@ -207,6 +207,31 @@
           }
         }
       }
+    },
+    "/api/uslugi": {
+      "post": {
+        "tags": [
+          "Uslugi"
+        ],
+        "operationId": "Uslugi_UtworzUsluge",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtworzonaUslugaCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "components": {
@@ -436,6 +461,73 @@
           "nazwa": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "UtworzonaUslugaCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "dataPrzyjeciaZlecenia": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "idKlienta": {
+            "type": "string",
+            "format": "guid"
+          },
+          "misje": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UtworzonaMisjaCommand"
+            }
+          }
+        }
+      },
+      "UtworzonaMisjaCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "nazwa": {
+            "type": "string",
+            "nullable": true
+          },
+          "opis": {
+            "type": "string",
+            "nullable": true
+          },
+          "idTypuMisji": {
+            "type": "string",
+            "format": "guid"
+          },
+          "maksymalnaWysokoscLotu": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idStatusuMisji": {
+            "type": "string",
+            "format": "guid"
+          },
+          "dataRozpoczecia": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dataZakonczenia": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "szerokoscGeograficzna": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "dlugoscGeograficzna": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "promien": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       }
