@@ -412,7 +412,7 @@ export class TypyMisjiClient implements ITypyMisjiClient {
 }
 
 export interface IUslugiClient {
-    utworzUsluge(command: UtworzonaUslugaCommand): Observable<void>;
+    utworzUsluge(command: UtworzUslugeCommand): Observable<void>;
 }
 
 @Injectable({
@@ -428,7 +428,7 @@ export class UslugiClient implements IUslugiClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    utworzUsluge(command: UtworzonaUslugaCommand): Observable<void> {
+    utworzUsluge(command: UtworzUslugeCommand): Observable<void> {
         let url_ = this.baseUrl + "/api/uslugi";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -878,12 +878,12 @@ export interface ITypMisjiDto {
     nazwa?: string | undefined;
 }
 
-export class UtworzonaUslugaCommand implements IUtworzonaUslugaCommand {
+export class UtworzUslugeCommand implements IUtworzUslugeCommand {
     dataPrzyjeciaZlecenia?: number;
     idKlienta?: string;
-    misje?: UtworzonaMisjaCommand[] | undefined;
+    misje?: MisjaDto[] | undefined;
 
-    constructor(data?: IUtworzonaUslugaCommand) {
+    constructor(data?: IUtworzUslugeCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -899,14 +899,14 @@ export class UtworzonaUslugaCommand implements IUtworzonaUslugaCommand {
             if (Array.isArray(_data["misje"])) {
                 this.misje = [] as any;
                 for (let item of _data["misje"])
-                    this.misje!.push(UtworzonaMisjaCommand.fromJS(item));
+                    this.misje!.push(MisjaDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): UtworzonaUslugaCommand {
+    static fromJS(data: any): UtworzUslugeCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new UtworzonaUslugaCommand();
+        let result = new UtworzUslugeCommand();
         result.init(data);
         return result;
     }
@@ -924,13 +924,13 @@ export class UtworzonaUslugaCommand implements IUtworzonaUslugaCommand {
     }
 }
 
-export interface IUtworzonaUslugaCommand {
+export interface IUtworzUslugeCommand {
     dataPrzyjeciaZlecenia?: number;
     idKlienta?: string;
-    misje?: UtworzonaMisjaCommand[] | undefined;
+    misje?: MisjaDto[] | undefined;
 }
 
-export class UtworzonaMisjaCommand implements IUtworzonaMisjaCommand {
+export class MisjaDto implements IMisjaDto {
     nazwa?: string | undefined;
     opis?: string | undefined;
     idTypuMisji?: string;
@@ -942,7 +942,7 @@ export class UtworzonaMisjaCommand implements IUtworzonaMisjaCommand {
     dlugoscGeograficzna?: number;
     promien?: number;
 
-    constructor(data?: IUtworzonaMisjaCommand) {
+    constructor(data?: IMisjaDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -966,9 +966,9 @@ export class UtworzonaMisjaCommand implements IUtworzonaMisjaCommand {
         }
     }
 
-    static fromJS(data: any): UtworzonaMisjaCommand {
+    static fromJS(data: any): MisjaDto {
         data = typeof data === 'object' ? data : {};
-        let result = new UtworzonaMisjaCommand();
+        let result = new MisjaDto();
         result.init(data);
         return result;
     }
@@ -989,7 +989,7 @@ export class UtworzonaMisjaCommand implements IUtworzonaMisjaCommand {
     }
 }
 
-export interface IUtworzonaMisjaCommand {
+export interface IMisjaDto {
     nazwa?: string | undefined;
     opis?: string | undefined;
     idTypuMisji?: string;

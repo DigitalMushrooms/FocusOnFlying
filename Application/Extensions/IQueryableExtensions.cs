@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FocusOnFlying.Application.Extensions
 {
-    public static class IQueryableExtension
+    public static class IQueryableExtensions
     {
         public static async Task<PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query, int offset, int rows) where T : class
         {

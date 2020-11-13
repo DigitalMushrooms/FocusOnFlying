@@ -10,7 +10,7 @@ namespace FocusOnFlying.WebUI.Controllers
     public class UslugiController : ApiController
     {
         [HttpPost]
-        public async Task UtworzUsluge(UtworzonaUslugaCommand command)
+        public async Task UtworzUsluge(UtworzUslugeCommand command)
         {
             await Mediator.Send(command);
         }

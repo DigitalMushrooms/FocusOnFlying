@@ -4,14 +4,16 @@ using FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FocusOnFlying.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(FocusOnFlyingContext))]
-    partial class FocusOnFlyingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201113192334_DodanieKluczaObcegoWTabeliMisje")]
+    partial class DodanieKluczaObcegoWTabeliMisje
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

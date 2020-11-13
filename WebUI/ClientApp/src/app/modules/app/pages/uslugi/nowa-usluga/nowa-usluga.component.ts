@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { DialogService } from 'primeng/dynamicdialog';
+import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { NowaUslugaForm } from 'src/app/shared/models/nowa-usluga/nowa-usluga-form.model';
-import { KlientDto, UslugiClient, UtworzonaMisjaCommand, UtworzonaUslugaCommand } from 'src/app/web-api-client';
+import { KlientDto, MisjaDto, UslugiClient, UtworzUslugeCommand } from 'src/app/web-api-client';
 import { KlienciComponent } from '../../klienci/klienci/klienci.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
@@ -12,7 +14,7 @@ import { MisjeComponent } from '../../misje/misje/misje.component';
   selector: 'app-nowa-usluga',
   templateUrl: './nowa-usluga.component.html',
   styleUrls: ['./nowa-usluga.component.css'],
-  providers: [DialogService]
+  providers: [DialogService, MessageToast]
 })
 export class NowaUslugaComponent {
   nowaUslugaForm = this.formBuilder.group({
@@ -28,7 +30,9 @@ export class NowaUslugaComponent {
   constructor(
     private formBuilder: FormBuilder,
     private dialogService: DialogService,
-    private uslugiClient: UslugiClient
+    private uslugiClient: UslugiClient,
+    private messageToast: MessageToast,
+    private router: Router
   ) { }
 
   dzisiaj(): Date {
@@ -96,7 +100,7 @@ export class NowaUslugaComponent {
 
   zapiszUsluge(): void {
     const command = {
-      dataPrzyjeciaZlecenia: this.controls['dataPrzyjeciaZalecenia'].value,
+      dataPrzyjeciaZlecenia: this.controls['dataPrzyjeciaZalecenia'].value.getTime(),
       idKlienta: this.klient.id,
       misje: this.misje.map(misja => ({
         nazwa: misja.nazwa,
@@ -109,11 +113,14 @@ export class NowaUslugaComponent {
         szerokoscGeograficzna: misja.szerokoscGeograficzna,
         dlugoscGeograficzna: misja.dlugoscGeograficzna,
         promien: misja.promien
-      } as UtworzonaMisjaCommand))
-    } as UtworzonaUslugaCommand;
+      } as MisjaDto))
+    } as UtworzUslugeCommand;
     this.uslugiClient.utworzUsluge(command)
       .subscribe(
-
+        () => {
+          this.messageToast.success('Utworzono usługę.');
+          this.router.navigate(['/home']);
+        }
       );
   }
 }

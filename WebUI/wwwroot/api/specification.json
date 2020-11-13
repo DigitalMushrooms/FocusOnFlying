@@ -219,7 +219,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UtworzonaUslugaCommand"
+                "$ref": "#/components/schemas/UtworzUslugeCommand"
               }
             }
           },
@@ -464,7 +464,7 @@
           }
         }
       },
-      "UtworzonaUslugaCommand": {
+      "UtworzUslugeCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -480,12 +480,12 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/UtworzonaMisjaCommand"
+              "$ref": "#/components/schemas/MisjaDto"
             }
           }
         }
       },
-      "UtworzonaMisjaCommand": {
+      "MisjaDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

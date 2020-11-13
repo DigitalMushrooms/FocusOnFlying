@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthModule, LogLevel, OidcConfigService } from 'angular-auth-oidc-client';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
@@ -16,7 +17,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MenuModule } from 'primeng/menu';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
 import { HttpTokenInterceptor } from 'src/app/core/interceptors/http.token.interceptor';
 import { MomentPipe } from 'src/app/shared/pipes/moment.pipe';
 import { AppRoutingModule } from './app-routing.module';
@@ -71,7 +74,9 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     MenuModule,
     RadioButtonModule,
     ReactiveFormsModule,
+    RippleModule,
     TableModule,
+    ToastModule
   ],
   providers: [
     OidcConfigService,
@@ -85,7 +90,8 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpTokenInterceptor,
       multi: true
-    }
+    },
+    MessageService
   ],
   bootstrap: [AppComponent]
 })

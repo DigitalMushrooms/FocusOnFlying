@@ -5,11 +5,6 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
 {
     public class Klient
     {
-        public Klient()
-        {
-            Uslugi = new List<Usluga>();
-        }
-
         public Guid Id { get; set; }
         public string Imie { get; set; }
         public string Nazwisko { get; set; }
@@ -28,6 +23,6 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public string Email { get; set; }
 
         public Kraj Kraj { get; set; }
-        public ICollection<Usluga> Uslugi { get; set; }
+        public ICollection<Usluga> Uslugi { get; set; } = new List<Usluga>();
     }
 }
