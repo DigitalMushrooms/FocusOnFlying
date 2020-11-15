@@ -12,27 +12,25 @@ export class AppComponent {
     {
       label: 'Ogólne',
       items: [
-        { label: 'Strona główna', icon: 'pi pi-home', routerLink: '/home' }
+        { label: 'Strona główna', icon: 'pi pi-fw pi-home', routerLink: '/home' }
       ]
     },
     {
       label: 'Klienci',
       items: [
-        { label: 'Nowy klient', icon: 'pi pi-user-plus', routerLink: '/klienci/nowy-klient' },
+        { label: 'Nowy klient', icon: 'pi pi-fw pi-user-plus', routerLink: '/klienci/nowy-klient' },
       ]
     },
     {
       label: 'Usługi',
       items: [
         { label: 'Nowa usługa', icon: 'pi pi-fw pi-plus', routerLink: '/uslugi/nowa-usluga' },
+        { label: 'Lista usług', icon: 'pi pi-fw pi-list', routerLink: '/uslugi/lista-uslug' },
       ]
     }
   ];
 
-  constructor() {
-  }
-
-  ngOnInit() {
+  ngOnInit(): void {
     moment.locale('pl');
   }
 }

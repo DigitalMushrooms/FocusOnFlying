@@ -1,0 +1,20 @@
+<p-card header="Lista usług">
+    <p-table [value]="uslugi">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="dataPrzyjeciaZlecenia">Przyjęcie zlecenia<p-sortIcon field="dataPrzyjeciaZlecenia"></p-sortIcon></th>
+                <th pSortableColumn="klient">Nazwa klienta<p-sortIcon field="klient"></p-sortIcon></th>
+                <th>Nazwa operatora</th>
+                <th>Status usługi</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-usluga>
+            <tr>
+                <td>{{usluga.dataPrzyjeciaZlecenia | dateFormat: 'DD.MM.YYYY'}}</td>
+                <td>{{usluga.klient | nazwaKlienta}}</td>
+                <td>{{'test'}}</td>
+                <td>{{'test'}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>

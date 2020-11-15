@@ -22,12 +22,14 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { HttpTokenInterceptor } from 'src/app/core/interceptors/http.token.interceptor';
 import { MomentPipe } from 'src/app/shared/pipes/moment.pipe';
+import { NazwaKlientaPipe } from 'src/app/shared/pipes/nazwa-klienta.pipe';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './pages/app/app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { KlienciComponent } from './pages/klienci/klienci/klienci.component';
 import { NowyKlientComponent } from './pages/klienci/nowy-klient/nowy-klient.component';
 import { MisjeComponent } from './pages/misje/misje/misje.component';
+import { ListaUslugComponent } from './pages/uslugi/lista-uslug/lista-uslug.component';
 import { NowaUslugaComponent } from './pages/uslugi/nowa-usluga/nowa-usluga.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
@@ -48,8 +50,10 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     AppComponent,
     HomeComponent,
     KlienciComponent,
+    ListaUslugComponent,
     MisjeComponent,
     MomentPipe,
+    NazwaKlientaPipe,
     NowaUslugaComponent,
     NowyKlientComponent
   ],

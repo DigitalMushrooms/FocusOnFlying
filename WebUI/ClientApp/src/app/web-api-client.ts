@@ -412,6 +412,7 @@ export class TypyMisjiClient implements ITypyMisjiClient {
 }
 
 export interface IUslugiClient {
+    pobierzUslugi(): Observable<UslugaDto[]>;
     utworzUsluge(command: UtworzUslugeCommand): Observable<void>;
 }
 
@@ -426,6 +427,58 @@ export class UslugiClient implements IUslugiClient {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    pobierzUslugi(): Observable<UslugaDto[]> {
+        let url_ = this.baseUrl + "/api/uslugi";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPobierzUslugi(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPobierzUslugi(<any>response_);
+                } catch (e) {
+                    return <Observable<UslugaDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<UslugaDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPobierzUslugi(response: HttpResponseBase): Observable<UslugaDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(UslugaDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<UslugaDto[]>(<any>null);
     }
 
     utworzUsluge(command: UtworzUslugeCommand): Observable<void> {
@@ -878,12 +931,14 @@ export interface ITypMisjiDto {
     nazwa?: string | undefined;
 }
 
-export class UtworzUslugeCommand implements IUtworzUslugeCommand {
+export class UslugaDto implements IUslugaDto {
+    id?: string;
     dataPrzyjeciaZlecenia?: number;
     idKlienta?: string;
+    klient?: KlientDto | undefined;
     misje?: MisjaDto[] | undefined;
 
-    constructor(data?: IUtworzUslugeCommand) {
+    constructor(data?: IUslugaDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -894,8 +949,10 @@ export class UtworzUslugeCommand implements IUtworzUslugeCommand {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.dataPrzyjeciaZlecenia = _data["dataPrzyjeciaZlecenia"];
             this.idKlienta = _data["idKlienta"];
+            this.klient = _data["klient"] ? KlientDto.fromJS(_data["klient"]) : <any>undefined;
             if (Array.isArray(_data["misje"])) {
                 this.misje = [] as any;
                 for (let item of _data["misje"])
@@ -904,17 +961,19 @@ export class UtworzUslugeCommand implements IUtworzUslugeCommand {
         }
     }
 
-    static fromJS(data: any): UtworzUslugeCommand {
+    static fromJS(data: any): UslugaDto {
         data = typeof data === 'object' ? data : {};
-        let result = new UtworzUslugeCommand();
+        let result = new UslugaDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["dataPrzyjeciaZlecenia"] = this.dataPrzyjeciaZlecenia;
         data["idKlienta"] = this.idKlienta;
+        data["klient"] = this.klient ? this.klient.toJSON() : <any>undefined;
         if (Array.isArray(this.misje)) {
             data["misje"] = [];
             for (let item of this.misje)
@@ -924,9 +983,11 @@ export class UtworzUslugeCommand implements IUtworzUslugeCommand {
     }
 }
 
-export interface IUtworzUslugeCommand {
+export interface IUslugaDto {
+    id?: string;
     dataPrzyjeciaZlecenia?: number;
     idKlienta?: string;
+    klient?: KlientDto | undefined;
     misje?: MisjaDto[] | undefined;
 }
 
@@ -1000,6 +1061,58 @@ export interface IMisjaDto {
     szerokoscGeograficzna?: number;
     dlugoscGeograficzna?: number;
     promien?: number;
+}
+
+export class UtworzUslugeCommand implements IUtworzUslugeCommand {
+    dataPrzyjeciaZlecenia?: number;
+    idKlienta?: string;
+    misje?: MisjaDto[] | undefined;
+
+    constructor(data?: IUtworzUslugeCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.dataPrzyjeciaZlecenia = _data["dataPrzyjeciaZlecenia"];
+            this.idKlienta = _data["idKlienta"];
+            if (Array.isArray(_data["misje"])) {
+                this.misje = [] as any;
+                for (let item of _data["misje"])
+                    this.misje!.push(MisjaDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UtworzUslugeCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UtworzUslugeCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["dataPrzyjeciaZlecenia"] = this.dataPrzyjeciaZlecenia;
+        data["idKlienta"] = this.idKlienta;
+        if (Array.isArray(this.misje)) {
+            data["misje"] = [];
+            for (let item of this.misje)
+                data["misje"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IUtworzUslugeCommand {
+    dataPrzyjeciaZlecenia?: number;
+    idKlienta?: string;
+    misje?: MisjaDto[] | undefined;
 }
 
 export class SwaggerException extends Error {

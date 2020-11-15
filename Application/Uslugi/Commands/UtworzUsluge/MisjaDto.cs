@@ -22,7 +22,9 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Misja, MisjaDto>();
+            profile.CreateMap<Misja, MisjaDto>()
+                .ForMember(dest => dest.DataRozpoczecia, opt => opt.MapFrom(src => src.DataRozpoczecia.ToUnixTime()))
+                .ForMember(dest => dest.DataZakonczenia, opt => opt.MapFrom(src => src.DataZakonczenia.ToUnixTime()));
             profile.CreateMap<MisjaDto, Misja>()
                 .ForMember(dest => dest.DataRozpoczecia, opt => opt.MapFrom(src => src.DataRozpoczecia.ToLocalDateTime()))
                 .ForMember(dest => dest.DataZakonczenia, opt => opt.MapFrom(src => src.DataZakonczenia.ToLocalDateTime()));
