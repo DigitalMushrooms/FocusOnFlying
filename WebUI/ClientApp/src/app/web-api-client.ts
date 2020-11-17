@@ -1043,8 +1043,8 @@ export interface ITypMisjiDto {
 export class UslugaDto implements IUslugaDto {
     id?: string;
     dataPrzyjeciaZlecenia?: number;
-    idKlienta?: string;
     klient?: KlientDto | undefined;
+    statusUslugi?: StatusUslugi | undefined;
     misje?: MisjaDto[] | undefined;
 
     constructor(data?: IUslugaDto) {
@@ -1060,8 +1060,8 @@ export class UslugaDto implements IUslugaDto {
         if (_data) {
             this.id = _data["id"];
             this.dataPrzyjeciaZlecenia = _data["dataPrzyjeciaZlecenia"];
-            this.idKlienta = _data["idKlienta"];
             this.klient = _data["klient"] ? KlientDto.fromJS(_data["klient"]) : <any>undefined;
+            this.statusUslugi = _data["statusUslugi"] ? StatusUslugi.fromJS(_data["statusUslugi"]) : <any>undefined;
             if (Array.isArray(_data["misje"])) {
                 this.misje = [] as any;
                 for (let item of _data["misje"])
@@ -1081,8 +1081,8 @@ export class UslugaDto implements IUslugaDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["dataPrzyjeciaZlecenia"] = this.dataPrzyjeciaZlecenia;
-        data["idKlienta"] = this.idKlienta;
         data["klient"] = this.klient ? this.klient.toJSON() : <any>undefined;
+        data["statusUslugi"] = this.statusUslugi ? this.statusUslugi.toJSON() : <any>undefined;
         if (Array.isArray(this.misje)) {
             data["misje"] = [];
             for (let item of this.misje)
@@ -1095,9 +1095,493 @@ export class UslugaDto implements IUslugaDto {
 export interface IUslugaDto {
     id?: string;
     dataPrzyjeciaZlecenia?: number;
-    idKlienta?: string;
     klient?: KlientDto | undefined;
+    statusUslugi?: StatusUslugi | undefined;
     misje?: MisjaDto[] | undefined;
+}
+
+export class StatusUslugi implements IStatusUslugi {
+    id?: string;
+    nazwa?: string | undefined;
+    uslugi?: Usluga[] | undefined;
+
+    constructor(data?: IStatusUslugi) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwa = _data["nazwa"];
+            if (Array.isArray(_data["uslugi"])) {
+                this.uslugi = [] as any;
+                for (let item of _data["uslugi"])
+                    this.uslugi!.push(Usluga.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatusUslugi {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatusUslugi();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwa"] = this.nazwa;
+        if (Array.isArray(this.uslugi)) {
+            data["uslugi"] = [];
+            for (let item of this.uslugi)
+                data["uslugi"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IStatusUslugi {
+    id?: string;
+    nazwa?: string | undefined;
+    uslugi?: Usluga[] | undefined;
+}
+
+export class Usluga implements IUsluga {
+    id?: string;
+    dataPrzyjeciaZlecenia?: Date;
+    idKlienta?: string;
+    idStatusuUslugi?: string;
+    klient?: Klient | undefined;
+    statusUslugi?: StatusUslugi | undefined;
+    misje?: Misja[] | undefined;
+
+    constructor(data?: IUsluga) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.dataPrzyjeciaZlecenia = _data["dataPrzyjeciaZlecenia"] ? new Date(_data["dataPrzyjeciaZlecenia"].toString()) : <any>undefined;
+            this.idKlienta = _data["idKlienta"];
+            this.idStatusuUslugi = _data["idStatusuUslugi"];
+            this.klient = _data["klient"] ? Klient.fromJS(_data["klient"]) : <any>undefined;
+            this.statusUslugi = _data["statusUslugi"] ? StatusUslugi.fromJS(_data["statusUslugi"]) : <any>undefined;
+            if (Array.isArray(_data["misje"])) {
+                this.misje = [] as any;
+                for (let item of _data["misje"])
+                    this.misje!.push(Misja.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Usluga {
+        data = typeof data === 'object' ? data : {};
+        let result = new Usluga();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["dataPrzyjeciaZlecenia"] = this.dataPrzyjeciaZlecenia ? this.dataPrzyjeciaZlecenia.toISOString() : <any>undefined;
+        data["idKlienta"] = this.idKlienta;
+        data["idStatusuUslugi"] = this.idStatusuUslugi;
+        data["klient"] = this.klient ? this.klient.toJSON() : <any>undefined;
+        data["statusUslugi"] = this.statusUslugi ? this.statusUslugi.toJSON() : <any>undefined;
+        if (Array.isArray(this.misje)) {
+            data["misje"] = [];
+            for (let item of this.misje)
+                data["misje"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IUsluga {
+    id?: string;
+    dataPrzyjeciaZlecenia?: Date;
+    idKlienta?: string;
+    idStatusuUslugi?: string;
+    klient?: Klient | undefined;
+    statusUslugi?: StatusUslugi | undefined;
+    misje?: Misja[] | undefined;
+}
+
+export class Klient implements IKlient {
+    id?: string;
+    imie?: string | undefined;
+    nazwisko?: string | undefined;
+    nazwa?: string | undefined;
+    pesel?: string | undefined;
+    regon?: string | undefined;
+    nip?: string | undefined;
+    numerPaszportu?: string | undefined;
+    numerTelefonu?: string | undefined;
+    kodPocztowy?: string | undefined;
+    miejscowosc?: string | undefined;
+    ulica?: string | undefined;
+    numerDomu?: string | undefined;
+    numerLokalu?: string | undefined;
+    idKraju?: string;
+    email?: string | undefined;
+    kraj?: Kraj | undefined;
+    uslugi?: Usluga[] | undefined;
+
+    constructor(data?: IKlient) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.imie = _data["imie"];
+            this.nazwisko = _data["nazwisko"];
+            this.nazwa = _data["nazwa"];
+            this.pesel = _data["pesel"];
+            this.regon = _data["regon"];
+            this.nip = _data["nip"];
+            this.numerPaszportu = _data["numerPaszportu"];
+            this.numerTelefonu = _data["numerTelefonu"];
+            this.kodPocztowy = _data["kodPocztowy"];
+            this.miejscowosc = _data["miejscowosc"];
+            this.ulica = _data["ulica"];
+            this.numerDomu = _data["numerDomu"];
+            this.numerLokalu = _data["numerLokalu"];
+            this.idKraju = _data["idKraju"];
+            this.email = _data["email"];
+            this.kraj = _data["kraj"] ? Kraj.fromJS(_data["kraj"]) : <any>undefined;
+            if (Array.isArray(_data["uslugi"])) {
+                this.uslugi = [] as any;
+                for (let item of _data["uslugi"])
+                    this.uslugi!.push(Usluga.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Klient {
+        data = typeof data === 'object' ? data : {};
+        let result = new Klient();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["imie"] = this.imie;
+        data["nazwisko"] = this.nazwisko;
+        data["nazwa"] = this.nazwa;
+        data["pesel"] = this.pesel;
+        data["regon"] = this.regon;
+        data["nip"] = this.nip;
+        data["numerPaszportu"] = this.numerPaszportu;
+        data["numerTelefonu"] = this.numerTelefonu;
+        data["kodPocztowy"] = this.kodPocztowy;
+        data["miejscowosc"] = this.miejscowosc;
+        data["ulica"] = this.ulica;
+        data["numerDomu"] = this.numerDomu;
+        data["numerLokalu"] = this.numerLokalu;
+        data["idKraju"] = this.idKraju;
+        data["email"] = this.email;
+        data["kraj"] = this.kraj ? this.kraj.toJSON() : <any>undefined;
+        if (Array.isArray(this.uslugi)) {
+            data["uslugi"] = [];
+            for (let item of this.uslugi)
+                data["uslugi"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IKlient {
+    id?: string;
+    imie?: string | undefined;
+    nazwisko?: string | undefined;
+    nazwa?: string | undefined;
+    pesel?: string | undefined;
+    regon?: string | undefined;
+    nip?: string | undefined;
+    numerPaszportu?: string | undefined;
+    numerTelefonu?: string | undefined;
+    kodPocztowy?: string | undefined;
+    miejscowosc?: string | undefined;
+    ulica?: string | undefined;
+    numerDomu?: string | undefined;
+    numerLokalu?: string | undefined;
+    idKraju?: string;
+    email?: string | undefined;
+    kraj?: Kraj | undefined;
+    uslugi?: Usluga[] | undefined;
+}
+
+export class Kraj implements IKraj {
+    id?: string;
+    nazwaKraju?: string | undefined;
+    skrot?: string | undefined;
+    klienci?: Klient[] | undefined;
+
+    constructor(data?: IKraj) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwaKraju = _data["nazwaKraju"];
+            this.skrot = _data["skrot"];
+            if (Array.isArray(_data["klienci"])) {
+                this.klienci = [] as any;
+                for (let item of _data["klienci"])
+                    this.klienci!.push(Klient.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Kraj {
+        data = typeof data === 'object' ? data : {};
+        let result = new Kraj();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwaKraju"] = this.nazwaKraju;
+        data["skrot"] = this.skrot;
+        if (Array.isArray(this.klienci)) {
+            data["klienci"] = [];
+            for (let item of this.klienci)
+                data["klienci"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IKraj {
+    id?: string;
+    nazwaKraju?: string | undefined;
+    skrot?: string | undefined;
+    klienci?: Klient[] | undefined;
+}
+
+export class Misja implements IMisja {
+    id?: string;
+    nazwa?: string | undefined;
+    opis?: string | undefined;
+    idTypuMisji?: string;
+    maksymalnaWysokoscLotu?: number;
+    idStatusuMisji?: string;
+    dataRozpoczecia?: Date;
+    dataZakonczenia?: Date;
+    idUslugi?: string;
+    szerokoscGeograficzna?: number;
+    dlugoscGeograficzna?: number;
+    promien?: number;
+    typMisji?: TypMisji | undefined;
+    statusMisji?: StatusMisji | undefined;
+    usluga?: Usluga | undefined;
+
+    constructor(data?: IMisja) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwa = _data["nazwa"];
+            this.opis = _data["opis"];
+            this.idTypuMisji = _data["idTypuMisji"];
+            this.maksymalnaWysokoscLotu = _data["maksymalnaWysokoscLotu"];
+            this.idStatusuMisji = _data["idStatusuMisji"];
+            this.dataRozpoczecia = _data["dataRozpoczecia"] ? new Date(_data["dataRozpoczecia"].toString()) : <any>undefined;
+            this.dataZakonczenia = _data["dataZakonczenia"] ? new Date(_data["dataZakonczenia"].toString()) : <any>undefined;
+            this.idUslugi = _data["idUslugi"];
+            this.szerokoscGeograficzna = _data["szerokoscGeograficzna"];
+            this.dlugoscGeograficzna = _data["dlugoscGeograficzna"];
+            this.promien = _data["promien"];
+            this.typMisji = _data["typMisji"] ? TypMisji.fromJS(_data["typMisji"]) : <any>undefined;
+            this.statusMisji = _data["statusMisji"] ? StatusMisji.fromJS(_data["statusMisji"]) : <any>undefined;
+            this.usluga = _data["usluga"] ? Usluga.fromJS(_data["usluga"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Misja {
+        data = typeof data === 'object' ? data : {};
+        let result = new Misja();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwa"] = this.nazwa;
+        data["opis"] = this.opis;
+        data["idTypuMisji"] = this.idTypuMisji;
+        data["maksymalnaWysokoscLotu"] = this.maksymalnaWysokoscLotu;
+        data["idStatusuMisji"] = this.idStatusuMisji;
+        data["dataRozpoczecia"] = this.dataRozpoczecia ? this.dataRozpoczecia.toISOString() : <any>undefined;
+        data["dataZakonczenia"] = this.dataZakonczenia ? this.dataZakonczenia.toISOString() : <any>undefined;
+        data["idUslugi"] = this.idUslugi;
+        data["szerokoscGeograficzna"] = this.szerokoscGeograficzna;
+        data["dlugoscGeograficzna"] = this.dlugoscGeograficzna;
+        data["promien"] = this.promien;
+        data["typMisji"] = this.typMisji ? this.typMisji.toJSON() : <any>undefined;
+        data["statusMisji"] = this.statusMisji ? this.statusMisji.toJSON() : <any>undefined;
+        data["usluga"] = this.usluga ? this.usluga.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IMisja {
+    id?: string;
+    nazwa?: string | undefined;
+    opis?: string | undefined;
+    idTypuMisji?: string;
+    maksymalnaWysokoscLotu?: number;
+    idStatusuMisji?: string;
+    dataRozpoczecia?: Date;
+    dataZakonczenia?: Date;
+    idUslugi?: string;
+    szerokoscGeograficzna?: number;
+    dlugoscGeograficzna?: number;
+    promien?: number;
+    typMisji?: TypMisji | undefined;
+    statusMisji?: StatusMisji | undefined;
+    usluga?: Usluga | undefined;
+}
+
+export class TypMisji implements ITypMisji {
+    id?: string;
+    nazwa?: string | undefined;
+    misje?: Misja[] | undefined;
+
+    constructor(data?: ITypMisji) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwa = _data["nazwa"];
+            if (Array.isArray(_data["misje"])) {
+                this.misje = [] as any;
+                for (let item of _data["misje"])
+                    this.misje!.push(Misja.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): TypMisji {
+        data = typeof data === 'object' ? data : {};
+        let result = new TypMisji();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwa"] = this.nazwa;
+        if (Array.isArray(this.misje)) {
+            data["misje"] = [];
+            for (let item of this.misje)
+                data["misje"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ITypMisji {
+    id?: string;
+    nazwa?: string | undefined;
+    misje?: Misja[] | undefined;
+}
+
+export class StatusMisji implements IStatusMisji {
+    id?: string;
+    nazwa?: string | undefined;
+    misje?: Misja[] | undefined;
+
+    constructor(data?: IStatusMisji) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwa = _data["nazwa"];
+            if (Array.isArray(_data["misje"])) {
+                this.misje = [] as any;
+                for (let item of _data["misje"])
+                    this.misje!.push(Misja.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatusMisji {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatusMisji();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwa"] = this.nazwa;
+        if (Array.isArray(this.misje)) {
+            data["misje"] = [];
+            for (let item of this.misje)
+                data["misje"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IStatusMisji {
+    id?: string;
+    nazwa?: string | undefined;
+    misje?: Misja[] | undefined;
 }
 
 export class MisjaDto implements IMisjaDto {
