@@ -185,6 +185,38 @@
         }
       }
     },
+    "/api/statusyuslugi/{nazwa}": {
+      "get": {
+        "tags": [
+          "StatusyUslugi"
+        ],
+        "operationId": "StatusyUslugi_PobierzStatusUslugi",
+        "parameters": [
+          {
+            "name": "nazwa",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusUslugiDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/typymisji": {
       "get": {
         "tags": [
@@ -471,6 +503,20 @@
           }
         }
       },
+      "StatusUslugiDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwa": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "TypMisjiDto": {
         "type": "object",
         "additionalProperties": false,
@@ -573,6 +619,10 @@
             "format": "int64"
           },
           "idKlienta": {
+            "type": "string",
+            "format": "guid"
+          },
+          "idStatusuUslugi": {
             "type": "string",
             "format": "guid"
           },

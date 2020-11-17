@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
 {
-    public class StatusMisji
+    public class StatusUslugi
     {
         public Guid Id { get; set; }
         public string Nazwa { get; set; }
 
-        public ICollection<Misja> Misje { get; set; } = new List<Misja>();
+        public ICollection<Usluga> Uslugi { get; set; } = new List<Usluga>();
     }
 }

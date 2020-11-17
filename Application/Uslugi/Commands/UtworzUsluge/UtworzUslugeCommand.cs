@@ -15,6 +15,7 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
     {
         public long DataPrzyjeciaZlecenia { get; set; }
         public Guid IdKlienta { get; set; }
+        public Guid IdStatusuUslugi { get; set; }
         public ICollection<MisjaDto> Misje { get; set; } = new List<MisjaDto>();
 
         public void Mapping(Profile profile)

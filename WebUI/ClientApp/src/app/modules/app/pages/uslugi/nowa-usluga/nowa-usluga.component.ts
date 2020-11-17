@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
@@ -6,7 +6,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { NowaUslugaForm } from 'src/app/shared/models/nowa-usluga/nowa-usluga-form.model';
-import { KlientDto, MisjaDto, UslugiClient, UtworzUslugeCommand } from 'src/app/web-api-client';
+import { KlientDto, MisjaDto, StatusUslugiDto, StatusyUslugiClient, UslugiClient, UtworzUslugeCommand } from 'src/app/web-api-client';
 import { KlienciComponent } from '../../klienci/klienci/klienci.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
@@ -16,7 +16,7 @@ import { MisjeComponent } from '../../misje/misje/misje.component';
   styleUrls: ['./nowa-usluga.component.css'],
   providers: [DialogService, MessageToast]
 })
-export class NowaUslugaComponent {
+export class NowaUslugaComponent implements OnInit {
   nowaUslugaForm = this.formBuilder.group({
     dataPrzyjeciaZalecenia: [this.dzisiaj()]
   });
@@ -26,14 +26,24 @@ export class NowaUslugaComponent {
   nazwaKlienta: string;
   tekstIdentyfikacyjnyKlienta: string;
   misje: NowaUslugaForm[] = [];
+  statusUslugi: StatusUslugiDto;
 
   constructor(
     private formBuilder: FormBuilder,
     private dialogService: DialogService,
     private uslugiClient: UslugiClient,
     private messageToast: MessageToast,
-    private router: Router
+    private router: Router,
+    private statusyUslugiClient: StatusyUslugiClient
   ) { }
+
+  ngOnInit(): void {
+    this.statusyUslugiClient.pobierzStatusUslugi("Utworzona").subscribe(
+      (statusUslugi: StatusUslugiDto) => {
+        this.statusUslugi = statusUslugi;
+      }
+    );
+  }
 
   dzisiaj(): Date {
     const dzisiaj = moment().startOf('day').toDate();
@@ -102,6 +112,7 @@ export class NowaUslugaComponent {
     const command = {
       dataPrzyjeciaZlecenia: this.controls['dataPrzyjeciaZalecenia'].value.getTime(),
       idKlienta: this.klient.id,
+      idStatusuUslugi: this.statusUslugi.id,
       misje: this.misje.map(misja => ({
         nazwa: misja.nazwa,
         opis: misja.opis,
