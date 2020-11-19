@@ -1,6 +1,7 @@
 import { TypMisjiDto } from "src/app/web-api-client";
+import { Pracownik } from '../misje/pracownik.model';
 
-export interface NowaUslugaForm {
+export interface UslugaForm {
     nazwa: string;
     dataRozpoczecia: Date;
     dataZakonczenia: Date,
@@ -9,6 +10,7 @@ export interface NowaUslugaForm {
     status: string,
     statusId: string,
     maksymalnaWysokoscLotu: number;
+    przypisanyPracownik: Pracownik,
     szerokoscGeograficzna: number,
     dlugoscGeograficzna: number,
     promien: number

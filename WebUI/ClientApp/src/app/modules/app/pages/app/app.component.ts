@@ -24,7 +24,7 @@ export class AppComponent {
     {
       label: 'Usługi',
       items: [
-        { label: 'Nowa usługa', icon: 'pi pi-fw pi-plus', routerLink: '/uslugi/nowa-usluga' },
+        { label: 'Nowa usługa', icon: 'pi pi-fw pi-plus', routerLink: '/uslugi/usluga' },
         { label: 'Lista usług', icon: 'pi pi-fw pi-list', routerLink: '/uslugi/lista-uslug' },
       ]
     }

@@ -5,18 +5,18 @@ import * as moment from 'moment';
 import { DialogService } from 'primeng/dynamicdialog';
 import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
-import { NowaUslugaForm } from 'src/app/shared/models/nowa-usluga/nowa-usluga-form.model';
+import { UslugaForm } from 'src/app/shared/models/usluga/nowa-usluga-form.model';
 import { KlientDto, MisjaDto, StatusUslugiDto, StatusyUslugiClient, UslugiClient, UtworzUslugeCommand } from 'src/app/web-api-client';
 import { KlienciComponent } from '../../klienci/klienci/klienci.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
 @Component({
-  selector: 'app-nowa-usluga',
-  templateUrl: './nowa-usluga.component.html',
-  styleUrls: ['./nowa-usluga.component.css'],
+  selector: 'app-usluga',
+  templateUrl: './usluga.component.html',
+  styleUrls: ['./usluga.component.css'],
   providers: [DialogService, MessageToast]
 })
-export class NowaUslugaComponent implements OnInit {
+export class UslugaComponent implements OnInit {
   nowaUslugaForm = this.formBuilder.group({
     dataPrzyjeciaZalecenia: [this.dzisiaj()]
   });
@@ -25,8 +25,8 @@ export class NowaUslugaComponent implements OnInit {
   klient: KlientDto;
   nazwaKlienta: string;
   tekstIdentyfikacyjnyKlienta: string;
-  misje: NowaUslugaForm[] = [];
-  statusUslugi: StatusUslugiDto;
+  misje: UslugaForm[] = [];
+  statusUtworzonejUslugi: StatusUslugiDto;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -38,9 +38,13 @@ export class NowaUslugaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.pobierzStatusUtworzonejUslugi();
+  }
+
+  pobierzStatusUtworzonejUslugi(): void {
     this.statusyUslugiClient.pobierzStatusUslugi("Utworzona").subscribe(
       (statusUslugi: StatusUslugiDto) => {
-        this.statusUslugi = statusUslugi;
+        this.statusUtworzonejUslugi = statusUslugi;
       }
     );
   }
@@ -112,7 +116,7 @@ export class NowaUslugaComponent implements OnInit {
     const command = {
       dataPrzyjeciaZlecenia: this.controls['dataPrzyjeciaZalecenia'].value.getTime(),
       idKlienta: this.klient.id,
-      idStatusuUslugi: this.statusUslugi.id,
+      idStatusuUslugi: this.statusUtworzonejUslugi.id,
       misje: this.misje.map(misja => ({
         nazwa: misja.nazwa,
         opis: misja.opis,

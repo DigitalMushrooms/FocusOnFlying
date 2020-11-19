@@ -1,12 +1,14 @@
 /// <reference types="@types/googlemaps" />
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { SelectItem } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { finalize, map } from 'rxjs/operators';
+import { finalize, map, tap } from 'rxjs/operators';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
-import { NowaUslugaForm } from 'src/app/shared/models/nowa-usluga/nowa-usluga-form.model';
+import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
+import { UslugaForm } from 'src/app/shared/models/usluga/nowa-usluga-form.model';
 import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
 
 @Component({
@@ -15,7 +17,7 @@ import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from
   styleUrls: ['./misje.component.css']
 })
 export class MisjeComponent implements OnInit {
-  nowaMisjaForm: IFormGroup<NowaUslugaForm>;
+  nowaMisjaForm: IFormGroup<UslugaForm>;
   formBuilder: IFormBuilder;
   typyMisji: SelectItem<TypMisjiDto>[] = [];
   statusMisji: StatusMisjiDto;
@@ -25,19 +27,72 @@ export class MisjeComponent implements OnInit {
   };
   nakladkiNaMape: google.maps.Circle[];
   pl = Kalendarz.pl;
+  pracownicy: SelectItem<Pracownik>[];
 
   constructor(
     formBuilder: FormBuilder,
     private dynamicDialogRef: DynamicDialogRef,
     private typyMisjiClient: TypyMisjiClient,
     private statusyMisjiClient: StatusyMisjiClient,
-    private dynamicDialogConfig: DynamicDialogConfig
+    private dynamicDialogConfig: DynamicDialogConfig,
+    private http: HttpClient
   ) {
     this.formBuilder = formBuilder;
   }
 
   ngOnInit(): void {
-    this.nowaMisjaForm = this.formBuilder.group<NowaUslugaForm>({
+    this.buildForm();
+    this.pobierzTypyMisji();
+    this.pobierzStatusMisji();
+    this.pobierzPracownikow();
+    this.typOnChange();
+    this.promienOnChange();
+  }
+
+  typOnChange(): void {
+    this.nowaMisjaForm.controls.typ.valueChanges.subscribe(
+      typ => {
+        if (!this.nowaMisjaForm.value.przypisanyPracownik)
+          return;
+        const uprawnienia = this.nowaMisjaForm.value.przypisanyPracownik.claims.filter(x => x.type === 'uprawnienia').map(x => x.value);
+        this.pracownicy.forEach(pracownik => pracownik.disabled = false);
+        if (typ?.nazwa === 'VLOS') {
+          if (!uprawnienia.includes('VLOS')) {
+            this.nowaMisjaForm.controls.przypisanyPracownik.setValue(null);
+          }
+          const pracownicyBezUprawnienia = this.pracownicy
+            .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').map(x => x.value).includes('VLOS'));
+          pracownicyBezUprawnienia.forEach(pracownik => pracownik.disabled = true)
+        } else if (typ?.nazwa === 'BVLOS') {
+          if (!uprawnienia.includes('BVLOS')) {
+            this.nowaMisjaForm.controls.przypisanyPracownik.setValue(null);
+          }
+          const pracownicyBezUprawnienia = this.pracownicy
+            .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').map(x => x.value).includes('BLOS'));
+          pracownicyBezUprawnienia.forEach(pracownik => pracownik.disabled = true)
+        }
+      });
+  }
+
+  pobierzPracownikow(): void {
+    this.http.get('https://localhost:44318/account/uzytkownicy')
+      .pipe(
+        map((pracownicy: Pracownik[]) =>
+          pracownicy.map(pracownik => ({
+            label: pracownik.claims.find(x => x.type === 'name').value,
+            value: pracownik
+          } as SelectItem<Pracownik>))))
+      .subscribe(
+        (uzytkownicy: SelectItem<Pracownik>[]) => {
+          console.log(uzytkownicy);
+
+          this.pracownicy = uzytkownicy;
+        }
+      );
+  }
+
+  buildForm(): void {
+    this.nowaMisjaForm = this.formBuilder.group<UslugaForm>({
       nazwa: [null, Validators.required],
       dataRozpoczecia: [null, Validators.required],
       dataZakonczenia: [null],
@@ -46,14 +101,11 @@ export class MisjeComponent implements OnInit {
       status: [{ value: null, disabled: true }],
       statusId: [null],
       maksymalnaWysokoscLotu: [null, Validators.required],
+      przypisanyPracownik: [null],
       szerokoscGeograficzna: [{ value: null, disabled: true }],
       dlugoscGeograficzna: [{ value: null, disabled: true }],
       promien: [200, Validators.required]
     });
-
-    this.pobierzTypyMisji();
-    this.pobierzStatusMisji();
-    this.promienOnChange();
   }
 
   pobierzTypyMisji(): void {

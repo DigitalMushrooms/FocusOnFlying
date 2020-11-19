@@ -30,7 +30,7 @@ import { KlienciComponent } from './pages/klienci/klienci/klienci.component';
 import { NowyKlientComponent } from './pages/klienci/nowy-klient/nowy-klient.component';
 import { MisjeComponent } from './pages/misje/misje/misje.component';
 import { ListaUslugComponent } from './pages/uslugi/lista-uslug/lista-uslug.component';
-import { NowaUslugaComponent } from './pages/uslugi/nowa-usluga/nowa-usluga.component';
+import { UslugaComponent } from './pages/uslugi/usluga/usluga.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
   return (): Promise<unknown> =>
@@ -54,8 +54,8 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     MisjeComponent,
     MomentPipe,
     NazwaKlientaPipe,
-    NowaUslugaComponent,
-    NowyKlientComponent
+    NowyKlientComponent,
+    UslugaComponent
   ],
   imports: [
     AppRoutingModule,

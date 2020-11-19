@@ -31,6 +31,11 @@
             <p-inputNumber formControlName="maksymalnaWysokoscLotu" min="1" inputId="maksymalnaWysokoscLotu" suffix=" m">
             </p-inputNumber>
         </div>
+        <div class="p-field p-col-3">
+            <label for="przypisanyPracownik">Przypisany pracownik</label>
+            <p-dropdown formControlName="przypisanyPracownik" id="przypisanyPracownik" [options]="pracownicy" [showClear]="true" [autoDisplayFirst]="false" placeholder="Wybierz pracownika">
+            </p-dropdown>
+        </div>
         <div class="p-field p-col-12">
             <label for="opis">Opis</label>
             <textarea formControlName="opis" id="opis" rows="4" pInputTextarea></textarea>
