@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using FocusOnFlying.Infrastructure.IDP.Quickstart.Account;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Events;
@@ -12,6 +13,7 @@ using IdentityServer4.Stores;
 using IdentityServer4.Test;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -50,6 +52,20 @@ namespace IdentityServerHost.Quickstart.UI
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
+        }
+
+        [HttpGet]
+        [EnableCors("DefaultPolicy")]
+        public IActionResult Uzytkownicy()
+        {
+            var users = TestUsers.Users.Select(x => new UserDto
+            {
+                SubjectId = x.SubjectId,
+                Username = x.Username,
+                IsActive = x.IsActive,
+                Claims = x.Claims
+            });
+            return Ok(users);
         }
 
         /// <summary>

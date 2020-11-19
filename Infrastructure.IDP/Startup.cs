@@ -35,12 +35,21 @@ namespace FocusOnFlying.Infrastructure.IDP
                 .AddInMemoryClients(Config.Clients)
                 .AddTestUsers(TestUsers.Users);
 
+            services.AddCors(o => o.AddPolicy("DefaultPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
         }
 
         public void Configure(IApplicationBuilder app)
         {
+            app.UseCors("DefaultPolicy");
+
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

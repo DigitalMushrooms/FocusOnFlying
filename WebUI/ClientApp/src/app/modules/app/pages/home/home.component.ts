@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
       .checkAuth()
       .subscribe(
         (isAuthenticated) => {
-          if(!isAuthenticated) {
+          if (!isAuthenticated) {
             this.oidcSecurityService.authorize();
           }
         }
