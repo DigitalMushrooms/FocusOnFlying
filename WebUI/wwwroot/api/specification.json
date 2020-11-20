@@ -784,6 +784,10 @@
             "type": "string",
             "format": "guid"
           },
+          "idPracownika": {
+            "type": "string",
+            "nullable": true
+          },
           "szerokoscGeograficzna": {
             "type": "number",
             "format": "decimal"
@@ -895,6 +899,10 @@
           "dataZakonczenia": {
             "type": "integer",
             "format": "int64"
+          },
+          "idPracownika": {
+            "type": "string",
+            "nullable": true
           },
           "szerokoscGeograficzna": {
             "type": "number",

@@ -1398,6 +1398,7 @@ export class Misja implements IMisja {
     dataRozpoczecia?: Date;
     dataZakonczenia?: Date;
     idUslugi?: string;
+    idPracownika?: string | undefined;
     szerokoscGeograficzna?: number;
     dlugoscGeograficzna?: number;
     promien?: number;
@@ -1425,6 +1426,7 @@ export class Misja implements IMisja {
             this.dataRozpoczecia = _data["dataRozpoczecia"] ? new Date(_data["dataRozpoczecia"].toString()) : <any>undefined;
             this.dataZakonczenia = _data["dataZakonczenia"] ? new Date(_data["dataZakonczenia"].toString()) : <any>undefined;
             this.idUslugi = _data["idUslugi"];
+            this.idPracownika = _data["idPracownika"];
             this.szerokoscGeograficzna = _data["szerokoscGeograficzna"];
             this.dlugoscGeograficzna = _data["dlugoscGeograficzna"];
             this.promien = _data["promien"];
@@ -1452,6 +1454,7 @@ export class Misja implements IMisja {
         data["dataRozpoczecia"] = this.dataRozpoczecia ? this.dataRozpoczecia.toISOString() : <any>undefined;
         data["dataZakonczenia"] = this.dataZakonczenia ? this.dataZakonczenia.toISOString() : <any>undefined;
         data["idUslugi"] = this.idUslugi;
+        data["idPracownika"] = this.idPracownika;
         data["szerokoscGeograficzna"] = this.szerokoscGeograficzna;
         data["dlugoscGeograficzna"] = this.dlugoscGeograficzna;
         data["promien"] = this.promien;
@@ -1472,6 +1475,7 @@ export interface IMisja {
     dataRozpoczecia?: Date;
     dataZakonczenia?: Date;
     idUslugi?: string;
+    idPracownika?: string | undefined;
     szerokoscGeograficzna?: number;
     dlugoscGeograficzna?: number;
     promien?: number;
@@ -1592,6 +1596,7 @@ export class MisjaDto implements IMisjaDto {
     idStatusuMisji?: string;
     dataRozpoczecia?: number;
     dataZakonczenia?: number;
+    idPracownika?: string | undefined;
     szerokoscGeograficzna?: number;
     dlugoscGeograficzna?: number;
     promien?: number;
@@ -1614,6 +1619,7 @@ export class MisjaDto implements IMisjaDto {
             this.idStatusuMisji = _data["idStatusuMisji"];
             this.dataRozpoczecia = _data["dataRozpoczecia"];
             this.dataZakonczenia = _data["dataZakonczenia"];
+            this.idPracownika = _data["idPracownika"];
             this.szerokoscGeograficzna = _data["szerokoscGeograficzna"];
             this.dlugoscGeograficzna = _data["dlugoscGeograficzna"];
             this.promien = _data["promien"];
@@ -1636,6 +1642,7 @@ export class MisjaDto implements IMisjaDto {
         data["idStatusuMisji"] = this.idStatusuMisji;
         data["dataRozpoczecia"] = this.dataRozpoczecia;
         data["dataZakonczenia"] = this.dataZakonczenia;
+        data["idPracownika"] = this.idPracownika;
         data["szerokoscGeograficzna"] = this.szerokoscGeograficzna;
         data["dlugoscGeograficzna"] = this.dlugoscGeograficzna;
         data["promien"] = this.promien;
@@ -1651,6 +1658,7 @@ export interface IMisjaDto {
     idStatusuMisji?: string;
     dataRozpoczecia?: number;
     dataZakonczenia?: number;
+    idPracownika?: string | undefined;
     szerokoscGeograficzna?: number;
     dlugoscGeograficzna?: number;
     promien?: number;

@@ -61,14 +61,14 @@ export class MisjeComponent implements OnInit {
             this.nowaMisjaForm.controls.przypisanyPracownik.setValue(null);
           }
           const pracownicyBezUprawnienia = this.pracownicy
-            .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').map(x => x.value).includes('VLOS'));
+            .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').some(x => x.value === 'VLOS'));
           pracownicyBezUprawnienia.forEach(pracownik => pracownik.disabled = true)
         } else if (typ?.nazwa === 'BVLOS') {
           if (!uprawnienia.includes('BVLOS')) {
             this.nowaMisjaForm.controls.przypisanyPracownik.setValue(null);
           }
           const pracownicyBezUprawnienia = this.pracownicy
-            .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').map(x => x.value).includes('BLOS'));
+            .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').some(x => x.value === 'BVLOS'));
           pracownicyBezUprawnienia.forEach(pracownik => pracownik.disabled = true)
         }
       });

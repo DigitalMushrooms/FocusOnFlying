@@ -15,6 +15,7 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
         public Guid IdStatusuMisji { get; set; }
         public long DataRozpoczecia { get; set; }
         public long DataZakonczenia { get; set; }
+        public string IdPracownika { get; set; }
 
         public decimal SzerokoscGeograficzna { get; set; }
         public decimal DlugoscGeograficzna { get; set; }
