@@ -7,7 +7,7 @@ import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { UslugaForm } from 'src/app/shared/models/usluga/nowa-usluga-form.model';
 import { KlientDto, MisjaDto, StatusUslugiDto, StatusyUslugiClient, UslugiClient, UtworzUslugeCommand } from 'src/app/web-api-client';
-import { KlienciComponent } from '../../klienci/klienci/klienci.component';
+import { KlienciDialogComponent } from '../../../components/klienci/klienci-dialog.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
 @Component({
@@ -55,7 +55,7 @@ export class UslugaComponent implements OnInit {
   }
 
   wybierzKlientaOnClick(): void {
-    const dialog = this.dialogService.open(KlienciComponent, {
+    const dialog = this.dialogService.open(KlienciDialogComponent, {
       header: 'Wybierz klienta',
       width: '80%'
     });

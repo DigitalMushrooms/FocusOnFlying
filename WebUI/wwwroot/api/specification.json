@@ -14,25 +14,25 @@
         "operationId": "Klienci_PobierzKlientow",
         "parameters": [
           {
-            "name": "Offset",
+            "name": "Fraza",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 1
           },
           {
-            "name": "Rows",
+            "name": "Pesel",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 2
           },
           {
-            "name": "SortField",
+            "name": "Nip",
             "in": "query",
             "schema": {
               "type": "string",
@@ -41,13 +41,49 @@
             "x-position": 3
           },
           {
+            "name": "Regon",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 5
+          },
+          {
+            "name": "Rows",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 6
+          },
+          {
+            "name": "SortField",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 7
+          },
+          {
             "name": "SortOrder",
             "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 4
+            "x-position": 8
           }
         ],
         "responses": {

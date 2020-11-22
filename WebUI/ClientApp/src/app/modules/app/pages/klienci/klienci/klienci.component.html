@@ -1,24 +1,56 @@
-<p-table [value]="klienci" [lazy]="true" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" selectionMode="single" (onLazyLoad)="pobierzKlientow($event)" (onRowSelect)="naWybraniuKlienta($event)">
-    <ng-template pTemplate="header">
-        <tr>
-            <th>Imie i nazwisko</th>
-            <th>PESEL</th>
-            <th>Nazwa</th>
-            <th>REGON</th>
-            <th>NIP</th>
-            <th>Adres</th>
-            <th>Kraj</th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-klient>
-        <tr [pSelectableRow]="klient">
-            <td>{{klient.imie}} {{klient.nazwisko}}</td>
-            <td>{{klient.pesel}}</td>
-            <td>{{klient.nazwa}}</td>
-            <td>{{klient.regon}}</td>
-            <td>{{klient.nip}}</td>
-            <td>{{klient.ulica}} {{klient.numerDomu}}{{klient.numerLokalu ? '/' + klient.numerLokalu : null}}, {{klient.kodPocztowy}} {{klient.miejscowosc}}</td>
-            <td>{{klient.kraj.nazwaKraju}}</td>
-        </tr>
-    </ng-template>
-</p-table>
+<p-card header="Lista klientów">
+    <div class="p-mb-4">
+        <p-fieldset legend="Filtr" [toggleable]="true">
+            <form [formGroup]="listaKlientowForm">
+                <div class="p-fluid p-formgrid p-grid">
+                    <div class="p-field p-col-3">
+                        <label for="fraza">Fraza</label>
+                        <input formControlName="fraza" id="fraza" type="text" pInputText>
+                    </div>
+                    <div class="p-field p-col-2">
+                        <label for="pesel">PESEL</label>
+                        <input formControlName="pesel" id="pesel" type="text" pInputText>
+                    </div>
+                    <div class="p-field p-col-2">
+                        <label for="nip">NIP</label>
+                        <input formControlName="nip" id="nip" type="text" pInputText>
+                    </div>
+                    <div class="p-field p-col-2">
+                        <label for="regon">REGON</label>
+                        <input formControlName="regon" id="regon" type="text" pInputText>
+                    </div>
+                    <div class="p-field p-col-3 p-mt-auto">
+                        <button pButton type="button" icon="pi pi-check" label="Wyszukaj" [disabled]="listaKlientowForm.invalid" (click)="wyszukajOnClick(tableRef)"></button>
+                    </div>
+                </div>
+            </form>
+        </p-fieldset>
+    </div>
+    <div>
+        <p-table #tableRef [value]="klienci" [lazy]="true" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" selectionMode="single" [lazyLoadOnInit]="false"
+            (onLazyLoad)="pobierzKlientow($event)" (onRowSelect)="naWybraniuKlienta($event)">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Imie i nazwisko</th>
+                    <th>PESEL</th>
+                    <th>Nazwa</th>
+                    <th>REGON</th>
+                    <th>NIP</th>
+                    <th>Adres</th>
+                    <th>Kraj</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-klient>
+                <tr [pSelectableRow]="klient">
+                    <td>{{klient.imie}} {{klient.nazwisko}}</td>
+                    <td>{{klient.pesel}}</td>
+                    <td>{{klient.nazwa}}</td>
+                    <td>{{klient.regon}}</td>
+                    <td>{{klient.nip}}</td>
+                    <td>{{klient.ulica}} {{klient.numerDomu}}{{klient.numerLokalu ? '/' + klient.numerLokalu : null}}, {{klient.kodPocztowy}} {{klient.miejscowosc}}</td>
+                    <td>{{klient.kraj.nazwaKraju}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</p-card>

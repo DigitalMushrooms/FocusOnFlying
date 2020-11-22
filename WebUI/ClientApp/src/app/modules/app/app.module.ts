@@ -11,6 +11,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { FieldsetModule } from 'primeng/fieldset';
 import { GMapModule } from 'primeng/gmap';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
@@ -24,11 +25,12 @@ import { HttpTokenInterceptor } from 'src/app/core/interceptors/http.token.inter
 import { MomentPipe } from 'src/app/shared/pipes/moment.pipe';
 import { NazwaKlientaPipe } from 'src/app/shared/pipes/nazwa-klienta.pipe';
 import { AppRoutingModule } from './app-routing.module';
+import { KlienciDialogComponent } from './components/klienci/klienci-dialog.component';
 import { AppComponent } from './pages/app/app.component';
 import { DronComponent } from './pages/drony/dron/dron.component';
 import { HomeComponent } from './pages/home/home.component';
 import { KlienciComponent } from './pages/klienci/klienci/klienci.component';
-import { NowyKlientComponent } from './pages/klienci/nowy-klient/nowy-klient.component';
+import { KlientComponent } from './pages/klienci/klient/klient.component';
 import { MisjeComponent } from './pages/misje/misje/misje.component';
 import { ListaUslugComponent } from './pages/uslugi/lista-uslug/lista-uslug.component';
 import { UslugaComponent } from './pages/uslugi/usluga/usluga.component';
@@ -49,15 +51,16 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
 @NgModule({
   declarations: [
     AppComponent,
+    DronComponent,
     HomeComponent,
-    KlienciComponent,
+    KlienciDialogComponent,
+    KlientComponent,
     ListaUslugComponent,
     MisjeComponent,
     MomentPipe,
     NazwaKlientaPipe,
-    NowyKlientComponent,
     UslugaComponent,
-    DronComponent
+    KlienciComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -70,6 +73,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     CommonModule,
     DropdownModule,
     DynamicDialogModule,
+    FieldsetModule,
     FormsModule,
     FormsModule,
     GMapModule,

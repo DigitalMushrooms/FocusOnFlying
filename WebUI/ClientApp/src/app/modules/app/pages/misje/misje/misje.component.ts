@@ -41,7 +41,7 @@ export class MisjeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.buildForm();
+    this.zbudujFormularz();
     this.pobierzTypyMisji();
     this.pobierzStatusMisji();
     this.pobierzPracownikow();
@@ -91,7 +91,7 @@ export class MisjeComponent implements OnInit {
       );
   }
 
-  buildForm(): void {
+  zbudujFormularz(): void {
     this.nowaMisjaForm = this.formBuilder.group<UslugaForm>({
       nazwa: [null, Validators.required],
       dataRozpoczecia: [null, Validators.required],

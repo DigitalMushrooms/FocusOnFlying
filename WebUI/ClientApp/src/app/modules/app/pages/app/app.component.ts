@@ -18,7 +18,8 @@ export class AppComponent {
     {
       label: 'Klienci',
       items: [
-        { label: 'Nowy klient', icon: 'pi pi-fw pi-user-plus', routerLink: '/klienci/nowy-klient' },
+        { label: 'Nowy klient', icon: 'pi pi-fw pi-user-plus', routerLink: '/klienci/klient' },
+        { label: 'Lista klientów', icon: 'pi pi-fw pi-users', routerLink: '/klienci' },
       ]
     },
     {

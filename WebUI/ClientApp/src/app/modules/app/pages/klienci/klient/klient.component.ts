@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SelectItem } from 'primeng/api';
 import { map } from 'rxjs/operators';
+import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { KlienciClient, KrajeClient, UtworzKlientaCommand } from 'src/app/web-api-client';
 
 @Component({
-  selector: 'app-nowy-klient',
-  templateUrl: './nowy-klient.component.html',
-  styleUrls: ['./nowy-klient.component.css']
+  selector: 'app-klient',
+  templateUrl: './klient.component.html',
+  styleUrls: ['./klient.component.css']
 })
-export class NowyKlientComponent implements OnInit {
+export class KlientComponent implements OnInit {
   kraje: SelectItem[] = [];
   nowyKlientForm = this.formBuilder.group({
     imie: [null],
@@ -33,7 +35,9 @@ export class NowyKlientComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private krajeClient: KrajeClient,
-    private klienciClient: KlienciClient
+    private klienciClient: KlienciClient,
+    private messageToast: MessageToast,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -72,7 +76,8 @@ export class NowyKlientComponent implements OnInit {
     } as UtworzKlientaCommand;
     this.klienciClient.utworzKlienta(command).subscribe(
       () => {
-        //TODO: Dorobić powiadomienie i wyczyścić pola.
+        this.messageToast.success('Utworzono klienta.');
+        this.router.navigate(['/klienci']);
       },
       (e) => {
         //TODO: Dorobić powiadomienia

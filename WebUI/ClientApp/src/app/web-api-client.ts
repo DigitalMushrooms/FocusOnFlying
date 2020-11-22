@@ -15,7 +15,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IKlienciClient {
-    pobierzKlientow(offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfKlientDto>;
+    pobierzKlientow(fraza: string | null | undefined, pesel: string | null | undefined, nip: string | null | undefined, regon: string | null | undefined, offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfKlientDto>;
     utworzKlienta(command: UtworzKlientaCommand): Observable<void>;
 }
 
@@ -32,8 +32,16 @@ export class KlienciClient implements IKlienciClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    pobierzKlientow(offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfKlientDto> {
+    pobierzKlientow(fraza: string | null | undefined, pesel: string | null | undefined, nip: string | null | undefined, regon: string | null | undefined, offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfKlientDto> {
         let url_ = this.baseUrl + "/api/klienci?";
+        if (fraza !== undefined && fraza !== null)
+            url_ += "Fraza=" + encodeURIComponent("" + fraza) + "&";
+        if (pesel !== undefined && pesel !== null)
+            url_ += "Pesel=" + encodeURIComponent("" + pesel) + "&";
+        if (nip !== undefined && nip !== null)
+            url_ += "Nip=" + encodeURIComponent("" + nip) + "&";
+        if (regon !== undefined && regon !== null)
+            url_ += "Regon=" + encodeURIComponent("" + regon) + "&";
         if (offset === null)
             throw new Error("The parameter 'offset' cannot be null.");
         else if (offset !== undefined)
