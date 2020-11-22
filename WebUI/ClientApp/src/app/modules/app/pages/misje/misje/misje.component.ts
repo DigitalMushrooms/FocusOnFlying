@@ -5,7 +5,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { SelectItem } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { finalize, map, tap } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
 import { UslugaForm } from 'src/app/shared/models/usluga/nowa-usluga-form.model';
