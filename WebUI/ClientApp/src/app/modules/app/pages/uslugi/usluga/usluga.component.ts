@@ -134,7 +134,7 @@ export class UslugaComponent implements OnInit {
       .subscribe(
         () => {
           this.messageToast.success('Utworzono usługę.');
-          this.router.navigate(['/home']);
+          this.router.navigate(['/strona-glowna']);
         }
       );
   }

@@ -14,6 +14,7 @@ namespace FocusOnFlying.Application.Common.Interfaces
         public DbSet<TypMisji> TypyMisji { get; set; }
         public DbSet<StatusMisji> StatusyMisji { get; set; }
         public DbSet<StatusUslugi> StatusyUslugi { get; set; }
+        public DbSet<TypDrona> TypyDrona { get; set; }
 
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

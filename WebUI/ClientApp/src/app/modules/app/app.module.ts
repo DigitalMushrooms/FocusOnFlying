@@ -25,6 +25,7 @@ import { MomentPipe } from 'src/app/shared/pipes/moment.pipe';
 import { NazwaKlientaPipe } from 'src/app/shared/pipes/nazwa-klienta.pipe';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './pages/app/app.component';
+import { DronComponent } from './pages/drony/dron/dron.component';
 import { HomeComponent } from './pages/home/home.component';
 import { KlienciComponent } from './pages/klienci/klienci/klienci.component';
 import { NowyKlientComponent } from './pages/klienci/nowy-klient/nowy-klient.component';
@@ -55,7 +56,8 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     MomentPipe,
     NazwaKlientaPipe,
     NowyKlientComponent,
-    UslugaComponent
+    UslugaComponent,
+    DronComponent
   ],
   imports: [
     AppRoutingModule,

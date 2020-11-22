@@ -12,7 +12,7 @@ export class AppComponent {
     {
       label: 'Ogólne',
       items: [
-        { label: 'Strona główna', icon: 'pi pi-fw pi-home', routerLink: '/home' }
+        { label: 'Strona główna', icon: 'pi pi-fw pi-home', routerLink: '/strona-glowna' }
       ]
     },
     {
@@ -26,6 +26,12 @@ export class AppComponent {
       items: [
         { label: 'Nowa usługa', icon: 'pi pi-fw pi-plus', routerLink: '/uslugi/usluga' },
         { label: 'Lista usług', icon: 'pi pi-fw pi-list', routerLink: '/uslugi/lista-uslug' },
+      ]
+    },
+    {
+      label: 'Drony',
+      items: [
+        { label: 'Nowy dron', icon: 'pi pi-fw pi-cloud', routerLink: '/drony/dron' }
       ]
     }
   ];

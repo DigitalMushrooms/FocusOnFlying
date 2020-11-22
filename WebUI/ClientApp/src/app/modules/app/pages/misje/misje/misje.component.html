@@ -6,12 +6,12 @@
         </div>
         <div class="p-field p-col-2">
             <label for="dataRozpoczecia">Data rozpoczecia</label>
-            <p-calendar formControlName="dataRozpoczecia" [maxDate]="nowaMisjaForm.value.dataZakonczenia" [locale]="pl" [dateFormat]="null" appendTo="body" [showTime]="true" inputId="dataRozpoczecia">
+            <p-calendar formControlName="dataRozpoczecia" [maxDate]="nowaMisjaForm.value.dataZakonczenia" [locale]="pl" [dateFormat]="null" appendTo="body" [showTime]="true" [showIcon]="true" inputId="dataRozpoczecia">
             </p-calendar>
         </div>
         <div class="p-field p-col-2">
             <label for="dataZakonczenia">Data zakończenia</label>
-            <p-calendar formControlName="dataZakonczenia" [minDate]="nowaMisjaForm.value.dataRozpoczecia" [locale]="pl" [dateFormat]="null" appendTo="body" [showTime]="true" inputId="dataZakonczenia">
+            <p-calendar formControlName="dataZakonczenia" [minDate]="nowaMisjaForm.value.dataRozpoczecia" [locale]="pl" [dateFormat]="null" appendTo="body" [showTime]="true" [showIcon]="true" inputId="dataZakonczenia">
             </p-calendar>
         </div>
     </div>
