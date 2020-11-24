@@ -8,6 +8,6 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public Guid Id { get; set; }
         public string Nazwa { get; set; }
 
-        public List<Misja> Misje { get; set; }
+        public ICollection<Misja> Misje { get; set; } = new List<Misja>();
     }
 }
