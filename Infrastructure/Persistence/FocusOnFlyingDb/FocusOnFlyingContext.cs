@@ -41,6 +41,7 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
             modelBuilder.ApplyConfiguration(new StatusUslugiConfiguration());
             modelBuilder.ApplyConfiguration(new TypDronaConfiguration());
             modelBuilder.ApplyConfiguration(new DronConfiguration());
+            modelBuilder.ApplyConfiguration(new MisjaDronConfiguration());
         }
     }
 }

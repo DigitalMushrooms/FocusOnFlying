@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
 {
@@ -10,5 +11,7 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public string NumerSeryjny { get; set; }
         public Guid IdTypuDrona { get; set; }
         public DateTime DataNastepnegoPrzegladu { get; set; }
+
+        public ICollection<MisjaDron> MisjeDrony { get; set; }
     }
 }

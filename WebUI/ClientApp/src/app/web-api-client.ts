@@ -1523,6 +1523,7 @@ export class Misja implements IMisja {
     typMisji?: TypMisji | undefined;
     statusMisji?: StatusMisji | undefined;
     usluga?: Usluga | undefined;
+    misjeDrony?: MisjaDron[] | undefined;
 
     constructor(data?: IMisja) {
         if (data) {
@@ -1551,6 +1552,11 @@ export class Misja implements IMisja {
             this.typMisji = _data["typMisji"] ? TypMisji.fromJS(_data["typMisji"]) : <any>undefined;
             this.statusMisji = _data["statusMisji"] ? StatusMisji.fromJS(_data["statusMisji"]) : <any>undefined;
             this.usluga = _data["usluga"] ? Usluga.fromJS(_data["usluga"]) : <any>undefined;
+            if (Array.isArray(_data["misjeDrony"])) {
+                this.misjeDrony = [] as any;
+                for (let item of _data["misjeDrony"])
+                    this.misjeDrony!.push(MisjaDron.fromJS(item));
+            }
         }
     }
 
@@ -1579,6 +1585,11 @@ export class Misja implements IMisja {
         data["typMisji"] = this.typMisji ? this.typMisji.toJSON() : <any>undefined;
         data["statusMisji"] = this.statusMisji ? this.statusMisji.toJSON() : <any>undefined;
         data["usluga"] = this.usluga ? this.usluga.toJSON() : <any>undefined;
+        if (Array.isArray(this.misjeDrony)) {
+            data["misjeDrony"] = [];
+            for (let item of this.misjeDrony)
+                data["misjeDrony"].push(item.toJSON());
+        }
         return data; 
     }
 }
@@ -1600,6 +1611,7 @@ export interface IMisja {
     typMisji?: TypMisji | undefined;
     statusMisji?: StatusMisji | undefined;
     usluga?: Usluga | undefined;
+    misjeDrony?: MisjaDron[] | undefined;
 }
 
 export class TypMisji implements ITypMisji {
@@ -1704,6 +1716,122 @@ export interface IStatusMisji {
     id?: string;
     nazwa?: string | undefined;
     misje?: Misja[] | undefined;
+}
+
+export class MisjaDron implements IMisjaDron {
+    idMisji?: string;
+    idDrona?: string;
+    misja?: Misja | undefined;
+    dron?: Dron | undefined;
+
+    constructor(data?: IMisjaDron) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.idMisji = _data["idMisji"];
+            this.idDrona = _data["idDrona"];
+            this.misja = _data["misja"] ? Misja.fromJS(_data["misja"]) : <any>undefined;
+            this.dron = _data["dron"] ? Dron.fromJS(_data["dron"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): MisjaDron {
+        data = typeof data === 'object' ? data : {};
+        let result = new MisjaDron();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["idMisji"] = this.idMisji;
+        data["idDrona"] = this.idDrona;
+        data["misja"] = this.misja ? this.misja.toJSON() : <any>undefined;
+        data["dron"] = this.dron ? this.dron.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IMisjaDron {
+    idMisji?: string;
+    idDrona?: string;
+    misja?: Misja | undefined;
+    dron?: Dron | undefined;
+}
+
+export class Dron implements IDron {
+    id?: string;
+    producent?: string | undefined;
+    model?: string | undefined;
+    numerSeryjny?: string | undefined;
+    idTypuDrona?: string;
+    dataNastepnegoPrzegladu?: Date;
+    misjeDrony?: MisjaDron[] | undefined;
+
+    constructor(data?: IDron) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.producent = _data["producent"];
+            this.model = _data["model"];
+            this.numerSeryjny = _data["numerSeryjny"];
+            this.idTypuDrona = _data["idTypuDrona"];
+            this.dataNastepnegoPrzegladu = _data["dataNastepnegoPrzegladu"] ? new Date(_data["dataNastepnegoPrzegladu"].toString()) : <any>undefined;
+            if (Array.isArray(_data["misjeDrony"])) {
+                this.misjeDrony = [] as any;
+                for (let item of _data["misjeDrony"])
+                    this.misjeDrony!.push(MisjaDron.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Dron {
+        data = typeof data === 'object' ? data : {};
+        let result = new Dron();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["producent"] = this.producent;
+        data["model"] = this.model;
+        data["numerSeryjny"] = this.numerSeryjny;
+        data["idTypuDrona"] = this.idTypuDrona;
+        data["dataNastepnegoPrzegladu"] = this.dataNastepnegoPrzegladu ? this.dataNastepnegoPrzegladu.toISOString() : <any>undefined;
+        if (Array.isArray(this.misjeDrony)) {
+            data["misjeDrony"] = [];
+            for (let item of this.misjeDrony)
+                data["misjeDrony"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IDron {
+    id?: string;
+    producent?: string | undefined;
+    model?: string | undefined;
+    numerSeryjny?: string | undefined;
+    idTypuDrona?: string;
+    dataNastepnegoPrzegladu?: Date;
+    misjeDrony?: MisjaDron[] | undefined;
 }
 
 export class MisjaDto implements IMisjaDto {

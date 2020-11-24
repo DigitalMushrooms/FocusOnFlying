@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
 {
@@ -22,5 +23,6 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public TypMisji TypMisji { get; set; }
         public StatusMisji StatusMisji { get; set; }
         public Usluga Usluga { get; set; }
+        public ICollection<MisjaDron> MisjeDrony { get; set; }
     }
 }

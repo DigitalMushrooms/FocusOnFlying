@@ -896,6 +896,13 @@
                 "$ref": "#/components/schemas/Usluga"
               }
             ]
+          },
+          "misjeDrony": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/MisjaDron"
+            }
           }
         }
       },
@@ -937,6 +944,73 @@
             "nullable": true,
             "items": {
               "$ref": "#/components/schemas/Misja"
+            }
+          }
+        }
+      },
+      "MisjaDron": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "idMisji": {
+            "type": "string",
+            "format": "guid"
+          },
+          "idDrona": {
+            "type": "string",
+            "format": "guid"
+          },
+          "misja": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Misja"
+              }
+            ]
+          },
+          "dron": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Dron"
+              }
+            ]
+          }
+        }
+      },
+      "Dron": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "producent": {
+            "type": "string",
+            "nullable": true
+          },
+          "model": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerSeryjny": {
+            "type": "string",
+            "nullable": true
+          },
+          "idTypuDrona": {
+            "type": "string",
+            "format": "guid"
+          },
+          "dataNastepnegoPrzegladu": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "misjeDrony": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/MisjaDron"
             }
           }
         }
