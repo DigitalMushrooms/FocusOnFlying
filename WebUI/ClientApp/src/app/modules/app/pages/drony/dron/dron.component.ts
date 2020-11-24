@@ -50,4 +50,7 @@ export class DronComponent implements OnInit {
         }
       );
   }
+
+  zapiszDronaOnClick(): void {
+  }
 }

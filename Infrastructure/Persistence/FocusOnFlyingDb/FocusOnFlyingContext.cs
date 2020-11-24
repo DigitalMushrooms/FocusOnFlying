@@ -23,6 +23,7 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
         public DbSet<StatusMisji> StatusyMisji { get; set; }
         public DbSet<StatusUslugi> StatusyUslugi { get; set; }
         public DbSet<TypDrona> TypyDrona { get; set; }
+        public DbSet<Dron> Drony { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -39,6 +40,7 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
             modelBuilder.ApplyConfiguration(new StatusMisjiConfiguration());
             modelBuilder.ApplyConfiguration(new StatusUslugiConfiguration());
             modelBuilder.ApplyConfiguration(new TypDronaConfiguration());
+            modelBuilder.ApplyConfiguration(new DronConfiguration());
         }
     }
 }
