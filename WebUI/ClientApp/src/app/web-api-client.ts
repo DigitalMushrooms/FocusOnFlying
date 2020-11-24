@@ -14,6 +14,72 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
+export interface IDronyClient {
+    utworzDrona(command: UtworzDronaCommand): Observable<void>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class DronyClient implements IDronyClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    utworzDrona(command: UtworzDronaCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/drony";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUtworzDrona(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUtworzDrona(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUtworzDrona(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+}
+
 export interface IKlienciClient {
     pobierzKlientow(fraza: string | null | undefined, pesel: string | null | undefined, nip: string | null | undefined, regon: string | null | undefined, offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfKlientDto>;
     utworzKlienta(command: UtworzKlientaCommand): Observable<void>;
@@ -675,6 +741,58 @@ export class UslugiClient implements IUslugiClient {
         }
         return _observableOf<void>(<any>null);
     }
+}
+
+export class UtworzDronaCommand implements IUtworzDronaCommand {
+    producent?: string | undefined;
+    model?: string | undefined;
+    numerSeryjny?: string | undefined;
+    idTypuDrona?: string;
+    dataNastepnegoPrzegladu?: number;
+
+    constructor(data?: IUtworzDronaCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.producent = _data["producent"];
+            this.model = _data["model"];
+            this.numerSeryjny = _data["numerSeryjny"];
+            this.idTypuDrona = _data["idTypuDrona"];
+            this.dataNastepnegoPrzegladu = _data["dataNastepnegoPrzegladu"];
+        }
+    }
+
+    static fromJS(data: any): UtworzDronaCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UtworzDronaCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["producent"] = this.producent;
+        data["model"] = this.model;
+        data["numerSeryjny"] = this.numerSeryjny;
+        data["idTypuDrona"] = this.idTypuDrona;
+        data["dataNastepnegoPrzegladu"] = this.dataNastepnegoPrzegladu;
+        return data; 
+    }
+}
+
+export interface IUtworzDronaCommand {
+    producent?: string | undefined;
+    model?: string | undefined;
+    numerSeryjny?: string | undefined;
+    idTypuDrona?: string;
+    dataNastepnegoPrzegladu?: number;
 }
 
 export class PagedResultBase implements IPagedResultBase {

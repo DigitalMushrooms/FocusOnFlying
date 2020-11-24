@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { SelectItem } from 'primeng/api';
 import { map } from 'rxjs/operators';
+import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { NowyDronForm } from 'src/app/shared/models/dron/nowy-dron-form.model';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
-import { TypDronaDto, TypyDronaClient } from 'src/app/web-api-client';
+import { DronyClient, TypDronaDto, TypyDronaClient, UtworzDronaCommand } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-dron',
@@ -21,7 +23,10 @@ export class DronComponent implements OnInit {
 
   constructor(
     formBuilder: FormBuilder,
-    private typyDronaClient: TypyDronaClient
+    private typyDronaClient: TypyDronaClient,
+    private dronyClient: DronyClient,
+    private messageToast: MessageToast,
+    private router: Router,
   ) {
     this.formBuilder = formBuilder;
   }
@@ -33,8 +38,8 @@ export class DronComponent implements OnInit {
 
   zbudujFormularz(): void {
     this.nowyDronForm = this.formBuilder.group<NowyDronForm>({
-      nazwaProducenta: [null, Validators.required],
-      nazwaModelu: [null, Validators.required],
+      producent: [null, Validators.required],
+      model: [null, Validators.required],
       numerSeryjny: [null, Validators.required],
       typ: [null, Validators.required],
       dataNastepnegoPrzegladu: [null, Validators.required]
@@ -52,5 +57,20 @@ export class DronComponent implements OnInit {
   }
 
   zapiszDronaOnClick(): void {
+    const formValue = this.nowyDronForm.value;
+    const command = {
+      producent: formValue.producent,
+      model: formValue.model,
+      numerSeryjny: formValue.numerSeryjny,
+      idTypuDrona: formValue.typ.id,
+      dataNastepnegoPrzegladu: formValue.dataNastepnegoPrzegladu.getTime()
+    } as UtworzDronaCommand;
+    this.dronyClient.utworzDrona(command)
+      .subscribe(
+        () => {
+          this.messageToast.success('Utworzono drona.');
+          this.router.navigate(['/strona-glowna']);
+        }
+      );
   }
 }

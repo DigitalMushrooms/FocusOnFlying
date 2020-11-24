@@ -6,6 +6,31 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/drony": {
+      "post": {
+        "tags": [
+          "Drony"
+        ],
+        "operationId": "Drony_UtworzDrona",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtworzDronaCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/klienci": {
       "get": {
         "tags": [
@@ -348,6 +373,32 @@
   },
   "components": {
     "schemas": {
+      "UtworzDronaCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "producent": {
+            "type": "string",
+            "nullable": true
+          },
+          "model": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerSeryjny": {
+            "type": "string",
+            "nullable": true
+          },
+          "idTypuDrona": {
+            "type": "string",
+            "format": "guid"
+          },
+          "dataNastepnegoPrzegladu": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
       "PagedResultOfKlientDto": {
         "allOf": [
           {

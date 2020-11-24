@@ -2,12 +2,12 @@
     <form [formGroup]="nowyDronForm">
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col-3">
-                <label for="nazwaProducenta">Nazwa producenta</label>
-                <input formControlName="nazwaProducenta" id="nazwaProducenta" type="text" pInputText>
+                <label for="producent">Nazwa Producenta</label>
+                <input formControlName="producent" id="producent" type="text" pInputText>
             </div>
             <div class="p-field p-col-3">
-                <label for="nazwaModelu">Nazwa modelu</label>
-                <input formControlName="nazwaModelu" id="nazwaModelu" type="text" pInputText>
+                <label for="model">Nazwa modelu</label>
+                <input formControlName="model" id="model" type="text" pInputText>
             </div>
             <div class="p-field p-col-3">
                 <label for="numerSeryjny">Numer seryjny</label>
@@ -30,7 +30,7 @@
         </div>
         <div class="p-d-flex p-jc-end">
             <div>
-                <button pButton type="button" icon="pi pi-check" class="p-ml-auto" label="Zapisz drona" (click)="zapiszDronaOnClick()"></button>
+                <button pButton type="button" icon="pi pi-check" class="p-ml-auto" label="Zapisz drona" [disabled]="nowyDronForm.invalid" (click)="zapiszDronaOnClick()"></button>
             </div>
         </div>
     </form>
