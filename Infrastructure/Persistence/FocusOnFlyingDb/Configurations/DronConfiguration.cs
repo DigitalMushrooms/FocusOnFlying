@@ -16,6 +16,11 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb.Configuration
             builder.Property(x => x.NumerSeryjny).IsRequired();
             builder.Property(x => x.IdTypuDrona);
             builder.Property(x => x.DataNastepnegoPrzegladu);
+
+            builder
+                .HasOne(x => x.TypDrona)
+                .WithMany(x => x.Drony)
+                .HasForeignKey(x => x.IdTypuDrona);
         }
     }
 }

@@ -84,8 +84,6 @@ export class MisjeComponent implements OnInit {
           } as SelectItem<Pracownik>))))
       .subscribe(
         (uzytkownicy: SelectItem<Pracownik>[]) => {
-          console.log(uzytkownicy);
-
           this.pracownicy = uzytkownicy;
         }
       );

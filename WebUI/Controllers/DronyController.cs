@@ -1,4 +1,6 @@
 ﻿using FocusOnFlying.Application.Drony.Commands.UtworzDrona;
+using FocusOnFlying.Application.Drony.Queries.PobierzDrony;
+using FocusOnFlying.Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -13,6 +15,13 @@ namespace FocusOnFlying.WebUI.Controllers
         public async Task UtworzDrona(UtworzDronaCommand command)
         {
             await Mediator.Send(command);
+        }
+
+        [HttpGet]
+        public async Task<PagedResult<DronDto>> PobierzDrony([FromQuery] PobierzDronyQuery query)
+        {
+            PagedResult<DronDto> drony = await Mediator.Send(query);
+            return drony;
         }
     }
 }

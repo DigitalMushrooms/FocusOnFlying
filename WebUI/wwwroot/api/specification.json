@@ -29,6 +29,62 @@
             "description": ""
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Drony"
+        ],
+        "operationId": "Drony_PobierzDrony",
+        "parameters": [
+          {
+            "name": "Offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "Rows",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "SortField",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "SortOrder",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfDronDto"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/klienci": {
@@ -399,6 +455,84 @@
           }
         }
       },
+      "PagedResultOfDronDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PagedResultBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "results": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/DronDto"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "DronDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "producent": {
+            "type": "string",
+            "nullable": true
+          },
+          "model": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerSeryjny": {
+            "type": "string",
+            "nullable": true
+          },
+          "typDrona": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TypDronaDto"
+              }
+            ]
+          },
+          "dataNastepnegoPrzegladu": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "TypDronaDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwa": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PagedResultBase": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rowCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "PagedResultOfKlientDto": {
         "allOf": [
           {
@@ -523,16 +657,6 @@
           }
         }
       },
-      "PagedResultBase": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "rowCount": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
       "UtworzKlientaCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -614,20 +738,6 @@
         }
       },
       "StatusUslugiDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "nazwa": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "TypDronaDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1057,11 +1167,40 @@
             "type": "string",
             "format": "date-time"
           },
+          "typDrona": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TypDrona"
+              }
+            ]
+          },
           "misjeDrony": {
             "type": "array",
             "nullable": true,
             "items": {
               "$ref": "#/components/schemas/MisjaDron"
+            }
+          }
+        }
+      },
+      "TypDrona": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwa": {
+            "type": "string",
+            "nullable": true
+          },
+          "drony": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Dron"
             }
           }
         }

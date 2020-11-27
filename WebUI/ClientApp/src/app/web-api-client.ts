@@ -16,6 +16,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IDronyClient {
     utworzDrona(command: UtworzDronaCommand): Observable<void>;
+    pobierzDrony(offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfDronDto>;
 }
 
 @Injectable({
@@ -77,6 +78,68 @@ export class DronyClient implements IDronyClient {
             }));
         }
         return _observableOf<void>(<any>null);
+    }
+
+    pobierzDrony(offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfDronDto> {
+        let url_ = this.baseUrl + "/api/drony?";
+        if (offset === null)
+            throw new Error("The parameter 'offset' cannot be null.");
+        else if (offset !== undefined)
+            url_ += "Offset=" + encodeURIComponent("" + offset) + "&";
+        if (rows === null)
+            throw new Error("The parameter 'rows' cannot be null.");
+        else if (rows !== undefined)
+            url_ += "Rows=" + encodeURIComponent("" + rows) + "&";
+        if (sortField !== undefined && sortField !== null)
+            url_ += "SortField=" + encodeURIComponent("" + sortField) + "&";
+        if (sortOrder === null)
+            throw new Error("The parameter 'sortOrder' cannot be null.");
+        else if (sortOrder !== undefined)
+            url_ += "SortOrder=" + encodeURIComponent("" + sortOrder) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPobierzDrony(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPobierzDrony(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultOfDronDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultOfDronDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPobierzDrony(response: HttpResponseBase): Observable<PagedResultOfDronDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfDronDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultOfDronDto>(<any>null);
     }
 }
 
@@ -831,6 +894,143 @@ export interface IPagedResultBase {
     rowCount?: number;
 }
 
+export class PagedResultOfDronDto extends PagedResultBase implements IPagedResultOfDronDto {
+    results?: DronDto[] | undefined;
+
+    constructor(data?: IPagedResultOfDronDto) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(DronDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfDronDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfDronDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IPagedResultOfDronDto extends IPagedResultBase {
+    results?: DronDto[] | undefined;
+}
+
+export class DronDto implements IDronDto {
+    id?: string;
+    producent?: string | undefined;
+    model?: string | undefined;
+    numerSeryjny?: string | undefined;
+    typDrona?: TypDronaDto | undefined;
+    dataNastepnegoPrzegladu?: number;
+
+    constructor(data?: IDronDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.producent = _data["producent"];
+            this.model = _data["model"];
+            this.numerSeryjny = _data["numerSeryjny"];
+            this.typDrona = _data["typDrona"] ? TypDronaDto.fromJS(_data["typDrona"]) : <any>undefined;
+            this.dataNastepnegoPrzegladu = _data["dataNastepnegoPrzegladu"];
+        }
+    }
+
+    static fromJS(data: any): DronDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DronDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["producent"] = this.producent;
+        data["model"] = this.model;
+        data["numerSeryjny"] = this.numerSeryjny;
+        data["typDrona"] = this.typDrona ? this.typDrona.toJSON() : <any>undefined;
+        data["dataNastepnegoPrzegladu"] = this.dataNastepnegoPrzegladu;
+        return data; 
+    }
+}
+
+export interface IDronDto {
+    id?: string;
+    producent?: string | undefined;
+    model?: string | undefined;
+    numerSeryjny?: string | undefined;
+    typDrona?: TypDronaDto | undefined;
+    dataNastepnegoPrzegladu?: number;
+}
+
+export class TypDronaDto implements ITypDronaDto {
+    id?: string;
+    nazwa?: string | undefined;
+
+    constructor(data?: ITypDronaDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwa = _data["nazwa"];
+        }
+    }
+
+    static fromJS(data: any): TypDronaDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TypDronaDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwa"] = this.nazwa;
+        return data; 
+    }
+}
+
+export interface ITypDronaDto {
+    id?: string;
+    nazwa?: string | undefined;
+}
+
 export class PagedResultOfKlientDto extends PagedResultBase implements IPagedResultOfKlientDto {
     results?: KlientDto[] | undefined;
 
@@ -1192,46 +1392,6 @@ export class StatusUslugiDto implements IStatusUslugiDto {
 }
 
 export interface IStatusUslugiDto {
-    id?: string;
-    nazwa?: string | undefined;
-}
-
-export class TypDronaDto implements ITypDronaDto {
-    id?: string;
-    nazwa?: string | undefined;
-
-    constructor(data?: ITypDronaDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.nazwa = _data["nazwa"];
-        }
-    }
-
-    static fromJS(data: any): TypDronaDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TypDronaDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["nazwa"] = this.nazwa;
-        return data; 
-    }
-}
-
-export interface ITypDronaDto {
     id?: string;
     nazwa?: string | undefined;
 }
@@ -1891,6 +2051,7 @@ export class Dron implements IDron {
     numerSeryjny?: string | undefined;
     idTypuDrona?: string;
     dataNastepnegoPrzegladu?: Date;
+    typDrona?: TypDrona | undefined;
     misjeDrony?: MisjaDron[] | undefined;
 
     constructor(data?: IDron) {
@@ -1910,6 +2071,7 @@ export class Dron implements IDron {
             this.numerSeryjny = _data["numerSeryjny"];
             this.idTypuDrona = _data["idTypuDrona"];
             this.dataNastepnegoPrzegladu = _data["dataNastepnegoPrzegladu"] ? new Date(_data["dataNastepnegoPrzegladu"].toString()) : <any>undefined;
+            this.typDrona = _data["typDrona"] ? TypDrona.fromJS(_data["typDrona"]) : <any>undefined;
             if (Array.isArray(_data["misjeDrony"])) {
                 this.misjeDrony = [] as any;
                 for (let item of _data["misjeDrony"])
@@ -1933,6 +2095,7 @@ export class Dron implements IDron {
         data["numerSeryjny"] = this.numerSeryjny;
         data["idTypuDrona"] = this.idTypuDrona;
         data["dataNastepnegoPrzegladu"] = this.dataNastepnegoPrzegladu ? this.dataNastepnegoPrzegladu.toISOString() : <any>undefined;
+        data["typDrona"] = this.typDrona ? this.typDrona.toJSON() : <any>undefined;
         if (Array.isArray(this.misjeDrony)) {
             data["misjeDrony"] = [];
             for (let item of this.misjeDrony)
@@ -1949,7 +2112,60 @@ export interface IDron {
     numerSeryjny?: string | undefined;
     idTypuDrona?: string;
     dataNastepnegoPrzegladu?: Date;
+    typDrona?: TypDrona | undefined;
     misjeDrony?: MisjaDron[] | undefined;
+}
+
+export class TypDrona implements ITypDrona {
+    id?: string;
+    nazwa?: string | undefined;
+    drony?: Dron[] | undefined;
+
+    constructor(data?: ITypDrona) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwa = _data["nazwa"];
+            if (Array.isArray(_data["drony"])) {
+                this.drony = [] as any;
+                for (let item of _data["drony"])
+                    this.drony!.push(Dron.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): TypDrona {
+        data = typeof data === 'object' ? data : {};
+        let result = new TypDrona();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwa"] = this.nazwa;
+        if (Array.isArray(this.drony)) {
+            data["drony"] = [];
+            for (let item of this.drony)
+                data["drony"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ITypDrona {
+    id?: string;
+    nazwa?: string | undefined;
+    drony?: Dron[] | undefined;
 }
 
 export class MisjaDto implements IMisjaDto {

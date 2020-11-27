@@ -1,0 +1,25 @@
+<p-card header="Lista dronów">
+    <p-table #tableRef [value]="drony" [lazy]="true" sortField="producent" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" selectionMode="single"
+        (onLazyLoad)="pobierzDrony($event)" (onRowSelect)="naWybraniuDrona($event)">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Producent</th>
+                <th>Model</th>
+                <th>Numer seryjny</th>
+                <th>Typ drona</th>
+                <th>Data następnego przeglądu</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-klient>
+            <tr [pSelectableRow]="klient">
+                <td>{{klient.producent}}</td>
+                <td>{{klient.model}}</td>
+                <td>{{klient.numerSeryjny}}</td>
+                <td>{{klient.typDrona.nazwa}}</td>
+                <td [class.alert]="przekroczonyDzienPrzegladu(klient)">
+                    {{klient.dataNastepnegoPrzegladu | dateFormat: 'DD.MM.YYYY'}}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>

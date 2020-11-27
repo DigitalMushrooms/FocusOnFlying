@@ -12,6 +12,7 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public Guid IdTypuDrona { get; set; }
         public DateTime DataNastepnegoPrzegladu { get; set; }
 
+        public TypDrona TypDrona { get; set; }
         public ICollection<MisjaDron> MisjeDrony { get; set; } = new List<MisjaDron>();
     }
 }

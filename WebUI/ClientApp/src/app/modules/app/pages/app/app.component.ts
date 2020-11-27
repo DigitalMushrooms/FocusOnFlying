@@ -32,7 +32,8 @@ export class AppComponent {
     {
       label: 'Drony',
       items: [
-        { label: 'Nowy dron', icon: 'pi pi-fw pi-cloud', routerLink: '/drony/dron' }
+        { label: 'Nowy dron', icon: 'pi pi-fw pi-cloud', routerLink: '/drony/dron' },
+        { label: 'Lista dronów', icon: 'pi pi-fw pi-list', routerLink: '/drony/lista-dronow' },
       ]
     }
   ];
