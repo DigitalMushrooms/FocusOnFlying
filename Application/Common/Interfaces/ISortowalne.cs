@@ -2,7 +2,6 @@
 {
     public interface ISortowalne
     {
-        public string SortField { get; set; }
-        public int SortOrder { get; set; }
+        public string Sort { get; set; }
     }
 }

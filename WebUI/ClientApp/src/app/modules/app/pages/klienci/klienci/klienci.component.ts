@@ -44,7 +44,7 @@ export class KlienciComponent implements OnInit {
     const formValue = this.listaKlientowForm.value;
     this.klienciClient.pobierzKlientow(
       formValue.fraza, formValue.pesel, formValue.nip, formValue.regon,
-      event.first, event.rows, event.sortField, event.sortOrder
+      `${event.sortField} ${event.sortOrder}`, event.first, event.rows
     )
       .pipe(finalize(() => this.loading = false))
       .subscribe(

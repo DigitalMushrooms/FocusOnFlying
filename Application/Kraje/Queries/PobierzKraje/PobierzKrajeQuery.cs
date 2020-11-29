@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FocusOnFlying.Application.Kraje.Queries.PobierzKraje
 {
-    public class PobierzKrajeQuery : IRequest<List<KrajDto>>, ISortowalne
+    public class PobierzKrajeQuery : IRequest<List<KrajDto>>
     {
         public string SortField { get; set; }
         public int SortOrder { get; set; }

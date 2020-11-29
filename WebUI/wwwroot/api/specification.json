@@ -131,16 +131,16 @@
             "x-position": 4
           },
           {
-            "name": "Offset",
+            "name": "Sort",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 5
           },
           {
-            "name": "Rows",
+            "name": "Offset",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -149,22 +149,13 @@
             "x-position": 6
           },
           {
-            "name": "SortField",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 7
-          },
-          {
-            "name": "SortOrder",
+            "name": "Rows",
             "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 8
+            "x-position": 7
           }
         ],
         "responses": {

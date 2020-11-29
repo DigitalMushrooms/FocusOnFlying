@@ -144,7 +144,7 @@ export class DronyClient implements IDronyClient {
 }
 
 export interface IKlienciClient {
-    pobierzKlientow(fraza: string | null | undefined, pesel: string | null | undefined, nip: string | null | undefined, regon: string | null | undefined, offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfKlientDto>;
+    pobierzKlientow(fraza: string | null | undefined, pesel: string | null | undefined, nip: string | null | undefined, regon: string | null | undefined, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfKlientDto>;
     utworzKlienta(command: UtworzKlientaCommand): Observable<void>;
 }
 
@@ -161,7 +161,7 @@ export class KlienciClient implements IKlienciClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    pobierzKlientow(fraza: string | null | undefined, pesel: string | null | undefined, nip: string | null | undefined, regon: string | null | undefined, offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfKlientDto> {
+    pobierzKlientow(fraza: string | null | undefined, pesel: string | null | undefined, nip: string | null | undefined, regon: string | null | undefined, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfKlientDto> {
         let url_ = this.baseUrl + "/api/klienci?";
         if (fraza !== undefined && fraza !== null)
             url_ += "Fraza=" + encodeURIComponent("" + fraza) + "&";
@@ -171,6 +171,8 @@ export class KlienciClient implements IKlienciClient {
             url_ += "Nip=" + encodeURIComponent("" + nip) + "&";
         if (regon !== undefined && regon !== null)
             url_ += "Regon=" + encodeURIComponent("" + regon) + "&";
+        if (sort !== undefined && sort !== null)
+            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
         if (offset === null)
             throw new Error("The parameter 'offset' cannot be null.");
         else if (offset !== undefined)
@@ -179,12 +181,6 @@ export class KlienciClient implements IKlienciClient {
             throw new Error("The parameter 'rows' cannot be null.");
         else if (rows !== undefined)
             url_ += "Rows=" + encodeURIComponent("" + rows) + "&";
-        if (sortField !== undefined && sortField !== null)
-            url_ += "SortField=" + encodeURIComponent("" + sortField) + "&";
-        if (sortOrder === null)
-            throw new Error("The parameter 'sortOrder' cannot be null.");
-        else if (sortOrder !== undefined)
-            url_ += "SortOrder=" + encodeURIComponent("" + sortOrder) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {

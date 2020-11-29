@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FocusOnFlying.Application.Drony.Queries.PobierzDrony
 {
-    public class PobierzDronyQuery : IRequest<PagedResult<DronDto>>, IStronnicowalne, ISortowalne
+    public class PobierzDronyQuery : IRequest<PagedResult<DronDto>>, IStronnicowalne
     {
         public int Offset { get; set; }
         public int Rows { get; set; }

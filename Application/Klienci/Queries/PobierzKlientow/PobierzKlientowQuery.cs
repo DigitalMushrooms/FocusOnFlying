@@ -11,27 +11,31 @@ using System.Threading.Tasks;
 
 namespace FocusOnFlying.Application.Klienci.Queries.PobierzKlientow
 {
-    public class PobierzKlientowQuery : IRequest<PagedResult<KlientDto>>, ISzukalne, IStronnicowalne, ISortowalne
+    public class PobierzKlientowQuery : IRequest<PagedResult<KlientDto>>, ISzukalne, ISortowalne, IStronnicowalne
     {
         public string Fraza { get; set; }
         public string Pesel { get; set; }
         public string Nip { get; set; }
         public string Regon { get; set; }
+        public string Sort { get; set; }
         public int Offset { get; set; }
         public int Rows { get; set; }
-        public string SortField { get; set; }
-        public int SortOrder { get; set; }
     }
 
     public class PobierzKlientowQueryHandler : IRequestHandler<PobierzKlientowQuery, PagedResult<KlientDto>>
     {
         private readonly IFocusOnFlyingContext _focusOnFlyingContext;
         private readonly IMapper _mapper;
+        private readonly IPropertyMappingService _propertyMappingService;
 
-        public PobierzKlientowQueryHandler(IFocusOnFlyingContext focusOnFlyingContext, IMapper mapper)
+        public PobierzKlientowQueryHandler(
+            IFocusOnFlyingContext focusOnFlyingContext, 
+            IMapper mapper,
+            IPropertyMappingService propertyMappingService)
         {
             _focusOnFlyingContext = focusOnFlyingContext;
             _mapper = mapper;
+            _propertyMappingService = propertyMappingService;
         }
 
         public async Task<PagedResult<KlientDto>> Handle(PobierzKlientowQuery request, CancellationToken cancellationToken)
@@ -67,10 +71,14 @@ namespace FocusOnFlying.Application.Klienci.Queries.PobierzKlientow
             {
                 query = query.Where(x => x.Regon.Contains(request.Regon));
             }
+
+            var mapping = _propertyMappingService.GetPropertyMapping<KlientDto, Klient>();
+            
             var klienci = await query
-                .GetSorted(request.SortField, request.SortOrder)
+                .ApplySort(request.Sort, mapping)
                 .ProjectTo<KlientDto>(_mapper.ConfigurationProvider)
                 .GetPagedAsync(request.Offset, request.Rows);
+
             return klienci;
         }
     }

@@ -20,7 +20,7 @@ export class KlienciDialogComponent {
   ) { }
 
   pobierzKlientow(event: LazyLoadEvent): void {
-    this.klienciClient.pobierzKlientow(null, null, null, null, event.first, event.rows, event.sortField, event.sortOrder)
+    this.klienciClient.pobierzKlientow(null, null, null, null, `${event.sortField} ${event.sortOrder}`, event.first, event.rows)
       .pipe(finalize(() => this.loading = false))
       .subscribe(
         klienci => {

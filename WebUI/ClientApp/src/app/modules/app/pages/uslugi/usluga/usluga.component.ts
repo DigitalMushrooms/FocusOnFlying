@@ -61,7 +61,7 @@ export class UslugaComponent implements OnInit {
   }
 
   pobierzKlientow(): void {
-    this.klienciClient.pobierzKlientow(null, null, null, null, 0, 0, 'imie', 1)
+    this.klienciClient.pobierzKlientow(null, null, null, null, 'imie 1', 0, 0)
       .pipe(map(klienci => klienci.results.map(klient => {
         if (klient.pesel) {
           return { label: `${klient.imie} ${klient.nazwisko}, PESEL: ${klient.pesel}`, value: klient } as SelectItem<KlientDto>;
