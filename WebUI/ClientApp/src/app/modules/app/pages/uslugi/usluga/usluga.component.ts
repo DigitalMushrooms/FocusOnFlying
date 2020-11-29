@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
+import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import * as moment from 'moment';
+import { SelectItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { map } from 'rxjs/operators';
 import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
-import { UslugaForm } from 'src/app/shared/models/usluga/nowa-usluga-form.model';
-import { KlientDto, MisjaDto, StatusUslugiDto, StatusyUslugiClient, UslugiClient, UtworzUslugeCommand } from 'src/app/web-api-client';
-import { KlienciDialogComponent } from '../../../components/klienci/klienci-dialog.component';
+import { NowaMisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
+import { NowaUslugaForm } from 'src/app/shared/models/usluga/nowa-usluga-form.model';
+import { KlienciClient, KlientDto, MisjaDto, StatusUslugiDto, StatusyUslugiClient, UslugiClient, UtworzUslugeCommand } from 'src/app/web-api-client';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
 @Component({
@@ -17,28 +20,36 @@ import { MisjeComponent } from '../../misje/misje/misje.component';
   providers: [DialogService, MessageToast]
 })
 export class UslugaComponent implements OnInit {
-  nowaUslugaForm = this.formBuilder.group({
-    dataPrzyjeciaZalecenia: [this.dzisiaj()]
-  });
-  controls = this.nowaUslugaForm.controls;
+  formBuilder: IFormBuilder;
+  nowaUslugaForm: IFormGroup<NowaUslugaForm>;
   pl = Kalendarz.pl;
-  klient: KlientDto;
-  nazwaKlienta: string;
-  tekstIdentyfikacyjnyKlienta: string;
-  misje: UslugaForm[] = [];
+  misje: NowaMisjaForm[] = [];
   statusUtworzonejUslugi: StatusUslugiDto;
+  klienci: SelectItem<KlientDto>[];
 
   constructor(
-    private formBuilder: FormBuilder,
+    formBuilder: FormBuilder,
     private dialogService: DialogService,
     private uslugiClient: UslugiClient,
     private messageToast: MessageToast,
     private router: Router,
-    private statusyUslugiClient: StatusyUslugiClient
-  ) { }
+    private statusyUslugiClient: StatusyUslugiClient,
+    private klienciClient: KlienciClient
+  ) {
+    this.formBuilder = formBuilder;
+  }
 
   ngOnInit(): void {
+    this.zbudujFormularz();
     this.pobierzStatusUtworzonejUslugi();
+    this.pobierzKlientow();
+  }
+
+  zbudujFormularz(): void {
+    this.nowaUslugaForm = this.formBuilder.group<NowaUslugaForm>({
+      dataPrzyjeciaZalecenia: [this.dzisiaj()],
+      klient: [null]
+    });
   }
 
   pobierzStatusUtworzonejUslugi(): void {
@@ -49,30 +60,24 @@ export class UslugaComponent implements OnInit {
     );
   }
 
+  pobierzKlientow(): void {
+    this.klienciClient.pobierzKlientow(null, null, null, null, 0, 0, 'imie', 1)
+      .pipe(map(klienci => klienci.results.map(klient => {
+        if (klient.pesel) {
+          return { label: `${klient.imie} ${klient.nazwisko}, PESEL: ${klient.pesel}`, value: klient } as SelectItem<KlientDto>;
+        } else {
+          return { label: `${klient.nazwa}, NIP: ${klient.nip}, REGON: ${klient.regon}`, value: klient } as SelectItem<KlientDto>;
+        }
+      }
+      )))
+      .subscribe(
+        (klienci: SelectItem<KlientDto>[]) => this.klienci = klienci
+      );
+  }
+
   dzisiaj(): Date {
     const dzisiaj = moment().startOf('day').toDate();
     return dzisiaj;
-  }
-
-  wybierzKlientaOnClick(): void {
-    const dialog = this.dialogService.open(KlienciDialogComponent, {
-      header: 'Wybierz klienta',
-      width: '80%'
-    });
-
-    dialog.onClose.subscribe(
-      (klient: KlientDto) => {
-        if (!klient)
-          return;
-        if (klient.pesel) {
-          this.nazwaKlienta = `${klient.imie} ${klient.nazwisko}`;
-          this.tekstIdentyfikacyjnyKlienta = `PESEL: ${klient.pesel}`;
-        } else {
-          this.nazwaKlienta = klient.nazwa;
-          this.tekstIdentyfikacyjnyKlienta = `REGON: ${klient.regon}, NIP: ${klient.nip}`;
-        }
-        this.klient = klient;
-      });
   }
 
   dodajMisjeOnClick(): void {
@@ -114,8 +119,8 @@ export class UslugaComponent implements OnInit {
 
   zapiszUsluge(): void {
     const command = {
-      dataPrzyjeciaZlecenia: this.controls['dataPrzyjeciaZalecenia'].value.getTime(),
-      idKlienta: this.klient.id,
+      dataPrzyjeciaZlecenia: this.nowaUslugaForm.value.dataPrzyjeciaZalecenia.getTime(),
+      idKlienta: this.nowaUslugaForm.value.klient.id,
       idStatusuUslugi: this.statusUtworzonejUslugi.id,
       misje: this.misje.map(misja => ({
         nazwa: misja.nazwa,

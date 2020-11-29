@@ -1,17 +1,6 @@
-import { TypMisjiDto } from "src/app/web-api-client";
-import { Pracownik } from '../misje/pracownik.model';
+import { KlientDto } from 'src/app/web-api-client';
 
-export interface UslugaForm {
-    nazwa: string;
-    dataRozpoczecia: Date;
-    dataZakonczenia: Date,
-    opis: string;
-    typ: TypMisjiDto;
-    status: string,
-    statusId: string,
-    maksymalnaWysokoscLotu: number;
-    przypisanyPracownik: Pracownik,
-    szerokoscGeograficzna: number,
-    dlugoscGeograficzna: number,
-    promien: number
+export interface NowaUslugaForm {
+    dataPrzyjeciaZalecenia: Date;
+    klient: KlientDto
 }

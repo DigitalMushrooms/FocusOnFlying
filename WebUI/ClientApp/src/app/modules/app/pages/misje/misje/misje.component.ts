@@ -8,7 +8,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { finalize, map } from 'rxjs/operators';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
-import { UslugaForm } from 'src/app/shared/models/usluga/nowa-usluga-form.model';
+import { NowaMisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
 import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
 
 @Component({
@@ -17,7 +17,7 @@ import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from
   styleUrls: ['./misje.component.css']
 })
 export class MisjeComponent implements OnInit {
-  nowaMisjaForm: IFormGroup<UslugaForm>;
+  nowaMisjaForm: IFormGroup<NowaMisjaForm>;
   formBuilder: IFormBuilder;
   typyMisji: SelectItem<TypMisjiDto>[] = [];
   statusMisji: StatusMisjiDto;
@@ -90,7 +90,7 @@ export class MisjeComponent implements OnInit {
   }
 
   zbudujFormularz(): void {
-    this.nowaMisjaForm = this.formBuilder.group<UslugaForm>({
+    this.nowaMisjaForm = this.formBuilder.group<NowaMisjaForm>({
       nazwa: [null, Validators.required],
       dataRozpoczecia: [null, Validators.required],
       dataZakonczenia: [null],

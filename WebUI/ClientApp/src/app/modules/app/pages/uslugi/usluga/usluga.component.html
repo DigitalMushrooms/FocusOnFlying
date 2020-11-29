@@ -1,28 +1,19 @@
 <p-card header="Dodanie nowej usługi">
     <form [formGroup]="nowaUslugaForm">
-        <div class="p-fluid p-formgrid p-grid p-nogutter">
-            <div class="p-field p-col-2 p-nogutter">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col-2">
                 <label for="dataPrzyjeciaZalecenia">Data przyjęcia zlecenia</label>
                 <p-calendar formControlName="dataPrzyjeciaZalecenia" [showIcon]="true" [locale]="pl" [dateFormat]="null" inputId="dataPrzyjeciaZalecenia">
                 </p-calendar>
             </div>
+            <div class="p-field p-col-4">
+                <label for="klient">Klient</label>
+                <p-dropdown formControlName="klient" id="klient" [options]="klienci" [filter]="true" [autoDisplayFirst]="false" required filterBy="label"
+                    placeholder="Wybierz klienta" emptyFilterMessage="Brak wyników.">
+                </p-dropdown>
+            </div>
         </div>
     </form>
-    <button *ngIf="!klient" pButton type="button" icon="pi pi-users" class="p-mb-3" label="Wybierz klienta" (click)="wybierzKlientaOnClick()"></button>
-    <h2 *ngIf="klient" class="p-mt-0">Klient</h2>
-    <p-card *ngIf="klient" [header]="nazwaKlienta" subheader="{{tekstIdentyfikacyjnyKlienta}}" [style]="{width: '400px'}" class="p-card-shadow">
-        Adres: {{klient.ulica}} {{klient.numerDomu}}{{klient.numerLokalu ? '/' + klient.numerLokalu : null}},
-        {{klient.kodPocztowy}} {{klient.miejscowosc}}<br />
-        Email: {{klient.email ? klient.email : 'brak'}}<br />
-        Numer telefonu: {{ klient.numerTelefonu ? klient.numerTelefonu : 'brak' }}
-        <ng-template pTemplate="footer">
-            <div class="p-d-flex p-jc-end">
-                <div>
-                    <p-button label="Zmień klienta" icon="pi pi-user-edit" (click)="wybierzKlientaOnClick()"></p-button>
-                </div>
-            </div>
-        </ng-template>
-    </p-card>
     <div *ngIf="misje.length > 0">
         <h2>Misje</h2>
         <div class="p-d-flex">
@@ -45,7 +36,7 @@
             </div>
         </div>
     </div>
-    <button *ngIf="!!klient" pButton type="button" icon="pi pi-star-o" class="p-mt-3" label="Dodaj misje" (click)="dodajMisjeOnClick()"></button>
+    <button pButton type="button" icon="pi pi-star-o" class="p-mt-3" label="Dodaj misje" (click)="dodajMisjeOnClick()"></button>
     <div class="p-d-flex p-jc-end">
         <div>
             <button pButton type="button" icon="pi pi-check" class="p-mt-3" label="Zapisz usługę" [disabled]="nowaUslugaForm.invalid" (click)="zapiszUsluge()"></button>
