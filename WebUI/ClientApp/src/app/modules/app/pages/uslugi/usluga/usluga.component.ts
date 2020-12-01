@@ -10,7 +10,7 @@ import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { NowaMisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
 import { NowaUslugaForm } from 'src/app/shared/models/usluga/nowa-usluga-form.model';
-import { KlienciClient, KlientDto, MisjaDto, StatusUslugiDto, StatusyUslugiClient, UslugiClient, UtworzUslugeCommand } from 'src/app/web-api-client';
+import { KlienciClient, KlientDto, MisjaDronDto, MisjaDto, StatusUslugiDto, StatusyUslugiClient, UslugiClient, UtworzUslugeCommand } from 'src/app/web-api-client';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
 @Component({
@@ -133,7 +133,8 @@ export class UslugaComponent implements OnInit {
         szerokoscGeograficzna: misja.szerokoscGeograficzna,
         dlugoscGeograficzna: misja.dlugoscGeograficzna,
         promien: misja.promien,
-        drony: misja.drony
+        misjeDrony: misja.drony?.map(d => ({ idDrona: d.id } as MisjaDronDto)) ?? null,
+        idPracownika: misja.przypisanyPracownik.subjectId
       } as MisjaDto))
     } as UtworzUslugeCommand;
     this.uslugiClient.utworzUsluge(command)

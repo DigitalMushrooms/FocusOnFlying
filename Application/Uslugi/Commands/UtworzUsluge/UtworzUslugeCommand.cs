@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FocusOnFlying.Application.Common.Interfaces;
 using FocusOnFlying.Application.Common.Mappings;
-using FocusOnFlying.Application.Drony.Queries.PobierzDrony;
 using FocusOnFlying.Application.Extensions;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using MediatR;
@@ -41,26 +40,8 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
 
         public async Task<Unit> Handle(UtworzUslugeCommand request, CancellationToken cancellationToken)
         {
-            List<Misja> misjeEntity = new List<Misja>();
-            foreach (MisjaDto misja in request.Misje)
-            {
-                Misja misjaEntity = _mapper.Map<Misja>(misja);
-                foreach (DronDto dron in misja.Drony)
-                {
-                    misjaEntity.MisjeDrony.Add(new MisjaDron { IdDrona = dron.Id });
-                    misjeEntity.Add(misjaEntity);
-                }
-            }
-
-            var uslugaEntity = new Usluga { 
-                DataPrzyjeciaZlecenia = request.DataPrzyjeciaZlecenia.ToLocalDateTime(),
-                IdKlienta = request.IdKlienta,
-                IdStatusuUslugi = request.IdStatusuUslugi,
-                Misje = misjeEntity,
-            };
-
+            Usluga uslugaEntity = _mapper.Map<Usluga>(request);
             _focusOnFlyingContext.Uslugi.Add(uslugaEntity);
-
             await _focusOnFlyingContext.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

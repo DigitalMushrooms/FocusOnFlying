@@ -793,12 +793,26 @@
             "type": "integer",
             "format": "int32"
           },
-          "drony": {
+          "misjeDrony": {
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/DronDto"
+              "$ref": "#/components/schemas/MisjaDronDto"
             }
+          }
+        }
+      },
+      "MisjaDronDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "idMisji": {
+            "type": "string",
+            "format": "guid"
+          },
+          "idDrona": {
+            "type": "string",
+            "format": "guid"
           }
         }
       },
