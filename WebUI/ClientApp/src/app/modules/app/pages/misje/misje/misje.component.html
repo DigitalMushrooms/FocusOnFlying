@@ -37,6 +37,10 @@
             </p-dropdown>
         </div>
         <div class="p-field p-col-12">
+            <label for="drony">Drony</label>
+            <p-multiSelect [options]="drony" formControlName="drony" inputId="drony"></p-multiSelect>
+        </div>
+        <div class="p-field p-col-12">
             <label for="opis">Opis</label>
             <textarea formControlName="opis" id="opis" rows="4" pInputTextarea></textarea>
         </div>

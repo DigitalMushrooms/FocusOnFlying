@@ -23,7 +23,7 @@ export class ListaDronowComponent implements OnInit {
 
   pobierzDrony(event: LazyLoadEvent): void {
     this.loading = true;
-    this.dronyClient.pobierzDrony(event.first, event.rows, event.sortField, event.sortOrder)
+    this.dronyClient.pobierzDrony(event.first, event.rows, `${event.sortField} ${event.sortOrder}`)
       .pipe(finalize(() => this.loading = false))
       .subscribe(
         (drony: PagedResultOfDronDto) => {

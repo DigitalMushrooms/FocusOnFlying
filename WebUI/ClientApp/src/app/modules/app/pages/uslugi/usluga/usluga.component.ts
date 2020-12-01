@@ -132,7 +132,8 @@ export class UslugaComponent implements OnInit {
         dataZakonczenia: misja.dataZakonczenia?.getTime(),
         szerokoscGeograficzna: misja.szerokoscGeograficzna,
         dlugoscGeograficzna: misja.dlugoscGeograficzna,
-        promien: misja.promien
+        promien: misja.promien,
+        drony: misja.drony
       } as MisjaDto))
     } as UtworzUslugeCommand;
     this.uslugiClient.utworzUsluge(command)

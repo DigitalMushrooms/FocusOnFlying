@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using FocusOnFlying.Application.Common.Mappings;
+using FocusOnFlying.Application.Drony.Queries.PobierzDrony;
 using FocusOnFlying.Application.Extensions;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using System;
+using System.Collections.Generic;
 
 namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
 {
@@ -20,6 +22,7 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
         public decimal SzerokoscGeograficzna { get; set; }
         public decimal DlugoscGeograficzna { get; set; }
         public int Promien { get; set; }
+        public List<DronDto> Drony { get; set; }
 
         public void Mapping(Profile profile)
         {

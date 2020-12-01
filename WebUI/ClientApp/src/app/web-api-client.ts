@@ -16,7 +16,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IDronyClient {
     utworzDrona(command: UtworzDronaCommand): Observable<void>;
-    pobierzDrony(offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfDronDto>;
+    pobierzDrony(offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfDronDto>;
 }
 
 @Injectable({
@@ -80,7 +80,7 @@ export class DronyClient implements IDronyClient {
         return _observableOf<void>(<any>null);
     }
 
-    pobierzDrony(offset: number | undefined, rows: number | undefined, sortField: string | null | undefined, sortOrder: number | undefined): Observable<PagedResultOfDronDto> {
+    pobierzDrony(offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfDronDto> {
         let url_ = this.baseUrl + "/api/drony?";
         if (offset === null)
             throw new Error("The parameter 'offset' cannot be null.");
@@ -90,12 +90,8 @@ export class DronyClient implements IDronyClient {
             throw new Error("The parameter 'rows' cannot be null.");
         else if (rows !== undefined)
             url_ += "Rows=" + encodeURIComponent("" + rows) + "&";
-        if (sortField !== undefined && sortField !== null)
-            url_ += "SortField=" + encodeURIComponent("" + sortField) + "&";
-        if (sortOrder === null)
-            throw new Error("The parameter 'sortOrder' cannot be null.");
-        else if (sortOrder !== undefined)
-            url_ += "SortOrder=" + encodeURIComponent("" + sortOrder) + "&";
+        if (sort !== undefined && sort !== null)
+            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -349,6 +345,72 @@ export class KrajeClient implements IKrajeClient {
             }));
         }
         return _observableOf<KrajDto[]>(<any>null);
+    }
+}
+
+export interface IMisjeClient {
+    pobierzMisje(): Observable<PagedResultOfMisjaDto>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class MisjeClient implements IMisjeClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    pobierzMisje(): Observable<PagedResultOfMisjaDto> {
+        let url_ = this.baseUrl + "/api/misje";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPobierzMisje(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPobierzMisje(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultOfMisjaDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultOfMisjaDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPobierzMisje(response: HttpResponseBase): Observable<PagedResultOfMisjaDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfMisjaDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultOfMisjaDto>(<any>null);
     }
 }
 
@@ -1312,6 +1374,135 @@ export interface IUtworzKlientaCommand {
     email?: string | undefined;
 }
 
+export class PagedResultOfMisjaDto extends PagedResultBase implements IPagedResultOfMisjaDto {
+    results?: MisjaDto[] | undefined;
+
+    constructor(data?: IPagedResultOfMisjaDto) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(MisjaDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfMisjaDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfMisjaDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IPagedResultOfMisjaDto extends IPagedResultBase {
+    results?: MisjaDto[] | undefined;
+}
+
+export class MisjaDto implements IMisjaDto {
+    nazwa?: string | undefined;
+    opis?: string | undefined;
+    idTypuMisji?: string;
+    maksymalnaWysokoscLotu?: number;
+    idStatusuMisji?: string;
+    dataRozpoczecia?: number;
+    dataZakonczenia?: number;
+    idPracownika?: string | undefined;
+    szerokoscGeograficzna?: number;
+    dlugoscGeograficzna?: number;
+    promien?: number;
+    drony?: DronDto[] | undefined;
+
+    constructor(data?: IMisjaDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.nazwa = _data["nazwa"];
+            this.opis = _data["opis"];
+            this.idTypuMisji = _data["idTypuMisji"];
+            this.maksymalnaWysokoscLotu = _data["maksymalnaWysokoscLotu"];
+            this.idStatusuMisji = _data["idStatusuMisji"];
+            this.dataRozpoczecia = _data["dataRozpoczecia"];
+            this.dataZakonczenia = _data["dataZakonczenia"];
+            this.idPracownika = _data["idPracownika"];
+            this.szerokoscGeograficzna = _data["szerokoscGeograficzna"];
+            this.dlugoscGeograficzna = _data["dlugoscGeograficzna"];
+            this.promien = _data["promien"];
+            if (Array.isArray(_data["drony"])) {
+                this.drony = [] as any;
+                for (let item of _data["drony"])
+                    this.drony!.push(DronDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MisjaDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MisjaDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["nazwa"] = this.nazwa;
+        data["opis"] = this.opis;
+        data["idTypuMisji"] = this.idTypuMisji;
+        data["maksymalnaWysokoscLotu"] = this.maksymalnaWysokoscLotu;
+        data["idStatusuMisji"] = this.idStatusuMisji;
+        data["dataRozpoczecia"] = this.dataRozpoczecia;
+        data["dataZakonczenia"] = this.dataZakonczenia;
+        data["idPracownika"] = this.idPracownika;
+        data["szerokoscGeograficzna"] = this.szerokoscGeograficzna;
+        data["dlugoscGeograficzna"] = this.dlugoscGeograficzna;
+        data["promien"] = this.promien;
+        if (Array.isArray(this.drony)) {
+            data["drony"] = [];
+            for (let item of this.drony)
+                data["drony"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IMisjaDto {
+    nazwa?: string | undefined;
+    opis?: string | undefined;
+    idTypuMisji?: string;
+    maksymalnaWysokoscLotu?: number;
+    idStatusuMisji?: string;
+    dataRozpoczecia?: number;
+    dataZakonczenia?: number;
+    idPracownika?: string | undefined;
+    szerokoscGeograficzna?: number;
+    dlugoscGeograficzna?: number;
+    promien?: number;
+    drony?: DronDto[] | undefined;
+}
+
 export class StatusMisjiDto implements IStatusMisjiDto {
     id?: string;
     nazwa?: string | undefined;
@@ -2162,82 +2353,6 @@ export interface ITypDrona {
     id?: string;
     nazwa?: string | undefined;
     drony?: Dron[] | undefined;
-}
-
-export class MisjaDto implements IMisjaDto {
-    nazwa?: string | undefined;
-    opis?: string | undefined;
-    idTypuMisji?: string;
-    maksymalnaWysokoscLotu?: number;
-    idStatusuMisji?: string;
-    dataRozpoczecia?: number;
-    dataZakonczenia?: number;
-    idPracownika?: string | undefined;
-    szerokoscGeograficzna?: number;
-    dlugoscGeograficzna?: number;
-    promien?: number;
-
-    constructor(data?: IMisjaDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.nazwa = _data["nazwa"];
-            this.opis = _data["opis"];
-            this.idTypuMisji = _data["idTypuMisji"];
-            this.maksymalnaWysokoscLotu = _data["maksymalnaWysokoscLotu"];
-            this.idStatusuMisji = _data["idStatusuMisji"];
-            this.dataRozpoczecia = _data["dataRozpoczecia"];
-            this.dataZakonczenia = _data["dataZakonczenia"];
-            this.idPracownika = _data["idPracownika"];
-            this.szerokoscGeograficzna = _data["szerokoscGeograficzna"];
-            this.dlugoscGeograficzna = _data["dlugoscGeograficzna"];
-            this.promien = _data["promien"];
-        }
-    }
-
-    static fromJS(data: any): MisjaDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new MisjaDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["nazwa"] = this.nazwa;
-        data["opis"] = this.opis;
-        data["idTypuMisji"] = this.idTypuMisji;
-        data["maksymalnaWysokoscLotu"] = this.maksymalnaWysokoscLotu;
-        data["idStatusuMisji"] = this.idStatusuMisji;
-        data["dataRozpoczecia"] = this.dataRozpoczecia;
-        data["dataZakonczenia"] = this.dataZakonczenia;
-        data["idPracownika"] = this.idPracownika;
-        data["szerokoscGeograficzna"] = this.szerokoscGeograficzna;
-        data["dlugoscGeograficzna"] = this.dlugoscGeograficzna;
-        data["promien"] = this.promien;
-        return data; 
-    }
-}
-
-export interface IMisjaDto {
-    nazwa?: string | undefined;
-    opis?: string | undefined;
-    idTypuMisji?: string;
-    maksymalnaWysokoscLotu?: number;
-    idStatusuMisji?: string;
-    dataRozpoczecia?: number;
-    dataZakonczenia?: number;
-    idPracownika?: string | undefined;
-    szerokoscGeograficzna?: number;
-    dlugoscGeograficzna?: number;
-    promien?: number;
 }
 
 export class UtworzUslugeCommand implements IUtworzUslugeCommand {

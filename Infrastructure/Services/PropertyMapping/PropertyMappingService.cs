@@ -1,4 +1,5 @@
 ﻿using FocusOnFlying.Application.Common.Interfaces;
+using FocusOnFlying.Application.Drony.Queries.PobierzDrony;
 using FocusOnFlying.Application.Klienci.Queries.PobierzKlientow;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using System;
@@ -21,11 +22,19 @@ namespace FocusOnFlying.Infrastructure.Services.PropertyMapping
             { "kraj.nazwaKraju", new PropertyMappingValue(new[] { "Kraj.NazwaKraju" }) }
         };
 
+        private readonly Dictionary<string, PropertyMappingValue> _dronMapping = new Dictionary<string, PropertyMappingValue>
+        {
+            { "producent", new PropertyMappingValue(new[] { "Producent" }) },
+            { "model", new PropertyMappingValue(new[] { "model" }) },
+            { "numerSeryjny", new PropertyMappingValue(new[] { "NumerSeryjny" }) },
+        };
+
         private readonly IList<IPropertyMapping> _propertyMappings = new List<IPropertyMapping>();
 
         public PropertyMappingService()
         {
             _propertyMappings.Add(new PropertyMapping<KlientDto, Klient>(_klientMapping));
+            _propertyMappings.Add(new PropertyMapping<DronDto, Dron>(_dronMapping));
         }
 
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping<TSource, TDestination>()

@@ -19,7 +19,9 @@ namespace FocusOnFlying.Application.Drony.Queries.PobierzDrony
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Dron, DronDto>()
-                .ForMember(dest => dest.DataNastepnegoPrzegladu, opt => opt.MapFrom(src => src.DataNastepnegoPrzegladu.ToUnixTime()));
+                .ForMember(dest => dest.DataNastepnegoPrzegladu, opt => opt.MapFrom(src => src.DataNastepnegoPrzegladu.ToUnixTime()))
+                .ReverseMap()
+                .ForPath(x => x.DataNastepnegoPrzegladu, x => x.MapFrom(y => y.DataNastepnegoPrzegladu.ToLocalDateTime()));
         }
     }
 }

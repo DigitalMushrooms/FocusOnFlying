@@ -24,6 +24,7 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
         public DbSet<StatusUslugi> StatusyUslugi { get; set; }
         public DbSet<TypDrona> TypyDrona { get; set; }
         public DbSet<Dron> Drony { get; set; }
+        public DbSet<MisjaDron> MisjeDrony { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -7,16 +7,17 @@ namespace FocusOnFlying.Application.Common.Interfaces
 {
     public interface IFocusOnFlyingContext
     {
-        public DbSet<Klient> Klienci { get; set; }
-        public DbSet<Usluga> Uslugi { get; set; }
-        public DbSet<Kraj> Kraje { get; set; }
-        public DbSet<Misja> Misje { get; set; }
-        public DbSet<TypMisji> TypyMisji { get; set; }
-        public DbSet<StatusMisji> StatusyMisji { get; set; }
-        public DbSet<StatusUslugi> StatusyUslugi { get; set; }
-        public DbSet<TypDrona> TypyDrona { get; set; }
-        public DbSet<Dron> Drony { get; set; }
+        DbSet<Klient> Klienci { get; set; }
+        DbSet<Usluga> Uslugi { get; set; }
+        DbSet<Kraj> Kraje { get; set; }
+        DbSet<Misja> Misje { get; set; }
+        DbSet<TypMisji> TypyMisji { get; set; }
+        DbSet<StatusMisji> StatusyMisji { get; set; }
+        DbSet<StatusUslugi> StatusyUslugi { get; set; }
+        DbSet<TypDrona> TypyDrona { get; set; }
+        DbSet<Dron> Drony { get; set; }
+        DbSet<MisjaDron> MisjeDrony { get; set; }
 
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

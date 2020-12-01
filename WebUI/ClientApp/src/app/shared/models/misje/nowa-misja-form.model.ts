@@ -1,4 +1,4 @@
-import { TypMisjiDto } from "src/app/web-api-client";
+import { DronDto, TypMisjiDto } from "src/app/web-api-client";
 import { Pracownik } from './pracownik.model';
 
 export interface NowaMisjaForm {
@@ -11,6 +11,7 @@ export interface NowaMisjaForm {
     statusId: string,
     maksymalnaWysokoscLotu: number;
     przypisanyPracownik: Pracownik,
+    drony: DronDto[],
     szerokoscGeograficzna: number,
     dlugoscGeograficzna: number,
     promien: number

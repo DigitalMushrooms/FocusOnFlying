@@ -7,9 +7,9 @@ import { SelectItem } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { finalize, map } from 'rxjs/operators';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
-import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
 import { NowaMisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
-import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
+import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
+import { DronDto, DronyClient, StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-misje',
@@ -17,8 +17,8 @@ import { StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from
   styleUrls: ['./misje.component.css']
 })
 export class MisjeComponent implements OnInit {
-  nowaMisjaForm: IFormGroup<NowaMisjaForm>;
   formBuilder: IFormBuilder;
+  nowaMisjaForm: IFormGroup<NowaMisjaForm>;
   typyMisji: SelectItem<TypMisjiDto>[] = [];
   statusMisji: StatusMisjiDto;
   opcjeMapy = {
@@ -28,6 +28,7 @@ export class MisjeComponent implements OnInit {
   nakladkiNaMape: google.maps.Circle[];
   pl = Kalendarz.pl;
   pracownicy: SelectItem<Pracownik>[];
+  drony: SelectItem<DronDto>[];
 
   constructor(
     formBuilder: FormBuilder,
@@ -35,7 +36,8 @@ export class MisjeComponent implements OnInit {
     private typyMisjiClient: TypyMisjiClient,
     private statusyMisjiClient: StatusyMisjiClient,
     private dynamicDialogConfig: DynamicDialogConfig,
-    private http: HttpClient
+    private http: HttpClient,
+    private dronyClient: DronyClient
   ) {
     this.formBuilder = formBuilder;
   }
@@ -45,6 +47,7 @@ export class MisjeComponent implements OnInit {
     this.pobierzTypyMisji();
     this.pobierzStatusMisji();
     this.pobierzPracownikow();
+    this.pobierzDrony();
     this.typOnChange();
     this.promienOnChange();
   }
@@ -89,6 +92,15 @@ export class MisjeComponent implements OnInit {
       );
   }
 
+  pobierzDrony(): void {
+    this.dronyClient.pobierzDrony(0, 0, 'producent 1, model 1')
+      .pipe(map(drony => drony.results.map(d =>
+        ({ label: `${d.producent} ${d.model}, SN: ${d.numerSeryjny}`, value: d } as SelectItem<DronDto>))))
+      .subscribe(
+        (drony) => this.drony = drony
+      );
+  }
+
   zbudujFormularz(): void {
     this.nowaMisjaForm = this.formBuilder.group<NowaMisjaForm>({
       nazwa: [null, Validators.required],
@@ -100,6 +112,7 @@ export class MisjeComponent implements OnInit {
       statusId: [null],
       maksymalnaWysokoscLotu: [null, Validators.required],
       przypisanyPracownik: [null],
+      drony: [null],
       szerokoscGeograficzna: [{ value: null, disabled: true }],
       dlugoscGeograficzna: [{ value: null, disabled: true }],
       promien: [200, Validators.required]

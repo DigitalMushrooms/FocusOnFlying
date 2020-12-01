@@ -55,22 +55,13 @@
             "x-position": 2
           },
           {
-            "name": "SortField",
+            "name": "Sort",
             "in": "query",
             "schema": {
               "type": "string",
               "nullable": true
             },
             "x-position": 3
-          },
-          {
-            "name": "SortOrder",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 4
           }
         ],
         "responses": {
@@ -231,6 +222,26 @@
                   "items": {
                     "$ref": "#/components/schemas/KrajDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/misje": {
+      "get": {
+        "tags": [
+          "Misje"
+        ],
+        "operationId": "Misje_PobierzMisje",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfMisjaDto"
                 }
               }
             }
@@ -714,6 +725,83 @@
           }
         }
       },
+      "PagedResultOfMisjaDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PagedResultBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "results": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/MisjaDto"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "MisjaDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "nazwa": {
+            "type": "string",
+            "nullable": true
+          },
+          "opis": {
+            "type": "string",
+            "nullable": true
+          },
+          "idTypuMisji": {
+            "type": "string",
+            "format": "guid"
+          },
+          "maksymalnaWysokoscLotu": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idStatusuMisji": {
+            "type": "string",
+            "format": "guid"
+          },
+          "dataRozpoczecia": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dataZakonczenia": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "idPracownika": {
+            "type": "string",
+            "nullable": true
+          },
+          "szerokoscGeograficzna": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "dlugoscGeograficzna": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "promien": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "drony": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/DronDto"
+            }
+          }
+        }
+      },
       "StatusMisjiDto": {
         "type": "object",
         "additionalProperties": false,
@@ -1193,56 +1281,6 @@
             "items": {
               "$ref": "#/components/schemas/Dron"
             }
-          }
-        }
-      },
-      "MisjaDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "nazwa": {
-            "type": "string",
-            "nullable": true
-          },
-          "opis": {
-            "type": "string",
-            "nullable": true
-          },
-          "idTypuMisji": {
-            "type": "string",
-            "format": "guid"
-          },
-          "maksymalnaWysokoscLotu": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "idStatusuMisji": {
-            "type": "string",
-            "format": "guid"
-          },
-          "dataRozpoczecia": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "dataZakonczenia": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "idPracownika": {
-            "type": "string",
-            "nullable": true
-          },
-          "szerokoscGeograficzna": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "dlugoscGeograficzna": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "promien": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },
