@@ -1,6 +1,7 @@
 ﻿using FocusOnFlying.Application.Common.Interfaces;
 using FocusOnFlying.Application.Drony.Queries.PobierzDrony;
 using FocusOnFlying.Application.Klienci.Queries.PobierzKlientow;
+using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,17 @@ namespace FocusOnFlying.Infrastructure.Services.PropertyMapping
         private readonly Dictionary<string, PropertyMappingValue> _dronMapping = new Dictionary<string, PropertyMappingValue>
         {
             { "producent", new PropertyMappingValue(new[] { "Producent" }) },
-            { "model", new PropertyMappingValue(new[] { "model" }) },
-            { "numerSeryjny", new PropertyMappingValue(new[] { "NumerSeryjny" }) },
+            { "model", new PropertyMappingValue(new[] { "Model" }) },
+            { "numerSeryjny", new PropertyMappingValue(new[] { "NumerSeryjny" }) }
+        };
+
+        private readonly Dictionary<string, PropertyMappingValue> _misjaMapping = new Dictionary<string, PropertyMappingValue>
+        {
+            { "nazwa", new PropertyMappingValue(new[] { "Nazwa" }) },
+            { "opis", new PropertyMappingValue(new[] { "Opis" }) },
+            { "typMisji.nazwa", new PropertyMappingValue(new[] { "TypMisji.Nazwa" }) },
+            { "dataRozpoczecia", new PropertyMappingValue(new[] { "DataRozpoczecia" }) },
+            { "dataZakonczenia", new PropertyMappingValue(new[] { "DataZakonczenia" }) }
         };
 
         private readonly IList<IPropertyMapping> _propertyMappings = new List<IPropertyMapping>();
@@ -35,6 +45,7 @@ namespace FocusOnFlying.Infrastructure.Services.PropertyMapping
         {
             _propertyMappings.Add(new PropertyMapping<KlientDto, Klient>(_klientMapping));
             _propertyMappings.Add(new PropertyMapping<DronDto, Dron>(_dronMapping));
+            _propertyMappings.Add(new PropertyMapping<MisjaDto, Misja>(_misjaMapping));
         }
 
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping<TSource, TDestination>()

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FocusOnFlying.Application.Common.Mappings;
 using FocusOnFlying.Application.Extensions;
+using FocusOnFlying.Application.TypyMisji.Queries.PobierzTypyMisji;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
     {
         public string Nazwa { get; set; }
         public string Opis { get; set; }
-        public Guid IdTypuMisji { get; set; }
+        public TypMisjiDto TypMisji { get; set; }
         public int MaksymalnaWysokoscLotu { get; set; }
         public Guid IdStatusuMisji { get; set; }
         public long DataRozpoczecia { get; set; }

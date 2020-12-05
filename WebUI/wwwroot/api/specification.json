@@ -1,5 +1,5 @@
 {
-  "x-generator": "NSwag v13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))",
+  "x-generator": "NSwag v13.9.4.0 (NJsonSchema v10.3.1.0 (Newtonsoft.Json v12.0.0.0))",
   "openapi": "3.0.0",
   "info": {
     "title": "FocusOnFlying API",
@@ -427,6 +427,65 @@
           }
         }
       }
+    },
+    "/api/uslugi/{id}/misje": {
+      "get": {
+        "tags": [
+          "Uslugi"
+        ],
+        "operationId": "Uslugi_PobierzMisjeUslugi",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "Rows",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfMisjaDto"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -757,9 +816,13 @@
             "type": "string",
             "nullable": true
           },
-          "idTypuMisji": {
-            "type": "string",
-            "format": "guid"
+          "typMisji": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TypMisjiDto"
+              }
+            ]
           },
           "maksymalnaWysokoscLotu": {
             "type": "integer",
@@ -802,6 +865,20 @@
           }
         }
       },
+      "TypMisjiDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwa": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "MisjaDronDto": {
         "type": "object",
         "additionalProperties": false,
@@ -831,20 +908,6 @@
         }
       },
       "StatusUslugiDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "nazwa": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "TypMisjiDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

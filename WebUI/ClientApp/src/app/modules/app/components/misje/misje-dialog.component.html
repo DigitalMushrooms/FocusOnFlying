@@ -1,0 +1,26 @@
+<p-table [value]="misje" [lazy]="true" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" sortField="nazwa" selectionMode="single"
+    (onLazyLoad)="pobierzMisje($event)" (onRowSelect)="naWybraniuMisji($event)">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="nazwa">Nazwa<p-sortIcon field="nazwa"></p-sortIcon>
+            </th>
+            <th pSortableColumn="opis">Opis<p-sortIcon field="opis"></p-sortIcon>
+            </th>
+            <th pSortableColumn="typMisji.nazwa">Typ<p-sortIcon field="typMisji.nazwa"></p-sortIcon>
+            </th>
+            <th pSortableColumn="dataRozpoczecia">Data rozpoczęcia<p-sortIcon field="dataRozpoczecia"></p-sortIcon>
+            </th>
+            <th pSortableColumn="dataZakonczenia">Data zakończenia<p-sortIcon field="dataZakonczenia"></p-sortIcon>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-misja>
+        <tr>
+            <td>{{misja.nazwa}}</td>
+            <td>{{misja.opis}}</td>
+            <td>{{misja.typMisji.nazwa}}</td>
+            <td>{{misja.dataRozpoczecia | dateFormat: 'DD.MM.YYYY'}}</td>
+            <td>{{misja.dataZakonczenia | dateFormat: 'DD.MM.YYYY'}}</td>
+        </tr>
+    </ng-template>
+</p-table>
