@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { findIndex } from 'lodash-es';
 import * as moment from 'moment';
 import { MenuItem, SelectItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -29,6 +28,7 @@ export class UslugaComponent implements OnInit {
   klienci: SelectItem<KlientDto>[];
   kontekstoweMenu: MenuItem[];
   wybranaMisja: NowaMisjaForm;
+  indeksWybranejUslugi: number;
 
   constructor(
     formBuilder: FormBuilder,
@@ -82,7 +82,7 @@ export class UslugaComponent implements OnInit {
   utworzMenuKontekstowe(): void {
     this.kontekstoweMenu = [
       { label: 'Edytuj misję', icon: 'pi pi-fw pi-star-o', command: () => this.edytujMisje() },
-      { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.edytujMisje() }
+      { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje() }
     ];
   }
 
@@ -107,8 +107,6 @@ export class UslugaComponent implements OnInit {
   }
 
   edytujMisje(): void {
-    const index = findIndex(this.misje, (misja) => misja.nazwa === this.wybranaMisja.nazwa);
-
     const dialog = this.dialogService.open(MisjeComponent, {
       header: 'Edycja misji',
       width: '80%',
@@ -119,14 +117,15 @@ export class UslugaComponent implements OnInit {
       (misja) => {
         if (!misja)
           return;
-        this.misje[index] = misja;
+        this.misje[this.indeksWybranejUslugi] = misja;
       }
     );
   }
 
   usunMisje(): void {
-    const index = findIndex(this.misje, (misja) => misja.nazwa === this.wybranaMisja.nazwa);
-    this.misje.splice(index, 1);
+    const misje = [...this.misje];
+    misje.splice(this.indeksWybranejUslugi, 1);
+    this.misje = misje;
   }
 
   zapiszUsluge(): void {
@@ -156,5 +155,9 @@ export class UslugaComponent implements OnInit {
           this.router.navigate(['/strona-glowna']);
         }
       );
+  }
+
+  naWybraniuUslugi(event: { index: number; }): void {
+    this.indeksWybranejUslugi = event.index;
   }
 }
