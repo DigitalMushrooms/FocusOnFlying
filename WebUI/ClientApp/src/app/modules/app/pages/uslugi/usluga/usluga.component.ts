@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { findIndex } from 'lodash-es';
 import * as moment from 'moment';
-import { SelectItem } from 'primeng/api';
+import { MenuItem, SelectItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { map } from 'rxjs/operators';
 import { MessageToast } from 'src/app/core/services/message-toast.service';
@@ -26,6 +27,8 @@ export class UslugaComponent implements OnInit {
   misje: NowaMisjaForm[] = [];
   statusUtworzonejUslugi: StatusUslugiDto;
   klienci: SelectItem<KlientDto>[];
+  kontekstoweMenu: MenuItem[];
+  wybranaMisja: NowaMisjaForm;
 
   constructor(
     formBuilder: FormBuilder,
@@ -43,6 +46,7 @@ export class UslugaComponent implements OnInit {
     this.zbudujFormularz();
     this.pobierzStatusUtworzonejUslugi();
     this.pobierzKlientow();
+    this.utworzMenuKontekstowe();
   }
 
   zbudujFormularz(): void {
@@ -75,6 +79,13 @@ export class UslugaComponent implements OnInit {
       );
   }
 
+  utworzMenuKontekstowe(): void {
+    this.kontekstoweMenu = [
+      { label: 'Edytuj misję', icon: 'pi pi-fw pi-star-o', command: () => this.edytujMisje() },
+      { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.edytujMisje() }
+    ];
+  }
+
   dzisiaj(): Date {
     const dzisiaj = moment().startOf('day').toDate();
     return dzisiaj;
@@ -95,13 +106,13 @@ export class UslugaComponent implements OnInit {
     );
   }
 
-  edytujMisje(index: number): void {
-    const misja = this.misje[index];
+  edytujMisje(): void {
+    const index = findIndex(this.misje, (misja) => misja.nazwa === this.wybranaMisja.nazwa);
 
     const dialog = this.dialogService.open(MisjeComponent, {
       header: 'Edycja misji',
       width: '80%',
-      data: misja
+      data: this.wybranaMisja
     });
 
     dialog.onClose.subscribe(
@@ -113,7 +124,8 @@ export class UslugaComponent implements OnInit {
     );
   }
 
-  usunMisje(index: number): void {
+  usunMisje(): void {
+    const index = findIndex(this.misje, (misja) => misja.nazwa === this.wybranaMisja.nazwa);
     this.misje.splice(index, 1);
   }
 

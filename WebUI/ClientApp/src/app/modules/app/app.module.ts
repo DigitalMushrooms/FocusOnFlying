@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
+import { ContextMenuModule } from 'primeng/contextmenu';
 import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -74,6 +75,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     CalendarModule,
     CardModule,
     CommonModule,
+    ContextMenuModule,
     DropdownModule,
     DynamicDialogModule,
     FieldsetModule,

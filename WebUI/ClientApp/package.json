@@ -38,7 +38,7 @@
     "@rxweb/types": "^1.0.6",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
-    "@types/lodash": "^4.14.162",
+    "@types/lodash-es": "^4.17.3",
     "@types/node": "^12.12.68",
     "@typescript-eslint/eslint-plugin": "^4.4.1",
     "@typescript-eslint/parser": "^4.4.1",

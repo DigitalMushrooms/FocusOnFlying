@@ -14,28 +14,40 @@
             </div>
         </div>
     </form>
-    <div *ngIf="misje.length > 0">
-        <h2>Misje</h2>
-        <div class="p-d-flex">
-            <div *ngFor="let misja of misje; index as i;" class="p-mb-3 p-mr-3">
-                <p-card [header]="misja.nazwa" [subheader]="'Typ: ' + misja.typ.nazwa">
-                    Maksymalna wysokość lotu: {{misja.maksymalnaWysokoscLotu}} m<br />
-                    Data rozpoczęcia: {{misja.dataRozpoczecia | dateFormat: 'llll'}}<br />
-                    Data zakończenia: {{misja.dataZakonczenia ? (misja.dataZakonczenia | dateFormat: 'llll') : 'nd.'}}
-                    <ng-template pTemplate="footer">
-                        <div class="p-d-flex p-jc-end">
-                            <div>
-                                <p-button label="Edytuj misję" icon="pi pi-pencil" (onClick)="edytujMisje(i)"></p-button>
-                            </div>
-                            <div class="p-ml-2">
-                                <p-button label="Usuń misję" icon="pi pi-times" (onClick)="usunMisje(i)"></p-button>
-                            </div>
-                        </div>
-                    </ng-template>
-                </p-card>
-            </div>
-        </div>
-    </div>
+    <h2>Misje</h2>
+    <p-table [value]="misje" [(contextMenuSelection)]="wybranaMisja" [contextMenu]="contextMenuRef">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="nazwa">Nazwa<p-sortIcon field="nazwa"></p-sortIcon>
+                </th>
+                <th pSortableColumn="typ.nazwa">Typ<p-sortIcon field="typ.nazwa"></p-sortIcon>
+                </th>
+                <th pSortableColumn="maksymalnaWysokoscLotu">Maksymalna wysokość lotu<p-sortIcon field="maksymalnaWysokoscLotu"></p-sortIcon>
+                </th>
+                <th pSortableColumn="dataRozpoczecia">Data rozpoczęcia<p-sortIcon field="dataRozpoczecia"></p-sortIcon>
+                </th>
+                <th pSortableColumn="dataZakonczenia">Data zakończenia<p-sortIcon field="dataZakonczenia"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-misja let-rowIndex="rowIndex">
+            <tr [pContextMenuRow]="misja" [pContextMenuRowIndex]="rowIndex">
+                <td>{{misja.nazwa}}</td>
+                <td>{{misja.typ.nazwa}}</td>
+                <td>{{misja.maksymalnaWysokoscLotu}} m</td>
+                <td>{{misja.dataRozpoczecia | dateFormat: 'llll'}}</td>
+                <td>{{misja.dataZakonczenia ? (misja.dataZakonczenia | dateFormat: 'llll') : 'nd.'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td [attr.colspan]="5">
+                    Brak misji
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-contextMenu #contextMenuRef [model]="kontekstoweMenu"></p-contextMenu>
     <button pButton type="button" icon="pi pi-star-o" class="p-mt-3" label="Dodaj misje" (click)="dodajMisjeOnClick()"></button>
     <div class="p-d-flex p-jc-end">
         <div>
