@@ -23,8 +23,8 @@
         </div>
         <div class="p-field p-col-2">
             <label for="status">Status</label>
-            <input formControlName="status" id="status" type="text" pInputText>
-            <input formControlName="statusId" type="text" hidden>
+            <p-dropdown formControlName="status" id="status" [options]="statusyMisji">
+            </p-dropdown>
         </div>
         <div class="p-field p-col-3">
             <label for="maksymalnaWysokoscLotu">Maksymalna wysokość lotu</label>

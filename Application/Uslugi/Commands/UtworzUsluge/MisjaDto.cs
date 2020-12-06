@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FocusOnFlying.Application.Common.Mappings;
 using FocusOnFlying.Application.Extensions;
+using FocusOnFlying.Application.StatusyMisji.Queries.PobierzStatusyMisji;
 using FocusOnFlying.Application.TypyMisji.Queries.PobierzTypyMisji;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using System;
@@ -12,7 +13,7 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
     {
         public string Nazwa { get; set; }
         public string Opis { get; set; }
-        public TypMisjiDto TypMisji { get; set; }
+        public Guid IdTypuMisji { get; set; }
         public int MaksymalnaWysokoscLotu { get; set; }
         public Guid IdStatusuMisji { get; set; }
         public long DataRozpoczecia { get; set; }
@@ -23,6 +24,9 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
         public decimal DlugoscGeograficzna { get; set; }
         public int Promien { get; set; }
         public List<MisjaDronDto> MisjeDrony { get; set; }
+
+        public TypMisjiDto TypMisji { get; set; }
+        public StatusMisjiDto StatusMisji { get; set; }
 
         public void Mapping(Profile profile)
         {

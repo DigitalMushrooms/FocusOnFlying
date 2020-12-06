@@ -816,13 +816,9 @@
             "type": "string",
             "nullable": true
           },
-          "typMisji": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/TypMisjiDto"
-              }
-            ]
+          "idTypuMisji": {
+            "type": "string",
+            "format": "guid"
           },
           "maksymalnaWysokoscLotu": {
             "type": "integer",
@@ -862,20 +858,22 @@
             "items": {
               "$ref": "#/components/schemas/MisjaDronDto"
             }
-          }
-        }
-      },
-      "TypMisjiDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
           },
-          "nazwa": {
-            "type": "string",
-            "nullable": true
+          "typMisji": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TypMisjiDto"
+              }
+            ]
+          },
+          "statusMisji": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/StatusMisjiDto"
+              }
+            ]
           }
         }
       },
@@ -890,6 +888,36 @@
           "idDrona": {
             "type": "string",
             "format": "guid"
+          },
+          "misja": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MisjaDto"
+              }
+            ]
+          },
+          "dron": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DronDto"
+              }
+            ]
+          }
+        }
+      },
+      "TypMisjiDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwa": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

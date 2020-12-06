@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, SelectItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { UslugaDto, UslugiClient } from 'src/app/web-api-client';
+import { PracownicyService } from 'src/app/core/services/pracownicy.service';
+import { NowaMisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
+import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
+import { MisjaDto, UslugaDto, UslugiClient } from 'src/app/web-api-client';
 import { MisjeDialogComponent } from '../../../components/misje/misje-dialog.component';
+import { MisjeComponent } from '../../misje/misje/misje.component';
 
 @Component({
   selector: 'app-lista-uslug',
@@ -19,6 +23,7 @@ export class ListaUslugComponent implements OnInit {
   constructor(
     private uslugiClient: UslugiClient,
     private dialogService: DialogService,
+    private pracownicyService: PracownicyService
   ) { }
 
   ngOnInit(): void {
@@ -43,14 +48,36 @@ export class ListaUslugComponent implements OnInit {
 
   edytujMisje(): void {
     const dialog = this.dialogService.open(MisjeDialogComponent, {
-      header: 'Edycja misji',
+      header: 'Wybór misji do edycji',
       width: '80%',
       data: { idUslugi: this.wybranaUsluga.id }
     });
 
     dialog.onClose.subscribe(
-      () => {
-        debugger;
+      (misja: MisjaDto) => {
+        this.pracownicyService.pobierzPracownikow()
+          .subscribe((pracownicy: Pracownik[]) => {
+            const edytowanaMisja: NowaMisjaForm = {
+              nazwa: misja.nazwa,
+              dataRozpoczecia: new Date(misja.dataRozpoczecia),
+              dataZakonczenia: new Date(misja.dataZakonczenia),
+              opis: misja.opis,
+              typ: misja.typMisji,
+              status: misja.statusMisji,
+              maksymalnaWysokoscLotu: misja.maksymalnaWysokoscLotu,
+              przypisanyPracownik: pracownicy.find(x => x.subjectId === misja.idPracownika),
+              drony: misja.misjeDrony.map(x => x.dron),
+              szerokoscGeograficzna: misja.szerokoscGeograficzna,
+              dlugoscGeograficzna: misja.dlugoscGeograficzna,
+              promien: misja.promien
+            }
+
+            const dialogEdycjiMisji = this.dialogService.open(MisjeComponent, {
+              header: 'Edycja misji',
+              width: '80%',
+              data: edytowanaMisja
+            });
+          });
       }
     );
   }

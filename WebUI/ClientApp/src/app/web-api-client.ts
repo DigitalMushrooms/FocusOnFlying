@@ -1480,7 +1480,7 @@ export interface IPagedResultOfMisjaDto extends IPagedResultBase {
 export class MisjaDto implements IMisjaDto {
     nazwa?: string | undefined;
     opis?: string | undefined;
-    typMisji?: TypMisjiDto | undefined;
+    idTypuMisji?: string;
     maksymalnaWysokoscLotu?: number;
     idStatusuMisji?: string;
     dataRozpoczecia?: number;
@@ -1490,6 +1490,8 @@ export class MisjaDto implements IMisjaDto {
     dlugoscGeograficzna?: number;
     promien?: number;
     misjeDrony?: MisjaDronDto[] | undefined;
+    typMisji?: TypMisjiDto | undefined;
+    statusMisji?: StatusMisjiDto | undefined;
 
     constructor(data?: IMisjaDto) {
         if (data) {
@@ -1504,7 +1506,7 @@ export class MisjaDto implements IMisjaDto {
         if (_data) {
             this.nazwa = _data["nazwa"];
             this.opis = _data["opis"];
-            this.typMisji = _data["typMisji"] ? TypMisjiDto.fromJS(_data["typMisji"]) : <any>undefined;
+            this.idTypuMisji = _data["idTypuMisji"];
             this.maksymalnaWysokoscLotu = _data["maksymalnaWysokoscLotu"];
             this.idStatusuMisji = _data["idStatusuMisji"];
             this.dataRozpoczecia = _data["dataRozpoczecia"];
@@ -1518,6 +1520,8 @@ export class MisjaDto implements IMisjaDto {
                 for (let item of _data["misjeDrony"])
                     this.misjeDrony!.push(MisjaDronDto.fromJS(item));
             }
+            this.typMisji = _data["typMisji"] ? TypMisjiDto.fromJS(_data["typMisji"]) : <any>undefined;
+            this.statusMisji = _data["statusMisji"] ? StatusMisjiDto.fromJS(_data["statusMisji"]) : <any>undefined;
         }
     }
 
@@ -1532,7 +1536,7 @@ export class MisjaDto implements IMisjaDto {
         data = typeof data === 'object' ? data : {};
         data["nazwa"] = this.nazwa;
         data["opis"] = this.opis;
-        data["typMisji"] = this.typMisji ? this.typMisji.toJSON() : <any>undefined;
+        data["idTypuMisji"] = this.idTypuMisji;
         data["maksymalnaWysokoscLotu"] = this.maksymalnaWysokoscLotu;
         data["idStatusuMisji"] = this.idStatusuMisji;
         data["dataRozpoczecia"] = this.dataRozpoczecia;
@@ -1546,6 +1550,8 @@ export class MisjaDto implements IMisjaDto {
             for (let item of this.misjeDrony)
                 data["misjeDrony"].push(item.toJSON());
         }
+        data["typMisji"] = this.typMisji ? this.typMisji.toJSON() : <any>undefined;
+        data["statusMisji"] = this.statusMisji ? this.statusMisji.toJSON() : <any>undefined;
         return data; 
     }
 }
@@ -1553,7 +1559,7 @@ export class MisjaDto implements IMisjaDto {
 export interface IMisjaDto {
     nazwa?: string | undefined;
     opis?: string | undefined;
-    typMisji?: TypMisjiDto | undefined;
+    idTypuMisji?: string;
     maksymalnaWysokoscLotu?: number;
     idStatusuMisji?: string;
     dataRozpoczecia?: number;
@@ -1563,6 +1569,56 @@ export interface IMisjaDto {
     dlugoscGeograficzna?: number;
     promien?: number;
     misjeDrony?: MisjaDronDto[] | undefined;
+    typMisji?: TypMisjiDto | undefined;
+    statusMisji?: StatusMisjiDto | undefined;
+}
+
+export class MisjaDronDto implements IMisjaDronDto {
+    idMisji?: string;
+    idDrona?: string;
+    misja?: MisjaDto | undefined;
+    dron?: DronDto | undefined;
+
+    constructor(data?: IMisjaDronDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.idMisji = _data["idMisji"];
+            this.idDrona = _data["idDrona"];
+            this.misja = _data["misja"] ? MisjaDto.fromJS(_data["misja"]) : <any>undefined;
+            this.dron = _data["dron"] ? DronDto.fromJS(_data["dron"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): MisjaDronDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MisjaDronDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["idMisji"] = this.idMisji;
+        data["idDrona"] = this.idDrona;
+        data["misja"] = this.misja ? this.misja.toJSON() : <any>undefined;
+        data["dron"] = this.dron ? this.dron.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IMisjaDronDto {
+    idMisji?: string;
+    idDrona?: string;
+    misja?: MisjaDto | undefined;
+    dron?: DronDto | undefined;
 }
 
 export class TypMisjiDto implements ITypMisjiDto {
@@ -1603,46 +1659,6 @@ export class TypMisjiDto implements ITypMisjiDto {
 export interface ITypMisjiDto {
     id?: string;
     nazwa?: string | undefined;
-}
-
-export class MisjaDronDto implements IMisjaDronDto {
-    idMisji?: string;
-    idDrona?: string;
-
-    constructor(data?: IMisjaDronDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.idMisji = _data["idMisji"];
-            this.idDrona = _data["idDrona"];
-        }
-    }
-
-    static fromJS(data: any): MisjaDronDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new MisjaDronDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["idMisji"] = this.idMisji;
-        data["idDrona"] = this.idDrona;
-        return data; 
-    }
-}
-
-export interface IMisjaDronDto {
-    idMisji?: string;
-    idDrona?: string;
 }
 
 export class StatusMisjiDto implements IStatusMisjiDto {

@@ -21,7 +21,7 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
         public void Mapping(Profile profile)
         {
             profile.CreateMap<UtworzUslugeCommand, Usluga>()
-                .ForMember(dest => dest.DataPrzyjeciaZlecenia, opt => opt.MapFrom(src => src.DataPrzyjeciaZlecenia.ToLocalDateTime()));
+                .ForMember(d => d.DataPrzyjeciaZlecenia, o => o.MapFrom(s => s.DataPrzyjeciaZlecenia.ToLocalDateTime()));
         }
     }
 
@@ -41,7 +41,7 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
         public async Task<Unit> Handle(UtworzUslugeCommand request, CancellationToken cancellationToken)
         {
             Usluga uslugaEntity = _mapper.Map<Usluga>(request);
-            _focusOnFlyingContext.Uslugi.Add(uslugaEntity);
+            _focusOnFlyingContext.Uslugi.Attach(uslugaEntity);
             await _focusOnFlyingContext.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

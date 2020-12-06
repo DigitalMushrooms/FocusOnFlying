@@ -136,9 +136,9 @@ export class UslugaComponent implements OnInit {
       misje: this.misje.map(misja => ({
         nazwa: misja.nazwa,
         opis: misja.opis,
-        typMisji: misja.typ,
+        idTypuMisji: misja.typ.id,
         maksymalnaWysokoscLotu: misja.maksymalnaWysokoscLotu,
-        idStatusuMisji: misja.statusId,
+        idStatusuMisji: misja.status.id,
         dataRozpoczecia: misja.dataRozpoczecia.getTime(),
         dataZakonczenia: misja.dataZakonczenia?.getTime(),
         szerokoscGeograficzna: misja.szerokoscGeograficzna,

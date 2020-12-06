@@ -15,7 +15,7 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-misja>
-        <tr>
+        <tr [pSelectableRow]="misja">
             <td>{{misja.nazwa}}</td>
             <td>{{misja.opis}}</td>
             <td>{{misja.typMisji.nazwa}}</td>

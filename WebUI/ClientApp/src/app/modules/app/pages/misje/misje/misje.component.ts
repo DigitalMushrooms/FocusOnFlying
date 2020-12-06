@@ -1,11 +1,12 @@
 /// <reference types="@types/googlemaps" />
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { SelectItem } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { finalize, map } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { PracownicyService } from 'src/app/core/services/pracownicy.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { NowaMisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
@@ -20,7 +21,7 @@ export class MisjeComponent implements OnInit {
   formBuilder: IFormBuilder;
   nowaMisjaForm: IFormGroup<NowaMisjaForm>;
   typyMisji: SelectItem<TypMisjiDto>[] = [];
-  statusMisji: StatusMisjiDto;
+  statusyMisji: SelectItem<StatusMisjiDto>[];
   opcjeMapy = {
     center: { lat: 52.2334836, lng: 21.0122257 },
     zoom: 12
@@ -36,20 +37,74 @@ export class MisjeComponent implements OnInit {
     private typyMisjiClient: TypyMisjiClient,
     private statusyMisjiClient: StatusyMisjiClient,
     private dynamicDialogConfig: DynamicDialogConfig,
-    private http: HttpClient,
-    private dronyClient: DronyClient
+    private dronyClient: DronyClient,
+    private pracownicyService: PracownicyService
   ) {
     this.formBuilder = formBuilder;
   }
 
   ngOnInit(): void {
     this.zbudujFormularz();
-    this.pobierzTypyMisji();
-    this.pobierzStatusMisji();
-    this.pobierzPracownikow();
-    this.pobierzDrony();
+    const typyMisji$ = this.pobierzTypyMisji();
+    const statusyMisji$ = this.pobierzStatusyMisji();
+    const pracownicy$ = this.pobierzPracownikow();
+    const drony$ = this.pobierzDrony();
     this.typOnChange();
     this.promienOnChange();
+
+    forkJoin([typyMisji$, statusyMisji$, pracownicy$, drony$])
+      .subscribe({
+        next: ([typyMisji, statusyMisji, pracownicy, drony]) => {
+          this.typyMisji = typyMisji;
+
+          const utworzona = statusyMisji.find(x => x.value.nazwa === 'Utworzona');
+          this.nowaMisjaForm.controls.status.setValue(utworzona.value);
+          this.statusyMisji = statusyMisji;
+
+          this.pracownicy = pracownicy;
+
+          this.drony = drony;
+        },
+        complete: () => this.wczytajPolaDoFormularza()
+      });
+  }
+
+  zbudujFormularz(): void {
+    this.nowaMisjaForm = this.formBuilder.group<NowaMisjaForm>({
+      nazwa: [null, Validators.required],
+      dataRozpoczecia: [null, Validators.required],
+      dataZakonczenia: [null],
+      opis: [null, Validators.required],
+      typ: [null, Validators.required],
+      status: [{ value: null, disabled: true }],
+      maksymalnaWysokoscLotu: [null, Validators.required],
+      przypisanyPracownik: [null],
+      drony: [null],
+      szerokoscGeograficzna: [{ value: null, disabled: true }],
+      dlugoscGeograficzna: [{ value: null, disabled: true }],
+      promien: [200, Validators.required]
+    });
+  }
+
+  pobierzTypyMisji(): Observable<SelectItem<TypMisjiDto>[]> {
+    return this.typyMisjiClient.pobierzTypyMisji()
+      .pipe(map(typyMisji => typyMisji.map(tm => ({ label: tm.nazwa, value: tm }) as SelectItem<TypMisjiDto>)));
+  }
+
+  pobierzStatusyMisji(): Observable<SelectItem<StatusMisjiDto>[]> {
+    return this.statusyMisjiClient.pobierzStatusyMisji()
+      .pipe(map(statusyMisji => statusyMisji.map(s => ({ label: s.nazwa, value: s } as SelectItem<StatusMisjiDto>))));
+  }
+
+  pobierzPracownikow(): Observable<SelectItem<Pracownik>[]> {
+    return this.pracownicyService.pobierzPracownikow()
+      .pipe(map(pracownicy => pracownicy.map(pracownik => ({ label: pracownik.claims.find(x => x.type === 'name').value, value: pracownik } as SelectItem<Pracownik>))));
+  }
+
+  pobierzDrony(): Observable<SelectItem<DronDto>[]> {
+    return this.dronyClient.pobierzDrony(0, 0, 'producent 1, model 1')
+      .pipe(map(drony => drony.results.map(d =>
+        ({ label: `${d.producent} ${d.model}, SN: ${d.numerSeryjny}`, value: d } as SelectItem<DronDto>))));
   }
 
   typOnChange(): void {
@@ -77,61 +132,15 @@ export class MisjeComponent implements OnInit {
       });
   }
 
-  pobierzPracownikow(): void {
-    this.http.get('https://localhost:44318/account/uzytkownicy')
-      .pipe(
-        map((pracownicy: Pracownik[]) =>
-          pracownicy.map(pracownik => ({
-            label: pracownik.claims.find(x => x.type === 'name').value,
-            value: pracownik
-          } as SelectItem<Pracownik>))))
+  promienOnChange(): void {
+    this.nowaMisjaForm.controls.promien.valueChanges
       .subscribe(
-        (uzytkownicy: SelectItem<Pracownik>[]) => {
-          this.pracownicy = uzytkownicy;
-        }
-      );
-  }
-
-  pobierzDrony(): void {
-    this.dronyClient.pobierzDrony(0, 0, 'producent 1, model 1')
-      .pipe(map(drony => drony.results.map(d =>
-        ({ label: `${d.producent} ${d.model}, SN: ${d.numerSeryjny}`, value: d } as SelectItem<DronDto>))))
-      .subscribe(
-        (drony) => this.drony = drony
-      );
-  }
-
-  zbudujFormularz(): void {
-    this.nowaMisjaForm = this.formBuilder.group<NowaMisjaForm>({
-      nazwa: [null, Validators.required],
-      dataRozpoczecia: [null, Validators.required],
-      dataZakonczenia: [null],
-      opis: [null, Validators.required],
-      typ: [null, Validators.required],
-      status: [{ value: null, disabled: true }],
-      statusId: [null],
-      maksymalnaWysokoscLotu: [null, Validators.required],
-      przypisanyPracownik: [null],
-      drony: [null],
-      szerokoscGeograficzna: [{ value: null, disabled: true }],
-      dlugoscGeograficzna: [{ value: null, disabled: true }],
-      promien: [200, Validators.required]
-    });
-  }
-
-  pobierzTypyMisji(): void {
-    this.typyMisjiClient.pobierzTypyMisji()
-      .pipe(
-        map(typyMisji => typyMisji.map(tm => ({ label: tm.nazwa, value: tm }) as SelectItem<TypMisjiDto>)),
-        finalize(() => this.wczytajPolaDoFormularza())
-      )
-      .subscribe(
-        typyMisji => this.typyMisji = typyMisji
+        (promien: number) => this.nakladkiNaMape[0]?.setRadius(promien)
       );
   }
 
   wczytajPolaDoFormularza(): void {
-    const misja = this.dynamicDialogConfig.data;
+    const misja: NowaMisjaForm = this.dynamicDialogConfig.data;
     if (!misja)
       return;
     this.nakladkiNaMape = [
@@ -147,23 +156,6 @@ export class MisjeComponent implements OnInit {
       })
     ];
     this.nowaMisjaForm.setValue(misja);
-  }
-
-  pobierzStatusMisji(): void {
-    this.statusyMisjiClient.pobierzStatusMisji("Utworzona")
-      .subscribe(
-        statusMisji => {
-          this.nowaMisjaForm.controls.status.setValue(statusMisji.nazwa);
-          this.nowaMisjaForm.controls.statusId.setValue(statusMisji.id);
-          this.statusMisji = statusMisji;
-        });
-  }
-
-  promienOnChange(): void {
-    this.nowaMisjaForm.controls.promien.valueChanges
-      .subscribe(
-        (promien: number) => this.nakladkiNaMape[0]?.setRadius(promien)
-      );
   }
 
   mapaOnClick(event: { latLng: { lat: () => number; lng: () => number; } }): void {

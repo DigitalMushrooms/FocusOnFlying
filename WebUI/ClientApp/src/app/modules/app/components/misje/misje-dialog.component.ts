@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LazyLoadEvent } from 'primeng/api';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { finalize } from 'rxjs/operators';
 import { MisjaDto, PagedResultOfMisjaDto, UslugiClient } from 'src/app/web-api-client';
 
@@ -16,7 +16,8 @@ export class MisjeDialogComponent {
 
   constructor(
     private uslugiClient: UslugiClient,
-    private dynamicDialogConfig: DynamicDialogConfig
+    private dynamicDialogConfig: DynamicDialogConfig,
+    private dynamicDialogRef: DynamicDialogRef,
   ) { }
 
   pobierzMisje(event: LazyLoadEvent): void {
@@ -32,6 +33,6 @@ export class MisjeDialogComponent {
   }
 
   naWybraniuMisji(event: { data: MisjaDto }): void {
-
+    this.dynamicDialogRef.close(event.data);
   }
 }
