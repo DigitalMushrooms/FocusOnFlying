@@ -196,8 +196,12 @@ export class MisjeComponent implements OnInit {
       if (isEmpty(operacje)) {
         this.messageToast.warning('Nie zmieniono żadnego pola.');
       } else {
-        this.misjeClient.zaktualizujMisje(misja.id, operacje)
-                  .subscribe();
+        this.misjeClient.zaktualizujMisje(misja.id, operacje).subscribe(
+          () => {
+            this.messageToast.success('Zaktualizowano misję.');
+            this.dynamicDialogRef.close();
+          }
+        );
       }
     } else {
       this.dynamicDialogRef.close(misja);

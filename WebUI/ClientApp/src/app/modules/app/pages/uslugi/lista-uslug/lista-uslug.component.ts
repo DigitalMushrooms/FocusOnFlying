@@ -83,7 +83,7 @@ export class ListaUslugComponent implements OnInit {
 
             dialogEdycjiMisji.onClose.subscribe(
               () => {
-                
+                this.pobierzUslugi();
               }
             );
           });

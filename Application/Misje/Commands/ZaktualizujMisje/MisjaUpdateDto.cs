@@ -1,11 +1,13 @@
-﻿using FocusOnFlying.Application.Common.Mappings;
-using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
+﻿using AutoMapper;
+using FocusOnFlying.Application.Common.Mappings;
+using FocusOnFlying.Application.Extensions;
+using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using NSwag.Annotations;
 using System;
 
 namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
 {
-    public class MisjaUpdateDto : IMapFrom<MisjaDto>
+    public class MisjaUpdateDto : IMapFrom<Misja>
     {
         [OpenApiIgnore]
         public Guid Id { get; set; }
@@ -20,5 +22,15 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
         public decimal SzerokoscGeograficzna { get; set; }
         public decimal DlugoscGeograficzna { get; set; }
         public int Promien { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Misja, MisjaUpdateDto>()
+                .ForMember(dest => dest.DataRozpoczecia, opt => opt.MapFrom(src => src.DataRozpoczecia.ToUnixTime()))
+                .ForMember(dest => dest.DataZakonczenia, opt => opt.MapFrom(src => src.DataZakonczenia.ToUnixTime()))
+                .ReverseMap()
+                .ForPath(dest => dest.DataRozpoczecia, opt => opt.MapFrom(src => src.DataRozpoczecia.ToLocalDateTime()))
+                .ForPath(dest => dest.DataZakonczenia, opt => opt.MapFrom(src => src.DataZakonczenia.ToLocalDateTime()));
+        }
     }
 }
