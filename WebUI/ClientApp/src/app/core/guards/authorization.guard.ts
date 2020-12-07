@@ -14,7 +14,6 @@ export class AuthorizationGuard implements CanActivate {
                 map((isAuthorized: boolean) => {
                     if (!isAuthorized) {
                         this.oidcSecurityService.authorize();
-                        return false;
                     }
                     return true;
                 })

@@ -8,7 +8,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { map } from 'rxjs/operators';
 import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
-import { NowaMisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
+import { MisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
 import { NowaUslugaForm } from 'src/app/shared/models/usluga/nowa-usluga-form.model';
 import { KlienciClient, KlientDto, MisjaDronDto, MisjaDto, StatusUslugiDto, StatusyUslugiClient, UslugiClient, UtworzUslugeCommand } from 'src/app/web-api-client';
 import { MisjeComponent } from '../../misje/misje/misje.component';
@@ -23,11 +23,11 @@ export class UslugaComponent implements OnInit {
   formBuilder: IFormBuilder;
   nowaUslugaForm: IFormGroup<NowaUslugaForm>;
   pl = Kalendarz.pl;
-  misje: NowaMisjaForm[] = [];
+  misje: MisjaForm[] = [];
   statusUtworzonejUslugi: StatusUslugiDto;
   klienci: SelectItem<KlientDto>[];
   kontekstoweMenu: MenuItem[];
-  wybranaMisja: NowaMisjaForm;
+  wybranaMisja: MisjaForm;
   indeksWybranejUslugi: number;
 
   constructor(

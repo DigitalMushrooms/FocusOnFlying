@@ -11,7 +11,11 @@ export class MessageToast {
         private messageService: MessageService
     ) { }
 
-    public success(detail: string): void {
+    success(detail: string): void {
         this.messageService.add({ key: this.key, severity: 'success', detail, life: 3000 });
+    }
+
+    warning(detail: string): void {
+        this.messageService.add({ key: this.key, severity: 'warn', detail, life: 3000 });
     }
 }

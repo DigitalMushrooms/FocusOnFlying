@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuItem, SelectItem } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { PracownicyService } from 'src/app/core/services/pracownicy.service';
-import { NowaMisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
+import { MisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
 import { MisjaDto, UslugaDto, UslugiClient } from 'src/app/web-api-client';
 import { MisjeDialogComponent } from '../../../components/misje/misje-dialog.component';
@@ -47,17 +47,20 @@ export class ListaUslugComponent implements OnInit {
   }
 
   edytujMisje(): void {
-    const dialog = this.dialogService.open(MisjeDialogComponent, {
+    const misjeDialog = this.dialogService.open(MisjeDialogComponent, {
       header: 'Wybór misji do edycji',
       width: '80%',
       data: { idUslugi: this.wybranaUsluga.id }
     });
 
-    dialog.onClose.subscribe(
+    misjeDialog.onClose.subscribe(
       (misja: MisjaDto) => {
+        if (!misja)
+          return;
         this.pracownicyService.pobierzPracownikow()
           .subscribe((pracownicy: Pracownik[]) => {
-            const edytowanaMisja: NowaMisjaForm = {
+            const edytowanaMisja: MisjaForm = {
+              id: misja.id,
               nazwa: misja.nazwa,
               dataRozpoczecia: new Date(misja.dataRozpoczecia),
               dataZakonczenia: new Date(misja.dataZakonczenia),
@@ -77,6 +80,12 @@ export class ListaUslugComponent implements OnInit {
               width: '80%',
               data: edytowanaMisja
             });
+
+            dialogEdycjiMisji.onClose.subscribe(
+              () => {
+                
+              }
+            );
           });
       }
     );

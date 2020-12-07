@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Logging;
 
 namespace FocusOnFlying.WebUI
 {
@@ -39,7 +38,8 @@ namespace FocusOnFlying.WebUI
                 });
 
             services.AddControllers()
-                .AddFluentValidation();
+                .AddFluentValidation()
+                .AddNewtonsoftJson();
 
             services.AddSpaStaticFiles(configuration =>
             {
@@ -78,8 +78,6 @@ namespace FocusOnFlying.WebUI
             });
 
             app.UseRouting();
-
-            //app.UseWebSockets();
 
             app.UseAuthentication();
             app.UseAuthorization();

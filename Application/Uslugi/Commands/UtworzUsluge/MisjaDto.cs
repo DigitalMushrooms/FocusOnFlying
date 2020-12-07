@@ -11,6 +11,7 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
 {
     public class MisjaDto : IMapFrom<Misja>
     {
+        public Guid Id { get; set; }
         public string Nazwa { get; set; }
         public string Opis { get; set; }
         public Guid IdTypuMisji { get; set; }

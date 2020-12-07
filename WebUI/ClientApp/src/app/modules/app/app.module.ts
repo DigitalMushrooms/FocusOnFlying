@@ -29,7 +29,6 @@ import { NazwaKlientaPipe } from 'src/app/shared/pipes/nazwa-klienta.pipe';
 import { AppRoutingModule } from './app-routing.module';
 import { KlienciDialogComponent } from './components/klienci/klienci-dialog.component';
 import { MisjeDialogComponent } from './components/misje/misje-dialog.component';
-// import { MisjeDialogComponent } from './components/misje/misje-dialog.component';
 import { AppComponent } from './pages/app/app.component';
 import { DronComponent } from './pages/drony/dron/dron.component';
 import { ListaDronowComponent } from './pages/drony/lista-dronow/lista-dronow.component';

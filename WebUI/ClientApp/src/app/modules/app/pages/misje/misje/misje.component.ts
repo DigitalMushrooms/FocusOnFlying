@@ -2,15 +2,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { isEmpty } from 'lodash-es';
 import { SelectItem } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { PracownicyService } from 'src/app/core/services/pracownicy.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
-import { NowaMisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
+import { MisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
-import { DronDto, DronyClient, StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
+import { DronDto, DronyClient, MisjeClient, Operation, StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-misje',
@@ -19,7 +21,7 @@ import { DronDto, DronyClient, StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, 
 })
 export class MisjeComponent implements OnInit {
   formBuilder: IFormBuilder;
-  nowaMisjaForm: IFormGroup<NowaMisjaForm>;
+  misjaForm: IFormGroup<MisjaForm>;
   typyMisji: SelectItem<TypMisjiDto>[] = [];
   statusyMisji: SelectItem<StatusMisjiDto>[];
   opcjeMapy = {
@@ -30,6 +32,7 @@ export class MisjeComponent implements OnInit {
   pl = Kalendarz.pl;
   pracownicy: SelectItem<Pracownik>[];
   drony: SelectItem<DronDto>[];
+  nazwaPrzycisku = 'Zapisz misję';
 
   constructor(
     formBuilder: FormBuilder,
@@ -38,12 +41,15 @@ export class MisjeComponent implements OnInit {
     private statusyMisjiClient: StatusyMisjiClient,
     private dynamicDialogConfig: DynamicDialogConfig,
     private dronyClient: DronyClient,
-    private pracownicyService: PracownicyService
+    private pracownicyService: PracownicyService,
+    private messageToast: MessageToast,
+    private misjeClient: MisjeClient
   ) {
     this.formBuilder = formBuilder;
   }
 
   ngOnInit(): void {
+    this.nadajNazwePrzyciskowi();
     this.zbudujFormularz();
     const typyMisji$ = this.pobierzTypyMisji();
     const statusyMisji$ = this.pobierzStatusyMisji();
@@ -58,7 +64,7 @@ export class MisjeComponent implements OnInit {
           this.typyMisji = typyMisji;
 
           const utworzona = statusyMisji.find(x => x.value.nazwa === 'Utworzona');
-          this.nowaMisjaForm.controls.status.setValue(utworzona.value);
+          this.misjaForm.controls.status.setValue(utworzona.value);
           this.statusyMisji = statusyMisji;
 
           this.pracownicy = pracownicy;
@@ -70,7 +76,8 @@ export class MisjeComponent implements OnInit {
   }
 
   zbudujFormularz(): void {
-    this.nowaMisjaForm = this.formBuilder.group<NowaMisjaForm>({
+    this.misjaForm = this.formBuilder.group<MisjaForm>({
+      id: [null],
       nazwa: [null, Validators.required],
       dataRozpoczecia: [null, Validators.required],
       dataZakonczenia: [null],
@@ -108,22 +115,22 @@ export class MisjeComponent implements OnInit {
   }
 
   typOnChange(): void {
-    this.nowaMisjaForm.controls.typ.valueChanges.subscribe(
+    this.misjaForm.controls.typ.valueChanges.subscribe(
       typ => {
-        if (!this.nowaMisjaForm.value.przypisanyPracownik)
+        if (!this.misjaForm.value.przypisanyPracownik)
           return;
-        const uprawnienia = this.nowaMisjaForm.value.przypisanyPracownik.claims.filter(x => x.type === 'uprawnienia').map(x => x.value);
+        const uprawnienia = this.misjaForm.value.przypisanyPracownik.claims.filter(x => x.type === 'uprawnienia').map(x => x.value);
         this.pracownicy.forEach(pracownik => pracownik.disabled = false);
         if (typ?.nazwa === 'VLOS') {
           if (!uprawnienia.includes('VLOS')) {
-            this.nowaMisjaForm.controls.przypisanyPracownik.setValue(null);
+            this.misjaForm.controls.przypisanyPracownik.setValue(null);
           }
           const pracownicyBezUprawnienia = this.pracownicy
             .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').some(x => x.value === 'VLOS'));
           pracownicyBezUprawnienia.forEach(pracownik => pracownik.disabled = true)
         } else if (typ?.nazwa === 'BVLOS') {
           if (!uprawnienia.includes('BVLOS')) {
-            this.nowaMisjaForm.controls.przypisanyPracownik.setValue(null);
+            this.misjaForm.controls.przypisanyPracownik.setValue(null);
           }
           const pracownicyBezUprawnienia = this.pracownicy
             .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').some(x => x.value === 'BVLOS'));
@@ -133,14 +140,14 @@ export class MisjeComponent implements OnInit {
   }
 
   promienOnChange(): void {
-    this.nowaMisjaForm.controls.promien.valueChanges
+    this.misjaForm.controls.promien.valueChanges
       .subscribe(
         (promien: number) => this.nakladkiNaMape[0]?.setRadius(promien)
       );
   }
 
   wczytajPolaDoFormularza(): void {
-    const misja: NowaMisjaForm = this.dynamicDialogConfig.data;
+    const misja: MisjaForm = this.dynamicDialogConfig.data;
     if (!misja)
       return;
     this.nakladkiNaMape = [
@@ -152,10 +159,10 @@ export class MisjeComponent implements OnInit {
         fillColor: '#c286d8',
         fillOpacity: 0.35,
         strokeWeight: 1,
-        radius: +this.nowaMisjaForm.controls.promien.value
+        radius: +this.misjaForm.controls.promien.value
       })
     ];
-    this.nowaMisjaForm.setValue(misja);
+    this.misjaForm.setValue(misja);
   }
 
   mapaOnClick(event: { latLng: { lat: () => number; lng: () => number; } }): void {
@@ -168,33 +175,60 @@ export class MisjeComponent implements OnInit {
         fillColor: '#c286d8',
         fillOpacity: 0.35,
         strokeWeight: 1,
-        radius: +this.nowaMisjaForm.controls.promien.value
+        radius: +this.misjaForm.controls.promien.value
       })
     ];
-    this.nowaMisjaForm.controls.szerokoscGeograficzna.setValue(event.latLng.lat());
-    this.nowaMisjaForm.controls.dlugoscGeograficzna.setValue(event.latLng.lng());
+    this.misjaForm.controls.szerokoscGeograficzna.setValue(event.latLng.lat());
+    this.misjaForm.controls.dlugoscGeograficzna.setValue(event.latLng.lng());
   }
 
   wyczyscMapeOnClick(): void {
     this.nakladkiNaMape = [];
-    this.nowaMisjaForm.controls.szerokoscGeograficzna.reset();
-    this.nowaMisjaForm.controls.dlugoscGeograficzna.reset();
+    this.misjaForm.controls.szerokoscGeograficzna.reset();
+    this.misjaForm.controls.dlugoscGeograficzna.reset();
   }
 
-  dodajMisjeOnClick(): void {
-    const misja = this.nowaMisjaForm.getRawValue();
-    this.dynamicDialogRef.close(misja);
+  zapiszMisjeOnClick(): void {
+    const misja = this.misjaForm.getRawValue();
+
+    if (this.istniejacaMisja()) {
+      const operacje = this.pobierzZmienionePola();
+      if (isEmpty(operacje)) {
+        this.messageToast.warning('Nie zmieniono żadnego pola.');
+      } else {
+        this.misjeClient.zaktualizujMisje(misja.id, operacje)
+                  .subscribe();
+      }
+    } else {
+      this.dynamicDialogRef.close(misja);
+    }
+  }
+
+  pobierzZmienionePola(): Operation[] {
+    const operacje: Operation[] = [];
+
+    Object.keys(this.misjaForm.controls).forEach((name: string) => {
+      const currentControl = this.misjaForm.controls[name];
+
+      if (currentControl.dirty) {
+        operacje.push({ op: 'replace', path: `/${name}`, value: currentControl.value } as Operation);
+      }
+    });
+
+    return operacje;
   }
 
   anulujOnClick(): void {
     this.dynamicDialogRef.destroy();
   }
 
-  nazwaPrzycisku(): string {
-    if (this.dynamicDialogConfig.data) {
-      return 'Zaktualizuj misję'
-    } else {
-      return 'Dodaj misję';
+  nadajNazwePrzyciskowi(): void {
+    if (this.istniejacaMisja()) {
+      this.nazwaPrzycisku = 'Zaktualizuj misję';
     }
+  }
+
+  istniejacaMisja(): boolean {
+    return !!this.dynamicDialogConfig.data;
   }
 }
