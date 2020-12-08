@@ -37,7 +37,9 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
 
         public async Task<Unit> Handle(ZaktualizujMisjeCommand request, CancellationToken cancellationToken)
         {
-            Misja misjaEntity = await _focusOnFlyingContext.Misje.SingleAsync(x => x.Id == request.Id);
+            Misja misjaEntity = await _focusOnFlyingContext.Misje
+                .Include(x => x.MisjeDrony)
+                .SingleAsync(x => x.Id == request.Id);
             var misja = _mapper.Map<MisjaUpdateDto>(misjaEntity);
 
             request.Patch.ApplyTo(misja);

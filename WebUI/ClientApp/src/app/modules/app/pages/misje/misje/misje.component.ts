@@ -10,9 +10,9 @@ import { map } from 'rxjs/operators';
 import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { PracownicyService } from 'src/app/core/services/pracownicy.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
-import { MisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
+import { MisjaForm } from 'src/app/shared/models/misje/misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
-import { DronDto, DronyClient, MisjeClient, Operation, StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
+import { DronDto, DronyClient, MisjaDronDto, MisjeClient, Operation, StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-misje',
@@ -178,8 +178,12 @@ export class MisjeComponent implements OnInit {
         radius: +this.misjaForm.controls.promien.value
       })
     ];
-    this.misjaForm.controls.szerokoscGeograficzna.setValue(event.latLng.lat());
-    this.misjaForm.controls.dlugoscGeograficzna.setValue(event.latLng.lng());
+    this.misjaForm.patchValue({ 
+      szerokoscGeograficzna: event.latLng.lat(),
+      dlugoscGeograficzna: event.latLng.lng()
+    });
+    this.misjaForm.controls.szerokoscGeograficzna.markAsDirty();
+    this.misjaForm.controls.dlugoscGeograficzna.markAsDirty();
   }
 
   wyczyscMapeOnClick(): void {
@@ -211,14 +215,34 @@ export class MisjeComponent implements OnInit {
   pobierzZmienionePola(): Operation[] {
     const operacje: Operation[] = [];
 
-    Object.keys(this.misjaForm.controls).forEach((name: string) => {
-      const currentControl = this.misjaForm.controls[name];
+    const controls = this.misjaForm.controls;
+    const value = this.misjaForm.value;
 
-      if (currentControl.dirty) {
-        operacje.push({ op: 'replace', path: `/${name}`, value: currentControl.value } as Operation);
-      }
-    });
-
+    if (controls.nazwa.dirty)
+      operacje.push({ op: 'replace', path: `/nazwa`, value: value.nazwa } as Operation);
+    if (controls.dataRozpoczecia.dirty)
+      operacje.push({ op: 'replace', path: `/dataRozpoczecia`, value: value.dataRozpoczecia.getTime() } as Operation);
+    if (controls.dataZakonczenia.dirty)
+      operacje.push({ op: 'replace', path: `/dataZakonczenia`, value: value.dataZakonczenia.getTime() } as Operation);
+    if (controls.opis.dirty)
+      operacje.push({ op: 'replace', path: `/opis`, value: value.opis } as Operation);
+    if (controls.typ.dirty)
+      operacje.push({ op: 'replace', path: `/idTypuMisji`, value: value.typ.id } as Operation);
+    if (controls.status.dirty)
+      operacje.push({ op: 'replace', path: `/status`, value: value.status.id } as Operation);
+    if (controls.maksymalnaWysokoscLotu.dirty)
+      operacje.push({ op: 'replace', path: `/maksymalnaWysokoscLotu`, value: value.maksymalnaWysokoscLotu } as Operation);
+    if (controls.przypisanyPracownik.dirty)
+      operacje.push({ op: 'replace', path: `/idPracownika`, value: value.przypisanyPracownik.subjectId } as Operation);
+    if (controls.drony.dirty) {
+      operacje.push({ op: 'replace', path: `/misjeDrony`, value: value.drony.map(d => ({ idMisji: value.id, idDrona: d.id } as MisjaDronDto)) } as Operation);
+    }
+    if (controls.szerokoscGeograficzna.dirty)
+      operacje.push({ op: 'replace', path: `/szerokoscGeograficzna`, value: this.misjaForm.getRawValue().szerokoscGeograficzna } as Operation);
+    if (controls.dlugoscGeograficzna.dirty)
+      operacje.push({ op: 'replace', path: `/dlugoscGeograficzna`, value: this.misjaForm.getRawValue().dlugoscGeograficzna } as Operation);
+    if (controls.promien.dirty)
+      operacje.push({ op: 'replace', path: `/promien`, value: value.promien } as Operation);
     return operacje;
   }
 

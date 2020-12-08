@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using FocusOnFlying.Application.Common.Mappings;
 using FocusOnFlying.Application.Extensions;
+using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using NSwag.Annotations;
 using System;
+using System.Collections.Generic;
 
 namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
 {
@@ -22,6 +24,8 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
         public decimal SzerokoscGeograficzna { get; set; }
         public decimal DlugoscGeograficzna { get; set; }
         public int Promien { get; set; }
+
+        public List<MisjaDronDto> MisjeDrony { get; set; }
 
         public void Mapping(Profile profile)
         {

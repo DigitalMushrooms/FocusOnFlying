@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { PracownicyService } from 'src/app/core/services/pracownicy.service';
-import { MisjaForm } from 'src/app/shared/models/misje/nowa-misja-form.model';
+import { MisjaForm } from 'src/app/shared/models/misje/misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
 import { MisjaDto, UslugaDto, UslugiClient } from 'src/app/web-api-client';
 import { MisjeDialogComponent } from '../../../components/misje/misje-dialog.component';
