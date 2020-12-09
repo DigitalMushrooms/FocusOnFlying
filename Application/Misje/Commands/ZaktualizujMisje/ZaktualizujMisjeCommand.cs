@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ValidationException = FocusOnFlying.Application.Common.Exceptions.ValidationException;
 
 namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
 {

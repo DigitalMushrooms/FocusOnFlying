@@ -2,10 +2,12 @@ using FluentValidation.AspNetCore;
 using FocusOnFlying.Application;
 using FocusOnFlying.Application.Common.Interfaces;
 using FocusOnFlying.Infrastructure;
+using FocusOnFlying.WebUI.Filters;
 using FocusOnFlying.WebUI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -37,9 +39,14 @@ namespace FocusOnFlying.WebUI
                     options.ApiName = "FocusOnFlyingAPI";
                 });
 
-            services.AddControllers()
-                .AddFluentValidation()
-                .AddNewtonsoftJson();
+            services.AddControllers(options => options.Filters.Add(new ApiExceptionFilterAttribute()))
+                .AddNewtonsoftJson()
+                .AddFluentValidation();
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
             services.AddSpaStaticFiles(configuration =>
             {

@@ -178,7 +178,7 @@ export class MisjeComponent implements OnInit {
         radius: +this.misjaForm.controls.promien.value
       })
     ];
-    this.misjaForm.patchValue({ 
+    this.misjaForm.patchValue({
       szerokoscGeograficzna: event.latLng.lat(),
       dlugoscGeograficzna: event.latLng.lng()
     });
@@ -204,6 +204,13 @@ export class MisjeComponent implements OnInit {
           () => {
             this.messageToast.success('Zaktualizowano misję.');
             this.dynamicDialogRef.close();
+          },
+          e => {
+            const response = JSON.parse(e.response);
+
+            if (response && response.errors.DataRozpoczecia) {
+              this.messageToast.error(response.errors.DataRozpoczecia[0]);
+            }
           }
         );
       }
@@ -234,9 +241,8 @@ export class MisjeComponent implements OnInit {
       operacje.push({ op: 'replace', path: `/maksymalnaWysokoscLotu`, value: value.maksymalnaWysokoscLotu } as Operation);
     if (controls.przypisanyPracownik.dirty)
       operacje.push({ op: 'replace', path: `/idPracownika`, value: value.przypisanyPracownik.subjectId } as Operation);
-    if (controls.drony.dirty) {
+    if (controls.drony.dirty)
       operacje.push({ op: 'replace', path: `/misjeDrony`, value: value.drony.map(d => ({ idMisji: value.id, idDrona: d.id } as MisjaDronDto)) } as Operation);
-    }
     if (controls.szerokoscGeograficzna.dirty)
       operacje.push({ op: 'replace', path: `/szerokoscGeograficzna`, value: this.misjaForm.getRawValue().szerokoscGeograficzna } as Operation);
     if (controls.dlugoscGeograficzna.dirty)
