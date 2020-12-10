@@ -1,5 +1,6 @@
 ﻿using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,5 +20,7 @@ namespace FocusOnFlying.Application.Common.Interfaces
         DbSet<MisjaDron> MisjeDrony { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+
+        ChangeTracker ChangeTracker { get; }
     }
 }
