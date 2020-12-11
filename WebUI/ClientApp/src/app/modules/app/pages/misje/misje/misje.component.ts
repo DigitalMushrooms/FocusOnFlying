@@ -3,10 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { isEmpty } from 'lodash-es';
+import * as moment from 'moment';
 import { SelectItem } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { PracownicyService } from 'src/app/core/services/pracownicy.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
@@ -111,7 +112,7 @@ export class MisjeComponent implements OnInit {
   pobierzDrony(): Observable<SelectItem<DronDto>[]> {
     return this.dronyClient.pobierzDrony(0, 0, 'producent 1, model 1')
       .pipe(map(drony => drony.results.map(d =>
-        ({ label: `${d.producent} ${d.model}, SN: ${d.numerSeryjny}`, value: d } as SelectItem<DronDto>))));
+        ({ label: `${d.producent} ${d.model}, SN: ${d.numerSeryjny}`, value: d, disabled: moment(new Date(d.dataNastepnegoPrzegladu)).isAfter(Date.now()) } as SelectItem<DronDto>))));
   }
 
   typOnChange(): void {
