@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace FocusOnFlying.Application.Uslugi.Queries.PobierzMisjeUslugi
 {
-    public class PobierzMisjeUslugiQuery : IRequest<Models.PagedResult<MisjaDto>>, ISortowalne, IStronnicowalne
+    public class PobierzMisjeUslugiQuery : IRequest<Common.Models.PagedResult<MisjaDto>>, ISortowalne, IStronnicowalne
     {
         [OpenApiIgnore]
         public Guid Id { get; set; }
@@ -23,7 +23,7 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzMisjeUslugi
         public int Rows { get; set; }
     }
 
-    public class PobierzMisjeUslugiQueryHandler : IRequestHandler<PobierzMisjeUslugiQuery, Models.PagedResult<MisjaDto>>
+    public class PobierzMisjeUslugiQueryHandler : IRequestHandler<PobierzMisjeUslugiQuery, Common.Models.PagedResult<MisjaDto>>
     {
         private readonly IFocusOnFlyingContext _focusOnFlyingContext;
         private readonly IMapper _mapper;
@@ -39,11 +39,11 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzMisjeUslugi
             _propertyMappingService = propertyMappingService;
         }
 
-        public async Task<Models.PagedResult<MisjaDto>> Handle(PobierzMisjeUslugiQuery request, CancellationToken cancellationToken)
+        public async Task<Common.Models.PagedResult<MisjaDto>> Handle(PobierzMisjeUslugiQuery request, CancellationToken cancellationToken)
         {
             var mapping = _propertyMappingService.GetPropertyMapping<MisjaDto, Misja>();
 
-            Models.PagedResult<MisjaDto> misje = await _focusOnFlyingContext.Misje
+            Common.Models.PagedResult<MisjaDto> misje = await _focusOnFlyingContext.Misje
                 .Where(x => x.IdUslugi == request.Id)
                 .ApplySort(request.Sort, mapping)
                 .ProjectTo<MisjaDto>(_mapper.ConfigurationProvider)

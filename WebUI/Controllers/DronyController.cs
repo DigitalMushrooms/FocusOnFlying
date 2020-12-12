@@ -1,6 +1,6 @@
-﻿using FocusOnFlying.Application.Drony.Commands.UtworzDrona;
+﻿using FocusOnFlying.Application.Common.Models;
+using FocusOnFlying.Application.Drony.Commands.UtworzDrona;
 using FocusOnFlying.Application.Drony.Queries.PobierzDrony;
-using FocusOnFlying.Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

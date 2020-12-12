@@ -1,6 +1,6 @@
-﻿using FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje;
+﻿using FocusOnFlying.Application.Common.Models;
+using FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje;
 using FocusOnFlying.Application.Misje.Queries;
-using FocusOnFlying.Application.Models;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;

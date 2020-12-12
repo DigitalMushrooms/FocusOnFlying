@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FocusOnFlying.Application.Models
+namespace FocusOnFlying.Application.Common.Models
 {
     public class PagedResult<T> : PagedResultBase where T : class
     {

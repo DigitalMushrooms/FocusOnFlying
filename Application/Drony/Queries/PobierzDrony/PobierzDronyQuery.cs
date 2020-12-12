@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FocusOnFlying.Application.Common.Interfaces;
+using FocusOnFlying.Application.Common.Models;
 using FocusOnFlying.Application.Extensions;
-using FocusOnFlying.Application.Models;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using MediatR;
 using System.Threading;

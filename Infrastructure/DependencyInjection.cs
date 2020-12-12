@@ -1,4 +1,5 @@
 ﻿using FocusOnFlying.Application.Common.Interfaces;
+using FocusOnFlying.Infrastructure.Mail;
 using FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb;
 using FocusOnFlying.Infrastructure.Services.PropertyMapping;
 using FocusOnFlying.WebUI.Services;
@@ -14,6 +15,8 @@ namespace FocusOnFlying.Infrastructure
 
             services.AddScoped<IAppSettingsService, AppSettingsService>();
             services.AddScoped<IPropertyMappingService, PropertyMappingService>();
+
+            services.AddTransient<IMailService, MailService>();
 
             return services;
         }

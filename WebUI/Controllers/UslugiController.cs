@@ -1,4 +1,4 @@
-﻿using FocusOnFlying.Application.Models;
+﻿using FocusOnFlying.Application.Common.Models;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
 using FocusOnFlying.Application.Uslugi.Queries.PobierzMisjeUslugi;
 using FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi;

@@ -1,5 +1,5 @@
 ﻿using FocusOnFlying.Application.Common.Interfaces;
-using FocusOnFlying.Application.Models;
+using FocusOnFlying.Application.Common.Models;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

@@ -1,6 +1,6 @@
-﻿using FocusOnFlying.Application.Klienci.Commands.UtworzKlienta;
+﻿using FocusOnFlying.Application.Common.Models;
+using FocusOnFlying.Application.Klienci.Commands.UtworzKlienta;
 using FocusOnFlying.Application.Klienci.Queries.PobierzKlientow;
-using FocusOnFlying.Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

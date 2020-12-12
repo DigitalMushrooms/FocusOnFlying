@@ -73,9 +73,9 @@ namespace FocusOnFlying.Application.Extensions
             return query.OrderBy(orderByString);
         }
 
-        public static async Task<Models.PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query, int offset, int rows) where T : class
+        public static async Task<Common.Models.PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query, int offset, int rows) where T : class
         {
-            var result = new Models.PagedResult<T>();
+            var result = new Common.Models.PagedResult<T>();
             result.RowCount = await query.CountAsync();
             if (rows == 0)
             {

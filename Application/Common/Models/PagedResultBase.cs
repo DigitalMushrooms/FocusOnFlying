@@ -1,4 +1,4 @@
-﻿namespace FocusOnFlying.Application.Models
+﻿namespace FocusOnFlying.Application.Common.Models
 {
     public class PagedResultBase
     {

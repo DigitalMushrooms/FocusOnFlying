@@ -112,7 +112,7 @@ export class MisjeComponent implements OnInit {
   pobierzDrony(): Observable<SelectItem<DronDto>[]> {
     return this.dronyClient.pobierzDrony(0, 0, 'producent 1, model 1')
       .pipe(map(drony => drony.results.map(d =>
-        ({ label: `${d.producent} ${d.model}, SN: ${d.numerSeryjny}`, value: d, disabled: moment(new Date(d.dataNastepnegoPrzegladu)).isAfter(Date.now()) } as SelectItem<DronDto>))));
+        ({ label: `${d.producent} ${d.model}, SN: ${d.numerSeryjny}`, value: d, disabled: moment(d.dataNastepnegoPrzegladu).isBefore(moment()) } as SelectItem<DronDto>))));
   }
 
   typOnChange(): void {

@@ -1,6 +1,7 @@
 using FluentValidation.AspNetCore;
 using FocusOnFlying.Application;
 using FocusOnFlying.Application.Common.Interfaces;
+using FocusOnFlying.Application.Common.Models;
 using FocusOnFlying.Infrastructure;
 using FocusOnFlying.WebUI.Filters;
 using FocusOnFlying.WebUI.Services;
@@ -29,6 +30,8 @@ namespace FocusOnFlying.WebUI
             services.AddInfrastructure();
 
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
+            services.Configure<MailConfiguration>(Configuration.GetSection("MailConfiguration"));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
