@@ -4,7 +4,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { PracownicyService } from 'src/app/core/services/pracownicy.service';
 import { MisjaForm } from 'src/app/shared/models/misje/misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
-import { MisjaDto, UslugaDto, UslugiClient } from 'src/app/web-api-client';
+import { MisjaDto, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
 import { MisjeDialogComponent } from '../../../components/misje/misje-dialog.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
@@ -55,38 +55,68 @@ export class ListaUslugComponent implements OnInit {
 
     misjeDialog.onClose.subscribe(
       (misja: MisjaDto) => {
-        if (!misja)
-          return;
-        this.pracownicyService.pobierzPracownikow()
-          .subscribe((pracownicy: Pracownik[]) => {
-            const edytowanaMisja: MisjaForm = {
-              id: misja.id,
-              nazwa: misja.nazwa,
-              dataRozpoczecia: new Date(misja.dataRozpoczecia),
-              dataZakonczenia: new Date(misja.dataZakonczenia),
-              opis: misja.opis,
-              typ: misja.typMisji,
-              status: misja.statusMisji,
-              maksymalnaWysokoscLotu: misja.maksymalnaWysokoscLotu,
-              przypisanyPracownik: pracownicy.find(x => x.subjectId === misja.idPracownika),
-              drony: misja.misjeDrony.map(x => x.dron),
-              szerokoscGeograficzna: misja.szerokoscGeograficzna,
-              dlugoscGeograficzna: misja.dlugoscGeograficzna,
-              promien: misja.promien
-            }
-
-            const dialogEdycjiMisji = this.dialogService.open(MisjeComponent, {
-              header: 'Edycja misji',
-              width: '80%',
-              data: edytowanaMisja
-            });
-
-            dialogEdycjiMisji.onClose.subscribe(
-              () => {
-                this.pobierzUslugi();
-              }
-            );
+        if (misja === null) {
+          const dialog = this.dialogService.open(MisjeComponent, {
+            header: 'Dodanie misji',
+            width: '80%'
           });
+
+          dialog.onClose.subscribe(
+            (misja: MisjaForm) => {
+              if (!misja)
+                return;
+              const command = {
+                nazwa: misja.nazwa,
+                opis: misja.opis,
+                idTypuMisji: misja.typ.id,
+                maksymalnaWysokoscLotu: misja.maksymalnaWysokoscLotu,
+                idStatusuMisji: misja.status.id,
+                dataRozpoczecia: misja.dataRozpoczecia.getTime(),
+                dataZakonczenia: misja.dataRozpoczecia.getTime(),
+                idPracownika: misja.przypisanyPracownik.subjectId,
+                szerokoscGeograficzna: misja.szerokoscGeograficzna,
+                dlugoscGeograficzna: misja.dlugoscGeograficzna,
+                promien: misja.promien
+              } as UtworzMisjeUslugiCommand;
+              debugger;
+              this.uslugiClient.utworzMisjeUslugi(this.wybranaUsluga.id, command).subscribe();
+            }
+          );
+        } else if (misja === undefined) {
+          return;
+        } else {
+          misja = misja as MisjaDto;
+          this.pracownicyService.pobierzPracownikow()
+            .subscribe((pracownicy: Pracownik[]) => {
+              const edytowanaMisja: MisjaForm = {
+                id: misja.id,
+                nazwa: misja.nazwa,
+                dataRozpoczecia: new Date(misja.dataRozpoczecia),
+                dataZakonczenia: new Date(misja.dataZakonczenia),
+                opis: misja.opis,
+                typ: misja.typMisji,
+                status: misja.statusMisji,
+                maksymalnaWysokoscLotu: misja.maksymalnaWysokoscLotu,
+                przypisanyPracownik: pracownicy.find(x => x.subjectId === misja.idPracownika),
+                drony: misja.misjeDrony.map(x => x.dron),
+                szerokoscGeograficzna: misja.szerokoscGeograficzna,
+                dlugoscGeograficzna: misja.dlugoscGeograficzna,
+                promien: misja.promien
+              }
+
+              const dialogEdycjiMisji = this.dialogService.open(MisjeComponent, {
+                header: 'Edycja misji',
+                width: '80%',
+                data: edytowanaMisja
+              });
+
+              dialogEdycjiMisji.onClose.subscribe(
+                () => {
+                  this.pobierzUslugi();
+                }
+              );
+            });
+        }
       }
     );
   }

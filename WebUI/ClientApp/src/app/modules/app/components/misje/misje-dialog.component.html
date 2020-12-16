@@ -1,3 +1,6 @@
+<div class="p-d-flex p-col-2 p-as-end p-mb-3">
+    <button pButton type="button" icon="pi pi-star-o" label="Dodaj misję" (click)="dodajMisje()"></button>
+</div>
 <p-table [value]="misje" [lazy]="true" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" sortField="nazwa" selectionMode="single"
     (onLazyLoad)="pobierzMisje($event)" (onRowSelect)="naWybraniuMisji($event)">
     <ng-template pTemplate="header">

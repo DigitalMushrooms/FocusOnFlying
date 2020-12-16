@@ -801,6 +801,7 @@ export interface IUslugiClient {
     pobierzUslugi(): Observable<UslugaDto[]>;
     utworzUsluge(command: UtworzUslugeCommand): Observable<void>;
     pobierzMisjeUslugi(id: string, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfMisjaDto>;
+    utworzMisjeUslugi(id: string, command: UtworzMisjeUslugiCommand): Observable<void>;
 }
 
 @Injectable({
@@ -975,6 +976,57 @@ export class UslugiClient implements IUslugiClient {
             }));
         }
         return _observableOf<PagedResultOfMisjaDto>(<any>null);
+    }
+
+    utworzMisjeUslugi(id: string, command: UtworzMisjeUslugiCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/uslugi/{id}/misje";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUtworzMisjeUslugi(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUtworzMisjeUslugi(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUtworzMisjeUslugi(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -2660,6 +2712,86 @@ export interface IUtworzUslugeCommand {
     idKlienta?: string;
     idStatusuUslugi?: string;
     misje?: MisjaDto[] | undefined;
+}
+
+export class UtworzMisjeUslugiCommand implements IUtworzMisjeUslugiCommand {
+    id?: string;
+    nazwa?: string | undefined;
+    opis?: string | undefined;
+    idTypuMisji?: string;
+    maksymalnaWysokoscLotu?: number;
+    idStatusuMisji?: string;
+    dataRozpoczecia?: number;
+    dataZakonczenia?: number;
+    idPracownika?: string | undefined;
+    szerokoscGeograficzna?: number;
+    dlugoscGeograficzna?: number;
+    promien?: number;
+
+    constructor(data?: IUtworzMisjeUslugiCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwa = _data["nazwa"];
+            this.opis = _data["opis"];
+            this.idTypuMisji = _data["idTypuMisji"];
+            this.maksymalnaWysokoscLotu = _data["maksymalnaWysokoscLotu"];
+            this.idStatusuMisji = _data["idStatusuMisji"];
+            this.dataRozpoczecia = _data["dataRozpoczecia"];
+            this.dataZakonczenia = _data["dataZakonczenia"];
+            this.idPracownika = _data["idPracownika"];
+            this.szerokoscGeograficzna = _data["szerokoscGeograficzna"];
+            this.dlugoscGeograficzna = _data["dlugoscGeograficzna"];
+            this.promien = _data["promien"];
+        }
+    }
+
+    static fromJS(data: any): UtworzMisjeUslugiCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UtworzMisjeUslugiCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwa"] = this.nazwa;
+        data["opis"] = this.opis;
+        data["idTypuMisji"] = this.idTypuMisji;
+        data["maksymalnaWysokoscLotu"] = this.maksymalnaWysokoscLotu;
+        data["idStatusuMisji"] = this.idStatusuMisji;
+        data["dataRozpoczecia"] = this.dataRozpoczecia;
+        data["dataZakonczenia"] = this.dataZakonczenia;
+        data["idPracownika"] = this.idPracownika;
+        data["szerokoscGeograficzna"] = this.szerokoscGeograficzna;
+        data["dlugoscGeograficzna"] = this.dlugoscGeograficzna;
+        data["promien"] = this.promien;
+        return data; 
+    }
+}
+
+export interface IUtworzMisjeUslugiCommand {
+    id?: string;
+    nazwa?: string | undefined;
+    opis?: string | undefined;
+    idTypuMisji?: string;
+    maksymalnaWysokoscLotu?: number;
+    idStatusuMisji?: string;
+    dataRozpoczecia?: number;
+    dataZakonczenia?: number;
+    idPracownika?: string | undefined;
+    szerokoscGeograficzna?: number;
+    dlugoscGeograficzna?: number;
+    promien?: number;
 }
 
 export class SwaggerException extends Error {

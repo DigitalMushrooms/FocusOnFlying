@@ -35,4 +35,8 @@ export class MisjeDialogComponent {
   naWybraniuMisji(event: { data: MisjaDto }): void {
     this.dynamicDialogRef.close(event.data);
   }
+
+  dodajMisje(): void {
+    this.dynamicDialogRef.close(null);
+  }
 }

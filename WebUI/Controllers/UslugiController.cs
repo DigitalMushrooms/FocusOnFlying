@@ -1,4 +1,5 @@
 ﻿using FocusOnFlying.Application.Common.Models;
+using FocusOnFlying.Application.Uslugi.Commands.UtworzMisjeUslugi;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
 using FocusOnFlying.Application.Uslugi.Queries.PobierzMisjeUslugi;
 using FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi;
@@ -33,6 +34,13 @@ namespace FocusOnFlying.WebUI.Controllers
         [HttpPost]
         public async Task UtworzUsluge(UtworzUslugeCommand command)
         {
+            await Mediator.Send(command);
+        }
+
+        [HttpPost("{id}/misje")]
+        public async Task UtworzMisjeUslugi([FromRoute] Guid id, [FromBody] UtworzMisjeUslugiCommand command)
+        {
+            command.Id = id;
             await Mediator.Send(command);
         }
     }

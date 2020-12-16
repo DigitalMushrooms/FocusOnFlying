@@ -525,6 +525,41 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Uslugi"
+        ],
+        "operationId": "Uslugi_UtworzMisjeUslugi",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtworzMisjeUslugiCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
       }
     }
   },
@@ -1489,6 +1524,60 @@
             "items": {
               "$ref": "#/components/schemas/MisjaDto"
             }
+          }
+        }
+      },
+      "UtworzMisjeUslugiCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwa": {
+            "type": "string",
+            "nullable": true
+          },
+          "opis": {
+            "type": "string",
+            "nullable": true
+          },
+          "idTypuMisji": {
+            "type": "string",
+            "format": "guid"
+          },
+          "maksymalnaWysokoscLotu": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idStatusuMisji": {
+            "type": "string",
+            "format": "guid"
+          },
+          "dataRozpoczecia": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dataZakonczenia": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "idPracownika": {
+            "type": "string",
+            "nullable": true
+          },
+          "szerokoscGeograficzna": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "dlugoscGeograficzna": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "promien": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       }
