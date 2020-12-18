@@ -23,7 +23,7 @@ export class MisjeDialogComponent {
   pobierzMisje(event: LazyLoadEvent): void {
     this.loading = true;
     const idUslugi: string = this.dynamicDialogConfig.data.idUslugi;
-    this.uslugiClient.pobierzMisjeUslugi(idUslugi, `${event.sortField} ${event.sortOrder}`, event.first, event.rows)
+    this.uslugiClient.pobierzMisjeUslugi(idUslugi, ['Utworzona', 'Zaplanowana', 'Wykonana'], `${event.sortField} ${event.sortOrder}`, event.first, event.rows)
       .pipe(finalize(() => this.loading = false))
       .subscribe(
         (misje: PagedResultOfMisjaDto) => {

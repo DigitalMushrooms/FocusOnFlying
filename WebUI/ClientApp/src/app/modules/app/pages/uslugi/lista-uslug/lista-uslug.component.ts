@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { PracownicyService } from 'src/app/core/services/pracownicy.service';
 import { MisjaForm } from 'src/app/shared/models/misje/misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
-import { MisjaDto, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
+import { MisjaDto, MisjeClient, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
 import { MisjeDialogComponent } from '../../../components/misje/misje-dialog.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
@@ -23,7 +24,9 @@ export class ListaUslugComponent implements OnInit {
   constructor(
     private uslugiClient: UslugiClient,
     private dialogService: DialogService,
-    private pracownicyService: PracownicyService
+    private pracownicyService: PracownicyService,
+    private misjeClient: MisjeClient,
+    private messageToast: MessageToast,
   ) { }
 
   ngOnInit(): void {
@@ -78,7 +81,6 @@ export class ListaUslugComponent implements OnInit {
                 dlugoscGeograficzna: misja.dlugoscGeograficzna,
                 promien: misja.promien
               } as UtworzMisjeUslugiCommand;
-              debugger;
               this.uslugiClient.utworzMisjeUslugi(this.wybranaUsluga.id, command).subscribe();
             }
           );
@@ -122,7 +124,20 @@ export class ListaUslugComponent implements OnInit {
   }
 
   usunMisje(): void {
-
+    const misjeDialog = this.dialogService.open(MisjeDialogComponent, {
+      header: 'Wybór misji do usunięcia',
+      width: '80%',
+      data: { idUslugi: this.wybranaUsluga.id }
+    });
+    misjeDialog.onClose.subscribe(
+      (misja: MisjaDto) => {
+        if (misja) {
+          this.misjeClient.usunMisje(misja.id)
+            .subscribe(
+              () => this.messageToast.success('Usunięto misję.')
+            );
+        }
+      });
   }
 
   naWybraniuUslugi(event: { index: number; }): void {

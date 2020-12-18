@@ -1,4 +1,5 @@
 ﻿using FocusOnFlying.Application.Common.Models;
+using FocusOnFlying.Application.Misje.Commands.UsunMisje;
 using FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje;
 using FocusOnFlying.Application.Misje.Queries;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
@@ -31,6 +32,13 @@ namespace FocusOnFlying.WebUI.Controllers
             [FromBody] [JsonSchemaType(typeof(List<Operation>))] JsonPatchDocument<MisjaUpdateDto> patch)
         {
             var command = new ZaktualizujMisjeCommand { Id = id, Patch = patch };
+            await Mediator.Send(command);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task UsunMisje(Guid id)
+        {
+            var command = new UsunMisjeCommand { Id = id };
             await Mediator.Send(command);
         }
     }

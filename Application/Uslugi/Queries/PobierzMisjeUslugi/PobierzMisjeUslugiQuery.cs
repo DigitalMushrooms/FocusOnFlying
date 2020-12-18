@@ -5,8 +5,10 @@ using FocusOnFlying.Application.Extensions;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using NSwag.Annotations;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading;
@@ -18,6 +20,7 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzMisjeUslugi
     {
         [OpenApiIgnore]
         public Guid Id { get; set; }
+        public List<string> Statusy { get; set; } = new List<string>();
         public string Sort { get; set; }
         public int Offset { get; set; }
         public int Rows { get; set; }
@@ -43,8 +46,16 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzMisjeUslugi
         {
             var mapping = _propertyMappingService.GetPropertyMapping<MisjaDto, Misja>();
 
-            Common.Models.PagedResult<MisjaDto> misje = await _focusOnFlyingContext.Misje
-                .Where(x => x.IdUslugi == request.Id)
+            IQueryable<Misja> query = _focusOnFlyingContext.Misje
+                .Include(x => x.StatusMisji)
+                .Where(x => x.IdUslugi == request.Id);
+
+            if (request.Statusy.Any())
+            {
+                query = query.Where(x => request.Statusy.Contains(x.StatusMisji.Nazwa));
+            }
+
+            Common.Models.PagedResult<MisjaDto> misje = await query
                 .ApplySort(request.Sort, mapping)
                 .ProjectTo<MisjaDto>(_mapper.ConfigurationProvider)
                 .GetPagedAsync(request.Offset, request.Rows);

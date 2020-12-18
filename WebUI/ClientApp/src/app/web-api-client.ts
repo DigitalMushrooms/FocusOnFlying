@@ -351,6 +351,7 @@ export class KrajeClient implements IKrajeClient {
 export interface IMisjeClient {
     pobierzMisje(): Observable<PagedResultOfMisjaDto>;
     zaktualizujMisje(id: string, patch: Operation[]): Observable<void>;
+    usunMisje(id: string): Observable<void>;
 }
 
 @Injectable({
@@ -447,6 +448,53 @@ export class MisjeClient implements IMisjeClient {
     }
 
     protected processZaktualizujMisje(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    usunMisje(id: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/misje/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUsunMisje(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUsunMisje(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUsunMisje(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -800,7 +848,7 @@ export class TypyMisjiClient implements ITypyMisjiClient {
 export interface IUslugiClient {
     pobierzUslugi(): Observable<UslugaDto[]>;
     utworzUsluge(command: UtworzUslugeCommand): Observable<void>;
-    pobierzMisjeUslugi(id: string, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfMisjaDto>;
+    pobierzMisjeUslugi(id: string, statusy: string[] | null | undefined, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfMisjaDto>;
     utworzMisjeUslugi(id: string, command: UtworzMisjeUslugiCommand): Observable<void>;
 }
 
@@ -917,11 +965,13 @@ export class UslugiClient implements IUslugiClient {
         return _observableOf<void>(<any>null);
     }
 
-    pobierzMisjeUslugi(id: string, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfMisjaDto> {
+    pobierzMisjeUslugi(id: string, statusy: string[] | null | undefined, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfMisjaDto> {
         let url_ = this.baseUrl + "/api/uslugi/{id}/misje?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (statusy !== undefined && statusy !== null)
+            statusy && statusy.forEach(item => { url_ += "Statusy=" + encodeURIComponent("" + item) + "&"; });
         if (sort !== undefined && sort !== null)
             url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
         if (offset === null)
