@@ -28,19 +28,26 @@
     </div>
     <div>
         <p-table #tableRef [value]="klienci" [lazy]="true" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" selectionMode="single"
-            [lazyLoadOnInit]="false" sortField="imie" (onLazyLoad)="pobierzKlientow($event)" (onRowSelect)="naWybraniuKlienta($event)">
+            [lazyLoadOnInit]="false" sortField="imie" styleClass="p-datatable-striped p-datatable-gridlines" (onLazyLoad)="pobierzKlientow($event)"
+            (onRowSelect)="naWybraniuKlienta($event)">
             <ng-template pTemplate="header">
                 <tr>
                     <th pSortableColumn="imie">Imie<p-sortIcon field="imie"></p-sortIcon>
                     </th>
                     <th pSortableColumn="nazwisko">Nazwisko<p-sortIcon field="nazwisko"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="pesel">PESEL<p-sortIcon field="pesel"></p-sortIcon></th>
-                    <th pSortableColumn="nazwa">Nazwa<p-sortIcon field="nazwa"></p-sortIcon></th>
-                    <th pSortableColumn="regon">REGON<p-sortIcon field="regon"></p-sortIcon></th>
-                    <th pSortableColumn="nip">NIP<p-sortIcon field="nip"></p-sortIcon></th>
-                    <th pSortableColumn="adres">Adres<p-sortIcon field="adres"></p-sortIcon></th>
-                    <th pSortableColumn="kraj.nazwaKraju">Kraj<p-sortIcon field="kraj.nazwaKraju"></p-sortIcon></th>
+                    <th pSortableColumn="pesel">PESEL<p-sortIcon field="pesel"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="nazwa">Nazwa<p-sortIcon field="nazwa"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="regon">REGON<p-sortIcon field="regon"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="nip">NIP<p-sortIcon field="nip"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="adres">Adres<p-sortIcon field="adres"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="kraj.nazwaKraju">Kraj<p-sortIcon field="kraj.nazwaKraju"></p-sortIcon>
+                    </th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-klient>

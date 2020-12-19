@@ -6,7 +6,6 @@ using FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FocusOnFlying.WebUI.Controllers
@@ -16,10 +15,9 @@ namespace FocusOnFlying.WebUI.Controllers
     public class UslugiController : ApiController
     {
         [HttpGet]
-        public async Task<List<UslugaDto>> PobierzUslugi()
+        public async Task<PagedResult<UslugaDto>> PobierzUslugi([FromQuery] PobierzUslugiQuery query)
         {
-            var query = new PobierzUslugiQuery();
-            List<UslugaDto> uslugi = await Mediator.Send(query);
+            PagedResult<UslugaDto> uslugi = await Mediator.Send(query);
             return uslugi;
         }
 

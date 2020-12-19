@@ -2,7 +2,8 @@
     <button pButton type="button" icon="pi pi-star-o" label="Dodaj misję" (click)="dodajMisje()"></button>
 </div>
 <p-table [value]="misje" [lazy]="true" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" sortField="nazwa" selectionMode="single" dataKey="id"
-    [(contextMenuSelection)]="wybranaMisja" [contextMenu]="contextMenuRef" (onContextMenuSelect)="naWybraniuUslugi()" (onLazyLoad)="pobierzMisje($event)">
+    [(contextMenuSelection)]="wybranaMisja" [contextMenu]="contextMenuRef" styleClass="p-datatable-striped p-datatable-gridlines" (onContextMenuSelect)="naWybraniuUslugi()"
+    (onLazyLoad)="pobierzMisje($event)">
     <ng-template pTemplate="header">
         <tr>
             <th pSortableColumn="nazwa">Nazwa<p-sortIcon field="nazwa"></p-sortIcon>

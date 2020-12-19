@@ -1,6 +1,6 @@
 <p-card header="Lista dronów">
     <p-table #tableRef [value]="drony" [lazy]="true" sortField="producent" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" selectionMode="single"
-        (onLazyLoad)="pobierzDrony($event)" (onRowSelect)="naWybraniuDrona($event)">
+        styleClass="p-datatable-striped p-datatable-gridlines" (onLazyLoad)="pobierzDrony($event)" (onRowSelect)="naWybraniuDrona($event)">
         <ng-template pTemplate="header">
             <tr>
                 <th>Producent</th>

@@ -846,7 +846,7 @@ export class TypyMisjiClient implements ITypyMisjiClient {
 }
 
 export interface IUslugiClient {
-    pobierzUslugi(): Observable<UslugaDto[]>;
+    pobierzUslugi(offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfUslugaDto>;
     utworzUsluge(command: UtworzUslugeCommand): Observable<void>;
     pobierzMisjeUslugi(id: string, statusy: string[] | null | undefined, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfMisjaDto>;
     utworzMisjeUslugi(id: string, command: UtworzMisjeUslugiCommand): Observable<void>;
@@ -865,8 +865,18 @@ export class UslugiClient implements IUslugiClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    pobierzUslugi(): Observable<UslugaDto[]> {
-        let url_ = this.baseUrl + "/api/uslugi";
+    pobierzUslugi(offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfUslugaDto> {
+        let url_ = this.baseUrl + "/api/uslugi?";
+        if (offset === null)
+            throw new Error("The parameter 'offset' cannot be null.");
+        else if (offset !== undefined)
+            url_ += "Offset=" + encodeURIComponent("" + offset) + "&";
+        if (rows === null)
+            throw new Error("The parameter 'rows' cannot be null.");
+        else if (rows !== undefined)
+            url_ += "Rows=" + encodeURIComponent("" + rows) + "&";
+        if (sort !== undefined && sort !== null)
+            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -884,14 +894,14 @@ export class UslugiClient implements IUslugiClient {
                 try {
                     return this.processPobierzUslugi(<any>response_);
                 } catch (e) {
-                    return <Observable<UslugaDto[]>><any>_observableThrow(e);
+                    return <Observable<PagedResultOfUslugaDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<UslugaDto[]>><any>_observableThrow(response_);
+                return <Observable<PagedResultOfUslugaDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processPobierzUslugi(response: HttpResponseBase): Observable<UslugaDto[]> {
+    protected processPobierzUslugi(response: HttpResponseBase): Observable<PagedResultOfUslugaDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -902,11 +912,7 @@ export class UslugiClient implements IUslugiClient {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(UslugaDto.fromJS(item));
-            }
+            result200 = PagedResultOfUslugaDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -914,7 +920,7 @@ export class UslugiClient implements IUslugiClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<UslugaDto[]>(<any>null);
+        return _observableOf<PagedResultOfUslugaDto>(<any>null);
     }
 
     utworzUsluge(command: UtworzUslugeCommand): Observable<void> {
@@ -1974,6 +1980,47 @@ export class StatusUslugiDto implements IStatusUslugiDto {
 export interface IStatusUslugiDto {
     id?: string;
     nazwa?: string | undefined;
+}
+
+export class PagedResultOfUslugaDto extends PagedResultBase implements IPagedResultOfUslugaDto {
+    results?: UslugaDto[] | undefined;
+
+    constructor(data?: IPagedResultOfUslugaDto) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(UslugaDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfUslugaDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfUslugaDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IPagedResultOfUslugaDto extends IPagedResultBase {
+    results?: UslugaDto[] | undefined;
 }
 
 export class UslugaDto implements IUslugaDto {

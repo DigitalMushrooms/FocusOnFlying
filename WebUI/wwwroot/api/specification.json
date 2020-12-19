@@ -451,16 +451,42 @@
           "Uslugi"
         ],
         "operationId": "Uslugi_PobierzUslugi",
+        "parameters": [
+          {
+            "name": "Offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "Rows",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UslugaDto"
-                  }
+                  "$ref": "#/components/schemas/PagedResultOfUslugaDto"
                 }
               }
             }
@@ -1098,6 +1124,26 @@
             "nullable": true
           }
         }
+      },
+      "PagedResultOfUslugaDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PagedResultBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "results": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/UslugaDto"
+                }
+              }
+            }
+          }
+        ]
       },
       "UslugaDto": {
         "type": "object",

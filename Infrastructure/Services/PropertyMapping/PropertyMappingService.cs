@@ -2,6 +2,7 @@
 using FocusOnFlying.Application.Drony.Queries.PobierzDrony;
 using FocusOnFlying.Application.Klienci.Queries.PobierzKlientow;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
+using FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,13 @@ namespace FocusOnFlying.Infrastructure.Services.PropertyMapping
             { "dataZakonczenia", new PropertyMappingValue(new[] { "DataZakonczenia" }) }
         };
 
+        private readonly Dictionary<string, PropertyMappingValue> _uslugaMapping = new Dictionary<string, PropertyMappingValue>
+        {
+            { "dataPrzyjeciaZlecenia", new PropertyMappingValue(new[] { "DataPrzyjeciaZlecenia" }) },
+            { "klient.nazwaKlienta", new PropertyMappingValue(new[] { "klient.imie", "klient.nazwa", "klient.nazwisko" }) },
+            { "statusUslugi.nazwa", new PropertyMappingValue(new[] { "StatusUslugi.Nazwa" }) },
+        };
+
         private readonly IList<IPropertyMapping> _propertyMappings = new List<IPropertyMapping>();
 
         public PropertyMappingService()
@@ -46,6 +54,7 @@ namespace FocusOnFlying.Infrastructure.Services.PropertyMapping
             _propertyMappings.Add(new PropertyMapping<KlientDto, Klient>(_klientMapping));
             _propertyMappings.Add(new PropertyMapping<DronDto, Dron>(_dronMapping));
             _propertyMappings.Add(new PropertyMapping<MisjaDto, Misja>(_misjaMapping));
+            _propertyMappings.Add(new PropertyMapping<UslugaDto, Usluga>(_uslugaMapping));
         }
 
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping<TSource, TDestination>()

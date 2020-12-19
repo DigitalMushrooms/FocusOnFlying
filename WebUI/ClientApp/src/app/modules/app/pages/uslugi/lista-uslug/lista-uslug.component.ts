@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { Table } from 'primeng/table';
+import { finalize } from 'rxjs/operators';
 import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { PracownicyService } from 'src/app/core/services/pracownicy.service';
 import { MisjaForm } from 'src/app/shared/models/misje/misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
-import { MisjaDto, MisjeClient, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
+import { MisjaDto, MisjeClient, PagedResultOfUslugaDto, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
 import { MisjeDialogComponent } from '../../../components/misje/misje-dialog.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
@@ -15,8 +17,10 @@ import { MisjeComponent } from '../../misje/misje/misje.component';
   styleUrls: ['./lista-uslug.component.css'],
   providers: [DialogService]
 })
-export class ListaUslugComponent implements OnInit {
+export class ListaUslugComponent {
   uslugi: UslugaDto[] = [];
+  loading = true;
+  liczbaRekordow = 0;
   wybranaUsluga: UslugaDto;
   indeksWybranejUslugi: number;
   kontekstoweMenu: MenuItem[];
@@ -29,27 +33,19 @@ export class ListaUslugComponent implements OnInit {
     private messageToast: MessageToast,
   ) { }
 
-  ngOnInit(): void {
-    this.pobierzUslugi();
-    this.utworzMenuKontekstowe();
+  pobierzUslugi(event: LazyLoadEvent): void {
+    this.loading = true;
+    this.uslugiClient.pobierzUslugi(event.first, event.rows, `${event.sortField} ${event.sortOrder}`)
+      .pipe(finalize(() => this.loading = false))
+      .subscribe(
+        (uslugi: PagedResultOfUslugaDto) => {
+          this.uslugi = uslugi.results;
+          this.liczbaRekordow = uslugi.rowCount;
+        }
+      );
   }
 
-  pobierzUslugi(): void {
-    this.uslugiClient.pobierzUslugi().subscribe(
-      (uslugi: UslugaDto[]) => {
-        this.uslugi = uslugi;
-      }
-    );
-  }
-
-  utworzMenuKontekstowe(): void {
-    this.kontekstoweMenu = [
-      { label: 'Edytuj misję', icon: 'pi pi-fw pi-star-o', command: () => this.edytujMisje() },
-      { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje() }
-    ];
-  }
-
-  edytujMisje(): void {
+  edytujMisje(tableRef: Table): void {
     const misjeDialog = this.dialogService.open(MisjeDialogComponent, {
       header: 'Wybór misji do edycji',
       width: '80%',
@@ -114,7 +110,8 @@ export class ListaUslugComponent implements OnInit {
 
               dialogEdycjiMisji.onClose.subscribe(
                 () => {
-                  this.pobierzUslugi();
+                  const event = tableRef.createLazyLoadMetadata();
+                  this.pobierzUslugi(event);
                 }
               );
             });
@@ -140,7 +137,10 @@ export class ListaUslugComponent implements OnInit {
       });
   }
 
-  naWybraniuUslugi(event: { index: number; }): void {
-    this.indeksWybranejUslugi = event.index;
+  naWybraniuUslugi(tableRef: Table): void {
+    this.kontekstoweMenu = [
+      { label: 'Edytuj misję', icon: 'pi pi-fw pi-star-o', command: () => this.edytujMisje(tableRef) },
+      { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje() }
+    ];
   }
 }

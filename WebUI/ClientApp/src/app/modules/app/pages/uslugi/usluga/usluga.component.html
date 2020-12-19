@@ -15,7 +15,8 @@
         </div>
     </form>
     <h2>Misje</h2>
-    <p-table [value]="misje" [(contextMenuSelection)]="wybranaMisja" [contextMenu]="contextMenuRef" (onContextMenuSelect)="naWybraniuUslugi($event)">
+    <p-table [value]="misje" [(contextMenuSelection)]="wybranaMisja" [contextMenu]="contextMenuRef" styleClass="p-datatable-striped p-datatable-gridlines"
+        (onContextMenuSelect)="naWybraniuUslugi($event)">
         <ng-template pTemplate="header">
             <tr>
                 <th pSortableColumn="nazwa">Nazwa<p-sortIcon field="nazwa"></p-sortIcon>
