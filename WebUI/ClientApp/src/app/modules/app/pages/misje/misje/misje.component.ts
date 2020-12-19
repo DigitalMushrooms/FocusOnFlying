@@ -201,19 +201,20 @@ export class MisjeComponent implements OnInit {
       if (isEmpty(operacje)) {
         this.messageToast.warning('Nie zmieniono żadnego pola.');
       } else {
-        this.misjeClient.zaktualizujMisje(misja.id, operacje).subscribe(
-          () => {
-            this.messageToast.success('Zaktualizowano misję.');
-            this.dynamicDialogRef.close();
-          },
-          e => {
-            const response = JSON.parse(e.response);
+        this.misjeClient.zaktualizujMisje(misja.id, operacje)
+          .subscribe(
+            () => {
+              this.messageToast.success('Zaktualizowano misję.');
+              this.dynamicDialogRef.close();
+            },
+            e => {
+              const response = JSON.parse(e.response);
 
-            if (response && response.errors.DataRozpoczecia) {
-              this.messageToast.error(response.errors.DataRozpoczecia[0]);
+              if (response && response.errors.DataRozpoczecia) {
+                this.messageToast.error(response.errors.DataRozpoczecia[0]);
+              }
             }
-          }
-        );
+          );
       }
     } else {
       this.dynamicDialogRef.close(misja);

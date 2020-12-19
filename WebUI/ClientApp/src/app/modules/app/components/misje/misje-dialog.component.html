@@ -1,8 +1,8 @@
 <div class="p-d-flex p-col-2 p-as-end p-mb-3">
     <button pButton type="button" icon="pi pi-star-o" label="Dodaj misję" (click)="dodajMisje()"></button>
 </div>
-<p-table [value]="misje" [lazy]="true" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" sortField="nazwa" selectionMode="single"
-    (onLazyLoad)="pobierzMisje($event)" (onRowSelect)="naWybraniuMisji($event)">
+<p-table [value]="misje" [lazy]="true" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" sortField="nazwa" selectionMode="single" dataKey="id"
+    [(contextMenuSelection)]="wybranaMisja" [contextMenu]="contextMenuRef" (onContextMenuSelect)="naWybraniuUslugi()" (onLazyLoad)="pobierzMisje($event)">
     <ng-template pTemplate="header">
         <tr>
             <th pSortableColumn="nazwa">Nazwa<p-sortIcon field="nazwa"></p-sortIcon>
@@ -18,7 +18,7 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-misja>
-        <tr [pSelectableRow]="misja">
+        <tr [pContextMenuRow]="misja">
             <td>{{misja.nazwa}}</td>
             <td>{{misja.opis}}</td>
             <td>{{misja.typMisji.nazwa}}</td>
@@ -27,3 +27,4 @@
         </tr>
     </ng-template>
 </p-table>
+<p-contextMenu #contextMenuRef [global]="true" [model]="kontekstoweMenu"></p-contextMenu>
