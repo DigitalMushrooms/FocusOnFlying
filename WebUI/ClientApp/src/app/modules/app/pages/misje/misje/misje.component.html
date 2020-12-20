@@ -61,7 +61,7 @@
             </p-inputNumber>
         </div>
         <div class="p-d-flex p-col-2 p-as-end p-mb-3">
-            <button pButton type="button" icon="pi pi-times" label="Wyczyść mapę" (click)="wyczyscMapeOnClick()"></button>
+            <button pButton type="button" icon="pi pi-times" label="Wyczyść mapę" [disabled]="dynamicDialogConfig.data?.doOdczytu" (click)="wyczyscMapeOnClick()"></button>
         </div>
     </div>
     <p-gmap [options]="opcjeMapy" [style]="{'width':'100%','height':'400px'}" [overlays]="nakladkiNaMape" (onMapClick)="mapaOnClick($event)"></p-gmap>

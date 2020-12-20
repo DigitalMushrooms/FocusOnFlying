@@ -110,7 +110,7 @@ export class UslugaComponent implements OnInit {
     const dialog = this.dialogService.open(MisjeComponent, {
       header: 'Edycja misji',
       width: '80%',
-      data: this.wybranaMisja
+      data: { doOdczytu: true, misjaForm: this.wybranaMisja } 
     });
 
     dialog.onClose.subscribe(

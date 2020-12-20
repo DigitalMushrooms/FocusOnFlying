@@ -40,7 +40,7 @@ export class MisjeComponent implements OnInit {
     private dynamicDialogRef: DynamicDialogRef,
     private typyMisjiClient: TypyMisjiClient,
     private statusyMisjiClient: StatusyMisjiClient,
-    private dynamicDialogConfig: DynamicDialogConfig,
+    public dynamicDialogConfig: DynamicDialogConfig,
     private dronyClient: DronyClient,
     private pracownicyService: PracownicyService,
     private messageToast: MessageToast,
@@ -148,7 +148,7 @@ export class MisjeComponent implements OnInit {
   }
 
   wczytajPolaDoFormularza(): void {
-    const misja: MisjaForm = this.dynamicDialogConfig.data;
+    const misja: MisjaForm = this.dynamicDialogConfig.data?.misjaForm;
     if (!misja)
       return;
     this.nakladkiNaMape = [
@@ -164,6 +164,10 @@ export class MisjeComponent implements OnInit {
       })
     ];
     this.misjaForm.setValue(misja);
+    if (this.dynamicDialogConfig.data.doOdczytu) {
+      this.misjaForm.disable();
+
+    }
   }
 
   mapaOnClick(event: { latLng: { lat: () => number; lng: () => number; } }): void {
@@ -265,6 +269,6 @@ export class MisjeComponent implements OnInit {
   }
 
   istniejacaMisja(): boolean {
-    return !!this.dynamicDialogConfig.data;
+    return !!this.dynamicDialogConfig.data?.misjaForm;
   }
 }
