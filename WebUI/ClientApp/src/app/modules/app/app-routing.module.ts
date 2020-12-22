@@ -6,6 +6,7 @@ import { ListaDronowComponent } from './pages/drony/lista-dronow/lista-dronow.co
 import { HomeComponent } from './pages/home/home.component';
 import { KlienciComponent } from './pages/klienci/klienci/klienci.component';
 import { KlientComponent } from './pages/klienci/klient/klient.component';
+import { ListaRaportowComponent } from './pages/raporty/lista-raportow/lista-raportow.component';
 import { ListaUslugComponent } from './pages/uslugi/lista-uslug/lista-uslug.component';
 import { UslugaComponent } from './pages/uslugi/usluga/usluga.component';
 
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'uslugi/lista-uslug', component: ListaUslugComponent, canActivate: [AuthorizationGuard] },
   { path: 'drony/dron', component: DronComponent, canActivate: [AuthorizationGuard] },
   { path: 'drony/lista-dronow', component: ListaDronowComponent, canActivate: [AuthorizationGuard] },
+  { path: 'raporty/lista-raportow', component: ListaRaportowComponent, canActivate: [AuthorizationGuard] },
   { path: '**', redirectTo: 'strona-glowna' }
 ];
 

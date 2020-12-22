@@ -35,7 +35,7 @@ export class ListaUslugComponent {
 
   pobierzUslugi(event: LazyLoadEvent): void {
     this.loading = true;
-    this.uslugiClient.pobierzUslugi(event.first, event.rows, `${event.sortField} ${event.sortOrder}`)
+    this.uslugiClient.pobierzUslugi(null, null, event.first, event.rows, `${event.sortField} ${event.sortOrder}`)
       .pipe(finalize(() => this.loading = false))
       .subscribe(
         (uslugi: PagedResultOfUslugaDto) => {

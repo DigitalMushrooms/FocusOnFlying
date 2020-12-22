@@ -846,7 +846,7 @@ export class TypyMisjiClient implements ITypyMisjiClient {
 }
 
 export interface IUslugiClient {
-    pobierzUslugi(offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfUslugaDto>;
+    pobierzUslugi(dataPrzyjeciaZleceniaOd: number | null | undefined, dataPrzyjeciaZleceniaDo: number | null | undefined, offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfUslugaDto>;
     utworzUsluge(command: UtworzUslugeCommand): Observable<void>;
     pobierzMisjeUslugi(id: string, statusy: string[] | null | undefined, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfMisjaDto>;
     utworzMisjeUslugi(id: string, command: UtworzMisjeUslugiCommand): Observable<void>;
@@ -865,8 +865,12 @@ export class UslugiClient implements IUslugiClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    pobierzUslugi(offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfUslugaDto> {
+    pobierzUslugi(dataPrzyjeciaZleceniaOd: number | null | undefined, dataPrzyjeciaZleceniaDo: number | null | undefined, offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfUslugaDto> {
         let url_ = this.baseUrl + "/api/uslugi?";
+        if (dataPrzyjeciaZleceniaOd !== undefined && dataPrzyjeciaZleceniaOd !== null)
+            url_ += "DataPrzyjeciaZleceniaOd=" + encodeURIComponent("" + dataPrzyjeciaZleceniaOd) + "&";
+        if (dataPrzyjeciaZleceniaDo !== undefined && dataPrzyjeciaZleceniaDo !== null)
+            url_ += "DataPrzyjeciaZleceniaDo=" + encodeURIComponent("" + dataPrzyjeciaZleceniaDo) + "&";
         if (offset === null)
             throw new Error("The parameter 'offset' cannot be null.");
         else if (offset !== undefined)

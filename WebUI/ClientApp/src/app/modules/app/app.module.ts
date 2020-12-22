@@ -36,6 +36,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { KlienciComponent } from './pages/klienci/klienci/klienci.component';
 import { KlientComponent } from './pages/klienci/klient/klient.component';
 import { MisjeComponent } from './pages/misje/misje/misje.component';
+import { ListaRaportowComponent } from './pages/raporty/lista-raportow/lista-raportow.component';
 import { ListaUslugComponent } from './pages/uslugi/lista-uslug/lista-uslug.component';
 import { UslugaComponent } from './pages/uslugi/usluga/usluga.component';
 
@@ -61,6 +62,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     KlienciDialogComponent,
     KlientComponent,
     ListaDronowComponent,
+    ListaRaportowComponent,
     ListaUslugComponent,
     MisjeComponent,
     MisjeDialogComponent,

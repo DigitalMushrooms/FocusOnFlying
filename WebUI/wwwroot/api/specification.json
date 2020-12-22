@@ -453,13 +453,33 @@
         "operationId": "Uslugi_PobierzUslugi",
         "parameters": [
           {
+            "name": "DataPrzyjeciaZleceniaOd",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "DataPrzyjeciaZleceniaDo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
             "name": "Offset",
             "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 1
+            "x-position": 3
           },
           {
             "name": "Rows",
@@ -468,7 +488,7 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 2
+            "x-position": 4
           },
           {
             "name": "Sort",
@@ -477,7 +497,7 @@
               "type": "string",
               "nullable": true
             },
-            "x-position": 3
+            "x-position": 5
           }
         ],
         "responses": {
