@@ -19,22 +19,66 @@
         </p-fieldset>
     </div>
     <div>
-        <p-table #tableRef [value]="uslugi" [lazy]="true" [lazyLoadOnInit]="false" [totalRecords]="liczbaRekordow" [loading]="loading" sortField="dataPrzyjeciaZlecenia"
-            styleClass="p-datatable-striped p-datatable-gridlines" (onLazyLoad)="pobierzUslugi($event)">
+        <p-table #tableRef [value]="misje" [lazy]="true" [lazyLoadOnInit]="false" [totalRecords]="liczbaRekordow" [loading]="loading" [scrollable]="true" [responsive]="true"
+            scrollHeight="300px" sortField="usluga.dataPrzyjeciaZlecenia" styleClass="p-datatable-striped p-datatable-gridlines" [style]="{width:'1382px'}"
+            (onLazyLoad)="pobierzUslugi($event)">
+            <ng-template pTemplate="colgroup" let-columns>
+                <colgroup>
+                    <col style="width:170px">
+                    <col style="width:170px">
+                    <col style="width:170px">
+                    <col style="width:170px">
+                    <col style="width:170px">
+                    <col style="width:170px">
+                    <col style="width:170px">
+                    <col style="width:170px">
+                    <col style="width:170px">
+                    <col style="width:170px">
+                    <col style="width:170px">
+                    <col style="width:350px">
+                    <col style="width:200px">
+                    <col style="width:350px">
+                </colgroup>
+            </ng-template>
             <ng-template pTemplate="header">
                 <tr>
-                    <th pSortableColumn="dataPrzyjeciaZlecenia">Data przyjecia zlecenia<p-sortIcon field="dataPrzyjeciaZlecenia"></p-sortIcon>
-                    </th>
+                    <th pSortableColumn="usluga.dataPrzyjeciaZlecenia">Data przyjecia zlecenia<p-sortIcon field="usluga.dataPrzyjeciaZlecenia"></p-sortIcon></th>
+                    <th pSortableColumn="usluga.statusUslugi.nazwa">Status usługi<p-sortIcon field="usluga.statusUslugi.nazwa"></p-sortIcon></th>
+                    <th pSortableColumn="statusMisji.nazwa">Status misji<p-sortIcon field="statusMisji.nazwa"></p-sortIcon></th>
+                    <th pSortableColumn="typMisji.nazwa">Typ misji<p-sortIcon field="typMisji.nazwa"></p-sortIcon></th>
+                    <th pSortableColumn="usluga.klient.imie">Imię<p-sortIcon field="usluga.klient.imie"></p-sortIcon></th>
+                    <th pSortableColumn="usluga.klient.nazwisko">Nazwisko<p-sortIcon field="usluga.klient.nazwisko"></p-sortIcon></th>
+                    <th pSortableColumn="usluga.klient.nazwa">Nazwa<p-sortIcon field="usluga.klient.nazwa"></p-sortIcon></th>
+                    <th pSortableColumn="usluga.klient.pesel">PESEL<p-sortIcon field="usluga.klient.pesel"></p-sortIcon></th>
+                    <th pSortableColumn="usluga.klient.regon">REGON<p-sortIcon field="usluga.klient.regon"></p-sortIcon></th>
+                    <th pSortableColumn="usluga.klient.nip">NIP<p-sortIcon field="usluga.klient.nip"></p-sortIcon></th>
+                    <th pSortableColumn="usluga.klient.numerTelefonu">Nr Tel<p-sortIcon field="usluga.klient.numerTelefonu"></p-sortIcon></th>
+                    <th pSortableColumn="usluga.klient.adres">Adres<p-sortIcon field="usluga.klient.adres"></p-sortIcon></th>
+                    <th pSortableColumn="usluga.klient.email">Email<p-sortIcon field="usluga.klient.email"></p-sortIcon></th>
+                    <th>Użyte drony</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-usluga>
+            <ng-template pTemplate="body" let-misja>
                 <tr>
-                    <td>{{usluga.dataPrzyjeciaZlecenia | dateFormat: 'DD.MM.YYYY'}}</td>
+                    <td>{{misja.usluga.dataPrzyjeciaZlecenia | dateFormat: 'DD.MM.YYYY'}}</td>
+                    <td>{{misja.usluga.statusUslugi.nazwa}}</td>
+                    <td>{{misja.statusMisji.nazwa}}</td>
+                    <td>{{misja.typMisji.nazwa}}</td>
+                    <td>{{misja.usluga.klient.imie}}</td>
+                    <td>{{misja.usluga.klient.nazwisko}}</td>
+                    <td>{{misja.usluga.klient.nazwa}}</td>
+                    <td>{{misja.usluga.klient.pesel}}</td>
+                    <td>{{misja.usluga.klient.regon}}</td>
+                    <td>{{misja.usluga.klient.nip}}</td>
+                    <td>{{misja.usluga.klient.numerTelefonu}}</td>
+                    <td>{{adres(misja.usluga.klient)}}</td>
+                    <td>{{misja.usluga.klient.email}}</td>
+                    <td>{{drony(misja.misjeDrony)}}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td [attr.colspan]="1">
+                    <td [attr.colspan]="9">
                         Brak danych
                     </td>
                 </tr>

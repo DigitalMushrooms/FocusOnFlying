@@ -19,9 +19,8 @@ namespace FocusOnFlying.WebUI.Controllers
     public class MisjeController : ApiController
     {
         [HttpGet]
-        public async Task<PagedResult<MisjaDto>> PobierzMisje()
+        public async Task<PagedResult<MisjaDto>> PobierzMisje([FromQuery] PobierzMisjeQuery query)
         {
-            var query = new PobierzMisjeQuery();
             var misje = await Mediator.Send(query);
             return misje;
         }

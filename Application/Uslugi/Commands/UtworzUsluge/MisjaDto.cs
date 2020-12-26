@@ -3,6 +3,7 @@ using FocusOnFlying.Application.Common.Mappings;
 using FocusOnFlying.Application.Extensions;
 using FocusOnFlying.Application.StatusyMisji.Queries.PobierzStatusyMisji;
 using FocusOnFlying.Application.TypyMisji.Queries.PobierzTypyMisji;
+using FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,7 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
 
         public TypMisjiDto TypMisji { get; set; }
         public StatusMisjiDto StatusMisji { get; set; }
+        public UslugaDto Usluga { get; set; }
 
         public void Mapping(Profile profile)
         {

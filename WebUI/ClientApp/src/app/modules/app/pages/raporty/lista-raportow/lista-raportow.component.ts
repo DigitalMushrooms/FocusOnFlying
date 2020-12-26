@@ -7,7 +7,7 @@ import { Table } from 'primeng/table';
 import { finalize } from 'rxjs/operators';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { ListaRaportowForm } from 'src/app/shared/models/raport/lista-raportow-form.model';
-import { PagedResultOfUslugaDto, UslugaDto, UslugiClient } from 'src/app/web-api-client';
+import { KlientDto, MisjaDronDto, MisjaDto, MisjeClient, PagedResultOfMisjaDto } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-lista-raportow',
@@ -18,13 +18,13 @@ export class ListaRaportowComponent implements OnInit {
   listaRaportowForm: IFormGroup<ListaRaportowForm>;
   formBuilder: IFormBuilder;
   pl = Kalendarz.pl;
-  uslugi: UslugaDto[];
+  misje: MisjaDto[];
   loading = false;
   liczbaRekordow = 0;
 
   constructor(
     formBuilder: FormBuilder,
-    private uslugiClient: UslugiClient) {
+    private misjeClient: MisjeClient) {
     this.formBuilder = formBuilder;
   }
 
@@ -50,13 +50,21 @@ export class ListaRaportowComponent implements OnInit {
     const poczatekMiesiaca = moment(miesiac).startOf('month').valueOf();
     const koniecMiesiaca = moment(miesiac).endOf('month').valueOf();
 
-    this.uslugiClient.pobierzUslugi(poczatekMiesiaca, koniecMiesiaca, 0, 0, `${event.sortField} ${event.sortOrder}`)
+    this.misjeClient.pobierzMisje(poczatekMiesiaca, koniecMiesiaca, 0, 0, `${event.sortField} ${event.sortOrder}`)
       .pipe(finalize(() => this.loading = false))
       .subscribe(
-        (uslugi: PagedResultOfUslugaDto) => {
-          this.uslugi = uslugi.results;
-          this.liczbaRekordow = uslugi.rowCount;
+        (misje: PagedResultOfMisjaDto) => {
+          this.misje = misje.results;
+          this.liczbaRekordow = misje.rowCount;
         }
       );
+  }
+
+  adres(klient: KlientDto): string {
+    return `${klient.ulica} ${klient.numerDomu}${klient.numerLokalu ? '/' + klient.numerLokalu : ''}, ${klient.kodPocztowy} ${klient.miejscowosc} ${klient.kraj.nazwaKraju}`;
+  }
+
+  drony(misjeDrony: MisjaDronDto[]): string {
+    return misjeDrony.map(x => `${x.dron.producent} ${x.dron.model} ${x.dron.numerSeryjny}`).join(', ');
   }
 }

@@ -235,6 +235,55 @@
           "Misje"
         ],
         "operationId": "Misje_PobierzMisje",
+        "parameters": [
+          {
+            "name": "DataPrzyjeciaZleceniaOd",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "DataPrzyjeciaZleceniaDo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "Rows",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 4
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 5
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -1036,6 +1085,14 @@
                 "$ref": "#/components/schemas/StatusMisjiDto"
               }
             ]
+          },
+          "usluga": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UslugaDto"
+              }
+            ]
           }
         }
       },
@@ -1096,74 +1153,6 @@
             "nullable": true
           }
         }
-      },
-      "Operation": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/OperationBase"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "value": {
-                "nullable": true
-              }
-            }
-          }
-        ]
-      },
-      "OperationBase": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "path": {
-            "type": "string",
-            "nullable": true
-          },
-          "op": {
-            "type": "string",
-            "nullable": true
-          },
-          "from": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "StatusUslugiDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "nazwa": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "PagedResultOfUslugaDto": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/PagedResultBase"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "results": {
-                "type": "array",
-                "nullable": true,
-                "items": {
-                  "$ref": "#/components/schemas/UslugaDto"
-                }
-              }
-            }
-          }
-        ]
       },
       "UslugaDto": {
         "type": "object",
@@ -1604,6 +1593,74 @@
             }
           }
         }
+      },
+      "Operation": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OperationBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "OperationBase": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "nullable": true
+          },
+          "op": {
+            "type": "string",
+            "nullable": true
+          },
+          "from": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "StatusUslugiDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwa": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PagedResultOfUslugaDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PagedResultBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "results": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/UslugaDto"
+                }
+              }
+            }
+          }
+        ]
       },
       "UtworzUslugeCommand": {
         "type": "object",

@@ -37,7 +37,8 @@ namespace FocusOnFlying.Infrastructure.Services.PropertyMapping
             { "opis", new PropertyMappingValue(new[] { "Opis" }) },
             { "typMisji.nazwa", new PropertyMappingValue(new[] { "TypMisji.Nazwa" }) },
             { "dataRozpoczecia", new PropertyMappingValue(new[] { "DataRozpoczecia" }) },
-            { "dataZakonczenia", new PropertyMappingValue(new[] { "DataZakonczenia" }) }
+            { "dataZakonczenia", new PropertyMappingValue(new[] { "DataZakonczenia" }) },
+            { "usluga.dataPrzyjeciaZlecenia", new PropertyMappingValue(new[] { "Usluga.DataPrzyjeciaZlecenia" }) },
         };
 
         private readonly Dictionary<string, PropertyMappingValue> _uslugaMapping = new Dictionary<string, PropertyMappingValue>

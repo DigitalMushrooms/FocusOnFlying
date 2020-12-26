@@ -349,7 +349,7 @@ export class KrajeClient implements IKrajeClient {
 }
 
 export interface IMisjeClient {
-    pobierzMisje(): Observable<PagedResultOfMisjaDto>;
+    pobierzMisje(dataPrzyjeciaZleceniaOd: number | null | undefined, dataPrzyjeciaZleceniaDo: number | null | undefined, offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfMisjaDto>;
     zaktualizujMisje(id: string, patch: Operation[]): Observable<void>;
     usunMisje(id: string): Observable<void>;
 }
@@ -367,8 +367,22 @@ export class MisjeClient implements IMisjeClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    pobierzMisje(): Observable<PagedResultOfMisjaDto> {
-        let url_ = this.baseUrl + "/api/misje";
+    pobierzMisje(dataPrzyjeciaZleceniaOd: number | null | undefined, dataPrzyjeciaZleceniaDo: number | null | undefined, offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfMisjaDto> {
+        let url_ = this.baseUrl + "/api/misje?";
+        if (dataPrzyjeciaZleceniaOd !== undefined && dataPrzyjeciaZleceniaOd !== null)
+            url_ += "DataPrzyjeciaZleceniaOd=" + encodeURIComponent("" + dataPrzyjeciaZleceniaOd) + "&";
+        if (dataPrzyjeciaZleceniaDo !== undefined && dataPrzyjeciaZleceniaDo !== null)
+            url_ += "DataPrzyjeciaZleceniaDo=" + encodeURIComponent("" + dataPrzyjeciaZleceniaDo) + "&";
+        if (offset === null)
+            throw new Error("The parameter 'offset' cannot be null.");
+        else if (offset !== undefined)
+            url_ += "Offset=" + encodeURIComponent("" + offset) + "&";
+        if (rows === null)
+            throw new Error("The parameter 'rows' cannot be null.");
+        else if (rows !== undefined)
+            url_ += "Rows=" + encodeURIComponent("" + rows) + "&";
+        if (sort !== undefined && sort !== null)
+            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1657,6 +1671,7 @@ export class MisjaDto implements IMisjaDto {
     misjeDrony?: MisjaDronDto[] | undefined;
     typMisji?: TypMisjiDto | undefined;
     statusMisji?: StatusMisjiDto | undefined;
+    usluga?: UslugaDto | undefined;
 
     constructor(data?: IMisjaDto) {
         if (data) {
@@ -1688,6 +1703,7 @@ export class MisjaDto implements IMisjaDto {
             }
             this.typMisji = _data["typMisji"] ? TypMisjiDto.fromJS(_data["typMisji"]) : <any>undefined;
             this.statusMisji = _data["statusMisji"] ? StatusMisjiDto.fromJS(_data["statusMisji"]) : <any>undefined;
+            this.usluga = _data["usluga"] ? UslugaDto.fromJS(_data["usluga"]) : <any>undefined;
         }
     }
 
@@ -1719,6 +1735,7 @@ export class MisjaDto implements IMisjaDto {
         }
         data["typMisji"] = this.typMisji ? this.typMisji.toJSON() : <any>undefined;
         data["statusMisji"] = this.statusMisji ? this.statusMisji.toJSON() : <any>undefined;
+        data["usluga"] = this.usluga ? this.usluga.toJSON() : <any>undefined;
         return data; 
     }
 }
@@ -1739,6 +1756,7 @@ export interface IMisjaDto {
     misjeDrony?: MisjaDronDto[] | undefined;
     typMisji?: TypMisjiDto | undefined;
     statusMisji?: StatusMisjiDto | undefined;
+    usluga?: UslugaDto | undefined;
 }
 
 export class MisjaDronDto implements IMisjaDronDto {
@@ -1867,164 +1885,6 @@ export class StatusMisjiDto implements IStatusMisjiDto {
 export interface IStatusMisjiDto {
     id?: string;
     nazwa?: string | undefined;
-}
-
-export class OperationBase implements IOperationBase {
-    path?: string | undefined;
-    op?: string | undefined;
-    from?: string | undefined;
-
-    constructor(data?: IOperationBase) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.path = _data["path"];
-            this.op = _data["op"];
-            this.from = _data["from"];
-        }
-    }
-
-    static fromJS(data: any): OperationBase {
-        data = typeof data === 'object' ? data : {};
-        let result = new OperationBase();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["path"] = this.path;
-        data["op"] = this.op;
-        data["from"] = this.from;
-        return data; 
-    }
-}
-
-export interface IOperationBase {
-    path?: string | undefined;
-    op?: string | undefined;
-    from?: string | undefined;
-}
-
-export class Operation extends OperationBase implements IOperation {
-    value?: any | undefined;
-
-    constructor(data?: IOperation) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.value = _data["value"];
-        }
-    }
-
-    static fromJS(data: any): Operation {
-        data = typeof data === 'object' ? data : {};
-        let result = new Operation();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["value"] = this.value;
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IOperation extends IOperationBase {
-    value?: any | undefined;
-}
-
-export class StatusUslugiDto implements IStatusUslugiDto {
-    id?: string;
-    nazwa?: string | undefined;
-
-    constructor(data?: IStatusUslugiDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.nazwa = _data["nazwa"];
-        }
-    }
-
-    static fromJS(data: any): StatusUslugiDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new StatusUslugiDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["nazwa"] = this.nazwa;
-        return data; 
-    }
-}
-
-export interface IStatusUslugiDto {
-    id?: string;
-    nazwa?: string | undefined;
-}
-
-export class PagedResultOfUslugaDto extends PagedResultBase implements IPagedResultOfUslugaDto {
-    results?: UslugaDto[] | undefined;
-
-    constructor(data?: IPagedResultOfUslugaDto) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            if (Array.isArray(_data["results"])) {
-                this.results = [] as any;
-                for (let item of _data["results"])
-                    this.results!.push(UslugaDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): PagedResultOfUslugaDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new PagedResultOfUslugaDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.results)) {
-            data["results"] = [];
-            for (let item of this.results)
-                data["results"].push(item.toJSON());
-        }
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IPagedResultOfUslugaDto extends IPagedResultBase {
-    results?: UslugaDto[] | undefined;
 }
 
 export class UslugaDto implements IUslugaDto {
@@ -2757,6 +2617,164 @@ export interface ITypDrona {
     id?: string;
     nazwa?: string | undefined;
     drony?: Dron[] | undefined;
+}
+
+export class OperationBase implements IOperationBase {
+    path?: string | undefined;
+    op?: string | undefined;
+    from?: string | undefined;
+
+    constructor(data?: IOperationBase) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.path = _data["path"];
+            this.op = _data["op"];
+            this.from = _data["from"];
+        }
+    }
+
+    static fromJS(data: any): OperationBase {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperationBase();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["path"] = this.path;
+        data["op"] = this.op;
+        data["from"] = this.from;
+        return data; 
+    }
+}
+
+export interface IOperationBase {
+    path?: string | undefined;
+    op?: string | undefined;
+    from?: string | undefined;
+}
+
+export class Operation extends OperationBase implements IOperation {
+    value?: any | undefined;
+
+    constructor(data?: IOperation) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): Operation {
+        data = typeof data === 'object' ? data : {};
+        let result = new Operation();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IOperation extends IOperationBase {
+    value?: any | undefined;
+}
+
+export class StatusUslugiDto implements IStatusUslugiDto {
+    id?: string;
+    nazwa?: string | undefined;
+
+    constructor(data?: IStatusUslugiDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.nazwa = _data["nazwa"];
+        }
+    }
+
+    static fromJS(data: any): StatusUslugiDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatusUslugiDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["nazwa"] = this.nazwa;
+        return data; 
+    }
+}
+
+export interface IStatusUslugiDto {
+    id?: string;
+    nazwa?: string | undefined;
+}
+
+export class PagedResultOfUslugaDto extends PagedResultBase implements IPagedResultOfUslugaDto {
+    results?: UslugaDto[] | undefined;
+
+    constructor(data?: IPagedResultOfUslugaDto) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(UslugaDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfUslugaDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfUslugaDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IPagedResultOfUslugaDto extends IPagedResultBase {
+    results?: UslugaDto[] | undefined;
 }
 
 export class UtworzUslugeCommand implements IUtworzUslugeCommand {

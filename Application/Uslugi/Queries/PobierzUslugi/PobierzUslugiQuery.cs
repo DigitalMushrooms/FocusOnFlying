@@ -51,7 +51,8 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi
                 query = query.Where(x => x.DataPrzyjeciaZlecenia >= request.DataPrzyjeciaZleceniaOd.ToLocalDateTime());
             }
 
-            Common.Models.PagedResult<UslugaDto> uslugi = await query.Include(x => x.Klient).ThenInclude(x => x.Kraj)
+            Common.Models.PagedResult<UslugaDto> uslugi = await query
+                .Include(x => x.Klient).ThenInclude(x => x.Kraj)
                 .Include(x => x.StatusUslugi)
                 .Include(x => x.Misje).ThenInclude(x => x.StatusMisji)
                 .Include(x => x.Misje).ThenInclude(x => x.TypMisji)
