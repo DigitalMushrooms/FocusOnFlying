@@ -21,6 +21,7 @@ export class ListaRaportowComponent implements OnInit {
   misje: MisjaDto[];
   loading = false;
   liczbaRekordow = 0;
+  cols: any[];
 
   constructor(
     formBuilder: FormBuilder,
@@ -30,6 +31,7 @@ export class ListaRaportowComponent implements OnInit {
 
   ngOnInit(): void {
     this.zbudujFormularz();
+    this.zbudujKolumnyTabeli();
   }
 
   zbudujFormularz(): void {
@@ -38,9 +40,33 @@ export class ListaRaportowComponent implements OnInit {
     })
   }
 
+  zbudujKolumnyTabeli(): void {
+    this.cols = [
+      { field: 'usluga.dataPrzyjeciaZlecenia', header: 'Data przyjecia zlecenia' },
+      { field: 'usluga.statusUslugi.nazwa', header: 'Status usługi' },
+      { field: 'statusMisji.nazwa', header: 'Status misji' },
+      { field: 'typMisji.nazwa', header: 'Typ misji' },
+      { field: 'usluga.klient.imie', header: 'Imię' },
+      { field: 'usluga.klient.nazwisko', header: 'Nazwisko' },
+      { field: 'usluga.klient.nazwa', header: 'Nazwa' },
+      { field: 'usluga.klient.pesel', header: 'PESEL' },
+      { field: 'usluga.klient.regon', header: 'REGON' },
+      { field: 'usluga.klient.nip', header: 'NIP' },
+      { field: 'usluga.klient.numerTelefonu', header: 'Nr Tel' },
+      { field: 'usluga.klient.adres', header: 'Adres' },
+      { field: 'usluga.klient.email', header: 'Email' },
+      { field: null, header: 'Użyte drony' },
+    ];
+  }
+
   wygenerujRaportOnClick(tableRef: Table): void {
     const event = tableRef.createLazyLoadMetadata();
     this.pobierzUslugi(event);
+  }
+
+  PobierzWygenerowanyRaportOnClick(tableRef: Table): void {
+    tableRef.exportFilename = `Raport ${moment(this.listaRaportowForm.value.miesiac).format('MMMM YYYY')}`;
+    tableRef.exportCSV();
   }
 
   pobierzUslugi(event: LazyLoadEvent): void {

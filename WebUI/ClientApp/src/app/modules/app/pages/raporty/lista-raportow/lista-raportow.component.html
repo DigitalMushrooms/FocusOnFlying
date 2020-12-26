@@ -12,17 +12,17 @@
                         <button pButton type="button" icon="pi pi-search" label="Wygeneruj raport" (click)="wygenerujRaportOnClick(tableRef)"></button>
                     </div>
                     <div class="p-field p-col-3 p-mt-auto">
-                        <button pButton type="button" icon="pi pi-file-excel" label="Pobierz wygenerowany raport"></button>
+                        <button pButton type="button" icon="pi pi-file-excel" label="Pobierz wygenerowany raport" (click)="PobierzWygenerowanyRaportOnClick(tableRef)"></button>
                     </div>
                 </div>
             </form>
         </p-fieldset>
     </div>
     <div>
-        <p-table #tableRef [value]="misje" [lazy]="true" [lazyLoadOnInit]="false" [totalRecords]="liczbaRekordow" [loading]="loading" [scrollable]="true" [responsive]="true"
+        <p-table #tableRef [columns]="cols" [value]="misje" [lazy]="true" [lazyLoadOnInit]="false" [totalRecords]="liczbaRekordow" [loading]="loading" [scrollable]="true" [responsive]="true"
             scrollHeight="300px" sortField="usluga.dataPrzyjeciaZlecenia" styleClass="p-datatable-striped p-datatable-gridlines" [style]="{width:'1382px'}"
             (onLazyLoad)="pobierzUslugi($event)">
-            <ng-template pTemplate="colgroup" let-columns>
+            <ng-template pTemplate="colgroup">
                 <colgroup>
                     <col style="width:170px">
                     <col style="width:170px">
@@ -40,10 +40,10 @@
                     <col style="width:350px">
                 </colgroup>
             </ng-template>
-            <ng-template pTemplate="header">
+            <ng-template pTemplate="header" let-columns>
                 <tr>
-                    <th pSortableColumn="usluga.dataPrzyjeciaZlecenia">Data przyjecia zlecenia<p-sortIcon field="usluga.dataPrzyjeciaZlecenia"></p-sortIcon></th>
-                    <th pSortableColumn="usluga.statusUslugi.nazwa">Status usługi<p-sortIcon field="usluga.statusUslugi.nazwa"></p-sortIcon></th>
+                    <th *ngFor="let col of columns" pSortableColumn={{col.field}}>{{col.header}}<p-sortIcon field={{col.field}}></p-sortIcon></th>
+                    <!-- <th pSortableColumn="usluga.statusUslugi.nazwa">Status usługi<p-sortIcon field="usluga.statusUslugi.nazwa"></p-sortIcon></th>
                     <th pSortableColumn="statusMisji.nazwa">Status misji<p-sortIcon field="statusMisji.nazwa"></p-sortIcon></th>
                     <th pSortableColumn="typMisji.nazwa">Typ misji<p-sortIcon field="typMisji.nazwa"></p-sortIcon></th>
                     <th pSortableColumn="usluga.klient.imie">Imię<p-sortIcon field="usluga.klient.imie"></p-sortIcon></th>
@@ -55,7 +55,7 @@
                     <th pSortableColumn="usluga.klient.numerTelefonu">Nr Tel<p-sortIcon field="usluga.klient.numerTelefonu"></p-sortIcon></th>
                     <th pSortableColumn="usluga.klient.adres">Adres<p-sortIcon field="usluga.klient.adres"></p-sortIcon></th>
                     <th pSortableColumn="usluga.klient.email">Email<p-sortIcon field="usluga.klient.email"></p-sortIcon></th>
-                    <th>Użyte drony</th>
+                    <th>Użyte drony</th> -->
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-misja>
