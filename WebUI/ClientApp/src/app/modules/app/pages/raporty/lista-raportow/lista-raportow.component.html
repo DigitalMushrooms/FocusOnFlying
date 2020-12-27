@@ -43,19 +43,6 @@
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns" pSortableColumn={{col.field}}>{{col.header}}<p-sortIcon field={{col.field}}></p-sortIcon></th>
-                    <!-- <th pSortableColumn="usluga.statusUslugi.nazwa">Status usługi<p-sortIcon field="usluga.statusUslugi.nazwa"></p-sortIcon></th>
-                    <th pSortableColumn="statusMisji.nazwa">Status misji<p-sortIcon field="statusMisji.nazwa"></p-sortIcon></th>
-                    <th pSortableColumn="typMisji.nazwa">Typ misji<p-sortIcon field="typMisji.nazwa"></p-sortIcon></th>
-                    <th pSortableColumn="usluga.klient.imie">Imię<p-sortIcon field="usluga.klient.imie"></p-sortIcon></th>
-                    <th pSortableColumn="usluga.klient.nazwisko">Nazwisko<p-sortIcon field="usluga.klient.nazwisko"></p-sortIcon></th>
-                    <th pSortableColumn="usluga.klient.nazwa">Nazwa<p-sortIcon field="usluga.klient.nazwa"></p-sortIcon></th>
-                    <th pSortableColumn="usluga.klient.pesel">PESEL<p-sortIcon field="usluga.klient.pesel"></p-sortIcon></th>
-                    <th pSortableColumn="usluga.klient.regon">REGON<p-sortIcon field="usluga.klient.regon"></p-sortIcon></th>
-                    <th pSortableColumn="usluga.klient.nip">NIP<p-sortIcon field="usluga.klient.nip"></p-sortIcon></th>
-                    <th pSortableColumn="usluga.klient.numerTelefonu">Nr Tel<p-sortIcon field="usluga.klient.numerTelefonu"></p-sortIcon></th>
-                    <th pSortableColumn="usluga.klient.adres">Adres<p-sortIcon field="usluga.klient.adres"></p-sortIcon></th>
-                    <th pSortableColumn="usluga.klient.email">Email<p-sortIcon field="usluga.klient.email"></p-sortIcon></th>
-                    <th>Użyte drony</th> -->
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-misja>

@@ -1,11 +1,16 @@
 ﻿using FocusOnFlying.Application.Common.Models;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzMisjeUslugi;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
+using FocusOnFlying.Application.Uslugi.Commands.ZaktualizujUsluge;
 using FocusOnFlying.Application.Uslugi.Queries.PobierzMisjeUslugi;
 using FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
+using NJsonSchema.Annotations;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FocusOnFlying.WebUI.Controllers
@@ -39,6 +44,15 @@ namespace FocusOnFlying.WebUI.Controllers
         public async Task UtworzMisjeUslugi([FromRoute] Guid id, [FromBody] UtworzMisjeUslugiCommand command)
         {
             command.Id = id;
+            await Mediator.Send(command);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task ZaktualizujUsluge(
+            [FromRoute] Guid id,
+            [FromBody][JsonSchemaType(typeof(List<Operation>))] JsonPatchDocument<UslugaUpdateDto> patch)
+        {
+            var command = new ZaktualizujUslugeCommand { Id = id, Patch = patch };
             await Mediator.Send(command);
         }
     }

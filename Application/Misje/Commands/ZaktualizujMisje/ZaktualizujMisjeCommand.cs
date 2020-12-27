@@ -52,6 +52,7 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
             Misja misjaEntity = await _focusOnFlyingContext.Misje
                 .Include(x => x.MisjeDrony)
                 .SingleAsync(x => x.Id == request.Id);
+
             var misja = _mapper.Map<MisjaUpdateDto>(misjaEntity);
 
             request.Patch.ApplyTo(misja);

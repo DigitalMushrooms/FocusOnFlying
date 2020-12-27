@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
@@ -7,7 +7,7 @@ import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { PracownicyService } from 'src/app/core/services/pracownicy.service';
 import { MisjaForm } from 'src/app/shared/models/misje/misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
-import { MisjaDto, MisjeClient, PagedResultOfUslugaDto, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
+import { MisjaDto, MisjeClient, Operation, PagedResultOfUslugaDto, StatusUslugiDto, StatusyUslugiClient, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
 import { MisjeDialogComponent } from '../../../components/misje/misje-dialog.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
@@ -22,7 +22,6 @@ export class ListaUslugComponent {
   loading = true;
   liczbaRekordow = 0;
   wybranaUsluga: UslugaDto;
-  indeksWybranejUslugi: number;
   kontekstoweMenu: MenuItem[];
 
   constructor(
@@ -31,6 +30,7 @@ export class ListaUslugComponent {
     private pracownicyService: PracownicyService,
     private misjeClient: MisjeClient,
     private messageToast: MessageToast,
+    private statusyUslugiClient: StatusyUslugiClient
   ) { }
 
   pobierzUslugi(event: LazyLoadEvent): void {
@@ -191,7 +191,30 @@ export class ListaUslugComponent {
     this.kontekstoweMenu = [
       { label: 'Podejrzyj misję', icon: 'pi pi-fw pi-star-o', command: () => this.podejrzyjMisje(tableRef) },
       { label: 'Edytuj misję', icon: 'pi pi-fw pi-star', command: () => this.edytujMisje(tableRef) },
-      { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje() }
+      { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje() },
+      { label: 'Zmień status usługi na "Wykonana"', icon: 'pi pi-fw pi-star', command: () => this.zmienStatusUslugi(tableRef, 'Wykonana'), visible: this.zmienStatusUslugiNaWykonanaVisible() },
     ];
+  }
+
+  zmienStatusUslugi(tableRef: Table, status: string): void {
+    this.statusyUslugiClient.pobierzStatusUslugi(status)
+      .subscribe(
+        (statusUslugi: StatusUslugiDto) => {
+          const operacja = [{ op: 'add', path: `/idStatusuUslugi`, value: statusUslugi.id } as Operation];
+          this.uslugiClient.zaktualizujUsluge(this.wybranaUsluga.id, operacja)
+            .subscribe(
+              () => {
+                this.messageToast.success('Zaktualizowano status misji');
+                const event = tableRef.createLazyLoadMetadata();
+                this.pobierzUslugi(event);
+              }
+            );
+        }
+      );
+  }
+
+  zmienStatusUslugiNaWykonanaVisible(): boolean {
+    const wynik = this.wybranaUsluga.misje.every(x => x.statusMisji.nazwa === 'Wykonana' || x.statusMisji.nazwa === 'Anulowana')
+    return wynik;
   }
 }
