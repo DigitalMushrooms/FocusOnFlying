@@ -47,15 +47,6 @@ export class MisjeDialogComponent {
       );
   }
 
-  zmienStatusMisjiNaWykonanaVisible(): boolean {
-    if (this.wybranaMisja?.dataRozpoczecia && this.wybranaMisja.dataZakonczenia) {
-      if (moment(this.wybranaMisja.dataZakonczenia).isBefore(moment())) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   pobierzMisje(event: LazyLoadEvent): void {
     this.loading = true;
     const idUslugi: string = this.dynamicDialogConfig.data.idUslugi;
@@ -74,8 +65,23 @@ export class MisjeDialogComponent {
 
   naWybraniuUslugi(): void {
     this.kontekstoweMenu = [
-      { label: 'Wybierz misje', icon: 'pi pi-fw pi-star-o', command: () => this.wybierzMisje() },
+      { label: 'Wybierz misje', icon: 'pi pi-fw pi-star-o', command: () => this.wybierzMisje(), visible: this.wybierzMisjeVisible() },
       { label: 'Zmień status misji na "Wykonana"', icon: 'pi pi-fw pi-star', command: () => this.zmienStatusMisji('Wykonana'), visible: this.zmienStatusMisjiNaWykonanaVisible() }
     ];
+  }
+
+  wybierzMisjeVisible(): boolean {
+    return this.wybranaMisja.statusMisji.nazwa !== 'Wykonana';
+  }
+
+  zmienStatusMisjiNaWykonanaVisible(): boolean {
+    if (this.wybranaMisja?.statusMisji.nazwa === 'Wykonana')
+      return false;
+    if (this.wybranaMisja?.dataRozpoczecia && this.wybranaMisja.dataZakonczenia) {
+      if (moment(this.wybranaMisja.dataZakonczenia).isBefore(moment())) {
+        return true;
+      }
+    }
+    return false;
   }
 }

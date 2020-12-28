@@ -1,4 +1,5 @@
-﻿using FocusOnFlying.Application.Common.Mappings;
+﻿using AutoMapper;
+using FocusOnFlying.Application.Common.Mappings;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using NSwag.Annotations;
 using System;
@@ -10,5 +11,11 @@ namespace FocusOnFlying.Application.Uslugi.Commands.ZaktualizujUsluge
         [OpenApiIgnore]
         public Guid Id { get; set; }
         public Guid IdStatusuUslugi { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Usluga, UslugaUpdateDto>()
+                .ReverseMap();
+        }
     }
 }

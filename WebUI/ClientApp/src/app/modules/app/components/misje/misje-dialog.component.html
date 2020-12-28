@@ -16,6 +16,8 @@
             </th>
             <th pSortableColumn="dataZakonczenia">Data zakończenia<p-sortIcon field="dataZakonczenia"></p-sortIcon>
             </th>
+            <th pSortableColumn="statusMisji.nazwa">Status<p-sortIcon field="statusMisji.nazwa"></p-sortIcon>
+            </th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-misja>
@@ -25,6 +27,7 @@
             <td>{{misja.typMisji.nazwa}}</td>
             <td>{{misja.dataRozpoczecia | dateFormat: 'DD.MM.YYYY'}}</td>
             <td>{{misja.dataZakonczenia | dateFormat: 'DD.MM.YYYY'}}</td>
+            <td>{{misja.statusMisji.nazwa}}</td>
         </tr>
     </ng-template>
 </p-table>

@@ -190,9 +190,9 @@ export class ListaUslugComponent {
   naWybraniuUslugi(tableRef: Table): void {
     this.kontekstoweMenu = [
       { label: 'Podejrzyj misję', icon: 'pi pi-fw pi-star-o', command: () => this.podejrzyjMisje(tableRef) },
-      { label: 'Edytuj misję', icon: 'pi pi-fw pi-star', command: () => this.edytujMisje(tableRef) },
-      { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje() },
-      { label: 'Zmień status usługi na "Wykonana"', icon: 'pi pi-fw pi-star', command: () => this.zmienStatusUslugi(tableRef, 'Wykonana'), visible: this.zmienStatusUslugiNaWykonanaVisible() },
+      { label: 'Edytuj misję', icon: 'pi pi-fw pi-star', command: () => this.edytujMisje(tableRef), visible: this.edytujMisjeVisible() },
+      { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje(), visible: this.usunMisjeVisible() },
+      { label: 'Zmień status usługi na "Wykonana"', icon: 'pi pi-fw pi-star', command: () => this.zmienStatusUslugi(tableRef, 'Zakończona'), visible: this.zmienStatusUslugiNaWykonanaVisible() },
     ];
   }
 
@@ -213,7 +213,17 @@ export class ListaUslugComponent {
       );
   }
 
+  edytujMisjeVisible(): boolean {
+    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona';
+  }
+
+  usunMisjeVisible(): boolean {
+    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona';
+  }
+
   zmienStatusUslugiNaWykonanaVisible(): boolean {
+    if (this.wybranaUsluga.statusUslugi.nazwa === 'Zakończona')
+      return false;
     const wynik = this.wybranaUsluga.misje.every(x => x.statusMisji.nazwa === 'Wykonana' || x.statusMisji.nazwa === 'Anulowana')
     return wynik;
   }
