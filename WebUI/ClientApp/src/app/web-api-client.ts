@@ -1714,8 +1714,8 @@ export class MisjaDto implements IMisjaDto {
     idTypuMisji?: string;
     maksymalnaWysokoscLotu?: number;
     idStatusuMisji?: string;
-    dataRozpoczecia?: number;
-    dataZakonczenia?: number;
+    dataRozpoczecia?: number | undefined;
+    dataZakonczenia?: number | undefined;
     idPracownika?: string | undefined;
     szerokoscGeograficzna?: number;
     dlugoscGeograficzna?: number;
@@ -1799,8 +1799,8 @@ export interface IMisjaDto {
     idTypuMisji?: string;
     maksymalnaWysokoscLotu?: number;
     idStatusuMisji?: string;
-    dataRozpoczecia?: number;
-    dataZakonczenia?: number;
+    dataRozpoczecia?: number | undefined;
+    dataZakonczenia?: number | undefined;
     idPracownika?: string | undefined;
     szerokoscGeograficzna?: number;
     dlugoscGeograficzna?: number;
@@ -2891,7 +2891,6 @@ export class UtworzMisjeUslugiCommand implements IUtworzMisjeUslugiCommand {
     opis?: string | undefined;
     idTypuMisji?: string;
     maksymalnaWysokoscLotu?: number;
-    idStatusuMisji?: string;
     dataRozpoczecia?: number;
     dataZakonczenia?: number;
     idPracownika?: string | undefined;
@@ -2915,7 +2914,6 @@ export class UtworzMisjeUslugiCommand implements IUtworzMisjeUslugiCommand {
             this.opis = _data["opis"];
             this.idTypuMisji = _data["idTypuMisji"];
             this.maksymalnaWysokoscLotu = _data["maksymalnaWysokoscLotu"];
-            this.idStatusuMisji = _data["idStatusuMisji"];
             this.dataRozpoczecia = _data["dataRozpoczecia"];
             this.dataZakonczenia = _data["dataZakonczenia"];
             this.idPracownika = _data["idPracownika"];
@@ -2939,7 +2937,6 @@ export class UtworzMisjeUslugiCommand implements IUtworzMisjeUslugiCommand {
         data["opis"] = this.opis;
         data["idTypuMisji"] = this.idTypuMisji;
         data["maksymalnaWysokoscLotu"] = this.maksymalnaWysokoscLotu;
-        data["idStatusuMisji"] = this.idStatusuMisji;
         data["dataRozpoczecia"] = this.dataRozpoczecia;
         data["dataZakonczenia"] = this.dataZakonczenia;
         data["idPracownika"] = this.idPracownika;
@@ -2956,7 +2953,6 @@ export interface IUtworzMisjeUslugiCommand {
     opis?: string | undefined;
     idTypuMisji?: string;
     maksymalnaWysokoscLotu?: number;
-    idStatusuMisji?: string;
     dataRozpoczecia?: number;
     dataZakonczenia?: number;
     idPracownika?: string | undefined;

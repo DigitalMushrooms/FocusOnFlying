@@ -37,7 +37,7 @@
                 <td>{{misja.typ.nazwa}}</td>
                 <td>{{misja.maksymalnaWysokoscLotu}} m</td>
                 <td>{{misja.dataRozpoczecia | dateFormat: 'llll'}}</td>
-                <td>{{misja.dataZakonczenia ? (misja.dataZakonczenia | dateFormat: 'llll') : 'nd.'}}</td>
+                <td>{{misja.dataZakonczenia | dateFormat: 'llll'}}</td>
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">

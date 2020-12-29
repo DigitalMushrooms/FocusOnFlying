@@ -49,6 +49,8 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
         {
             _request = request;
 
+            await NadajStatusMisjom();
+
             Usluga uslugaEntity = _mapper.Map<Usluga>(request);
             _focusOnFlyingContext.Uslugi.Attach(uslugaEntity);
             await _focusOnFlyingContext.SaveChangesAsync(cancellationToken);
@@ -60,6 +62,21 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
             return Unit.Value;
         }
 
+        private async Task NadajStatusMisjom()
+        {
+            foreach (MisjaDto misja in _request.Misje)
+            {
+                if (misja.DataRozpoczecia.HasValue && misja.DataZakonczenia.HasValue)
+                {
+                    misja.IdStatusuMisji = (await _focusOnFlyingContext.StatusyMisji.SingleAsync(x => x.Nazwa == "Zaplanowana")).Id;
+                } 
+                else
+                {
+                    misja.IdStatusuMisji = (await _focusOnFlyingContext.StatusyMisji.SingleAsync(x => x.Nazwa == "Utworzona")).Id;
+                }
+            }
+        }
+
         private string WygenerujOpisWiadomosci()
         {
             CultureInfo polska = new CultureInfo("pl-pl", false);
@@ -69,8 +86,8 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge
             IEnumerable<string> misje = _request.Misje.Select(x => 
                 $@"Misja ""{x.Nazwa}""
                 <ul>
-                    <li>Data rozpoczęcia: {x.DataRozpoczecia.ToLocalDateTime().ToString("f", polska)}</li>
-                    <li>Data zakończenia: {x.DataZakonczenia.ToLocalDateTime().ToString("f", polska)}</li>
+                    <li>Data rozpoczęcia: {x.DataRozpoczecia.ToLocalDateTime()?.ToString("f", polska) ?? "nd."}</li>
+                    <li>Data zakończenia: {x.DataZakonczenia.ToLocalDateTime()?.ToString("f", polska) ?? "nd."}</li>
                     <li>Opis: ""{x.Opis}""</li>
                     <li>Lokalizacja miejsca: <a href=""https://www.google.com/maps/@{x.SzerokoscGeograficzna},{x.DlugoscGeograficzna},16z"" target=""_blank"">Mapa Google</a></li>
                 </ul>");

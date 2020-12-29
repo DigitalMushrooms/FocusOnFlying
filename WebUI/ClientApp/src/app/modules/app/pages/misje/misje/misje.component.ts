@@ -13,7 +13,7 @@ import { PracownicyService } from 'src/app/core/services/pracownicy.service';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { MisjaForm } from 'src/app/shared/models/misje/misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
-import { DronDto, DronyClient, MisjaDronDto, MisjeClient, Operation, StatusMisjiDto, StatusyMisjiClient, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
+import { DronDto, DronyClient, MisjaDronDto, MisjeClient, Operation, TypMisjiDto, TypyMisjiClient } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-misje',
@@ -24,7 +24,6 @@ export class MisjeComponent implements OnInit {
   formBuilder: IFormBuilder;
   misjaForm: IFormGroup<MisjaForm>;
   typyMisji: SelectItem<TypMisjiDto>[] = [];
-  statusyMisji: SelectItem<StatusMisjiDto>[];
   opcjeMapy = {
     center: { lat: 52.2334836, lng: 21.0122257 },
     zoom: 12
@@ -39,7 +38,6 @@ export class MisjeComponent implements OnInit {
     formBuilder: FormBuilder,
     private dynamicDialogRef: DynamicDialogRef,
     private typyMisjiClient: TypyMisjiClient,
-    private statusyMisjiClient: StatusyMisjiClient,
     public dynamicDialogConfig: DynamicDialogConfig,
     private dronyClient: DronyClient,
     private pracownicyService: PracownicyService,
@@ -53,20 +51,15 @@ export class MisjeComponent implements OnInit {
     this.nadajNazwePrzyciskowi();
     this.zbudujFormularz();
     const typyMisji$ = this.pobierzTypyMisji();
-    const statusyMisji$ = this.pobierzStatusyMisji();
     const pracownicy$ = this.pobierzPracownikow();
     const drony$ = this.pobierzDrony();
     this.typOnChange();
     this.promienOnChange();
 
-    forkJoin([typyMisji$, statusyMisji$, pracownicy$, drony$])
+    forkJoin([typyMisji$, pracownicy$, drony$])
       .subscribe({
-        next: ([typyMisji, statusyMisji, pracownicy, drony]) => {
+        next: ([typyMisji, pracownicy, drony]) => {
           this.typyMisji = typyMisji;
-
-          const utworzona = statusyMisji.find(x => x.value.nazwa === 'Utworzona');
-          this.misjaForm.controls.status.setValue(utworzona.value);
-          this.statusyMisji = statusyMisji;
 
           this.pracownicy = pracownicy;
 
@@ -80,11 +73,10 @@ export class MisjeComponent implements OnInit {
     this.misjaForm = this.formBuilder.group<MisjaForm>({
       id: [null],
       nazwa: [null, Validators.required],
-      dataRozpoczecia: [null, Validators.required],
+      dataRozpoczecia: [null],
       dataZakonczenia: [null],
       opis: [null, Validators.required],
       typ: [null, Validators.required],
-      status: [{ value: null, disabled: true }],
       maksymalnaWysokoscLotu: [null, Validators.required],
       przypisanyPracownik: [null],
       drony: [null],
@@ -97,11 +89,6 @@ export class MisjeComponent implements OnInit {
   pobierzTypyMisji(): Observable<SelectItem<TypMisjiDto>[]> {
     return this.typyMisjiClient.pobierzTypyMisji()
       .pipe(map(typyMisji => typyMisji.map(tm => ({ label: tm.nazwa, value: tm }) as SelectItem<TypMisjiDto>)));
-  }
-
-  pobierzStatusyMisji(): Observable<SelectItem<StatusMisjiDto>[]> {
-    return this.statusyMisjiClient.pobierzStatusyMisji()
-      .pipe(map(statusyMisji => statusyMisji.map(s => ({ label: s.nazwa, value: s } as SelectItem<StatusMisjiDto>))));
   }
 
   pobierzPracownikow(): Observable<SelectItem<Pracownik>[]> {
@@ -166,7 +153,6 @@ export class MisjeComponent implements OnInit {
     this.misjaForm.setValue(misja);
     if (this.dynamicDialogConfig.data.doOdczytu) {
       this.misjaForm.disable();
-
     }
   }
 
@@ -241,8 +227,6 @@ export class MisjeComponent implements OnInit {
       operacje.push({ op: 'replace', path: `/opis`, value: value.opis } as Operation);
     if (controls.typ.dirty)
       operacje.push({ op: 'replace', path: `/idTypuMisji`, value: value.typ.id } as Operation);
-    if (controls.status.dirty)
-      operacje.push({ op: 'replace', path: `/status`, value: value.status.id } as Operation);
     if (controls.maksymalnaWysokoscLotu.dirty)
       operacje.push({ op: 'replace', path: `/maksymalnaWysokoscLotu`, value: value.maksymalnaWysokoscLotu } as Operation);
     if (controls.przypisanyPracownik.dirty)

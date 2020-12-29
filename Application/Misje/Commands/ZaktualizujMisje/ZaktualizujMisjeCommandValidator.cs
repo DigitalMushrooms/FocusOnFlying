@@ -23,10 +23,13 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
         }
 
         private async Task<bool> DataMusiMiecWolnyTerminNaDrony(
-            MisjaUpdateDto misjaUpdateDto, long dataRozpoczecia, CancellationToken cancellationToken)
+            MisjaUpdateDto misjaUpdateDto, long? dataRozpoczecia, CancellationToken cancellationToken)
         {
-            DateTime dataRozpoczeciaDateTime = dataRozpoczecia.ToLocalDateTime();
-            DateTime dataZakonczeniaDateTime = misjaUpdateDto.DataZakonczenia.ToLocalDateTime();
+            if (!dataRozpoczecia.HasValue || !misjaUpdateDto.DataZakonczenia.HasValue)
+                return true;
+
+            DateTime dataRozpoczeciaDateTime = dataRozpoczecia.Value.ToLocalDateTime();
+            DateTime dataZakonczeniaDateTime = misjaUpdateDto.DataZakonczenia.Value.ToLocalDateTime();
 
             foreach (MisjaDronDto misjaDron in misjaUpdateDto.MisjeDrony)
             {

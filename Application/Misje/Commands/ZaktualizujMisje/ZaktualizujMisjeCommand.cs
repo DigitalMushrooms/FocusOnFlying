@@ -64,6 +64,8 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
             }
 
             string opisWiadomosci = WygenerujOpisWiadomosci(misjaEntity);
+            await NadajStatusMisji(misja);
+
             _mapper.Map(misja, misjaEntity);
 
             await _focusOnFlyingContext.SaveChangesAsync(cancellationToken);
@@ -75,6 +77,18 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
             await _mailService.WyslijWadomoscEmail(klient.Email, "Zaktualizowano misję", opisWiadomosci);
 
             return Unit.Value;
+        }
+
+        private async Task NadajStatusMisji(MisjaUpdateDto misja)
+        {
+            if (misja.DataRozpoczecia.HasValue && misja.DataZakonczenia.HasValue)
+            {
+                StatusMisji statusUtworzonejMisji = await _focusOnFlyingContext.StatusyMisji.SingleAsync(x => x.Nazwa == "Utworzona");
+                if (misja.IdStatusuMisji == statusUtworzonejMisji.Id)
+                {
+                    misja.IdStatusuMisji = (await _focusOnFlyingContext.StatusyMisji.SingleAsync(x => x.Nazwa == "Zaplanowana")).Id;
+                }
+            }
         }
 
         private string WygenerujOpisWiadomosci(Misja misja)

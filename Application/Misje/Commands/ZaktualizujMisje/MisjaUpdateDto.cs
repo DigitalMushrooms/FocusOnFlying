@@ -18,8 +18,8 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
         public Guid IdTypuMisji { get; set; }
         public int MaksymalnaWysokoscLotu { get; set; }
         public Guid IdStatusuMisji { get; set; }
-        public long DataRozpoczecia { get; set; }
-        public long DataZakonczenia { get; set; }
+        public long? DataRozpoczecia { get; set; }
+        public long? DataZakonczenia { get; set; }
         public string IdPracownika { get; set; }
         public decimal SzerokoscGeograficzna { get; set; }
         public decimal DlugoscGeograficzna { get; set; }

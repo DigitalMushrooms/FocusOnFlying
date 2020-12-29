@@ -1,4 +1,4 @@
-import { DronDto, StatusMisjiDto, TypMisjiDto } from "src/app/web-api-client";
+import { DronDto, TypMisjiDto } from "src/app/web-api-client";
 import { Pracownik } from './pracownik.model';
 
 export interface MisjaForm {
@@ -8,7 +8,6 @@ export interface MisjaForm {
     dataZakonczenia: Date,
     opis: string;
     typ: TypMisjiDto;
-    status: StatusMisjiDto,
     maksymalnaWysokoscLotu: number;
     przypisanyPracownik: Pracownik,
     drony: DronDto[],

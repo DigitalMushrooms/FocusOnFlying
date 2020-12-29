@@ -1081,11 +1081,13 @@
           },
           "dataRozpoczecia": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "nullable": true
           },
           "dataZakonczenia": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "nullable": true
           },
           "idPracownika": {
             "type": "string",
@@ -1752,10 +1754,6 @@
           "maksymalnaWysokoscLotu": {
             "type": "integer",
             "format": "int32"
-          },
-          "idStatusuMisji": {
-            "type": "string",
-            "format": "guid"
           },
           "dataRozpoczecia": {
             "type": "integer",

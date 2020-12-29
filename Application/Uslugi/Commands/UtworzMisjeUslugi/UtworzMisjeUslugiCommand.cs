@@ -18,7 +18,6 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzMisjeUslugi
         public string Opis { get; set; }
         public Guid IdTypuMisji { get; set; }
         public int MaksymalnaWysokoscLotu { get; set; }
-        public Guid IdStatusuMisji { get; set; }
         public long DataRozpoczecia { get; set; }
         public long DataZakonczenia { get; set; }
         public string IdPracownika { get; set; }
@@ -56,12 +55,25 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UtworzMisjeUslugi
                 .Include(x => x.Misje)
                 .SingleAsync(x => x.Id == request.Id);
 
-            var misjaEntity = _mapper.Map<Misja>(request);
+            Misja misjaEntity = _mapper.Map<Misja>(request);
+            await NadajStatusMisjom(misjaEntity);
             uslugaEntity.Misje.Add(misjaEntity);
 
             await _focusOnFlyingContext.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
+        }
+
+        private async Task NadajStatusMisjom(Misja misjaEntity)
+        {
+            if (misjaEntity.DataRozpoczecia.HasValue && misjaEntity.DataZakonczenia.HasValue)
+            {
+                misjaEntity.IdStatusuMisji = (await _focusOnFlyingContext.StatusyMisji.SingleAsync(x => x.Nazwa == "Zaplanowana")).Id;
+            }
+            else
+            {
+                misjaEntity.IdStatusuMisji = (await _focusOnFlyingContext.StatusyMisji.SingleAsync(x => x.Nazwa == "Utworzona")).Id;
+            }
         }
     }
 }
