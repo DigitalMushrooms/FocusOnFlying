@@ -11,8 +11,8 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public Guid IdTypuMisji { get; set; }
         public int MaksymalnaWysokoscLotu { get; set; }
         public Guid IdStatusuMisji { get; set; }
-        public DateTime DataRozpoczecia { get; set; }
-        public DateTime DataZakonczenia { get; set; }
+        public DateTime? DataRozpoczecia { get; set; }
+        public DateTime? DataZakonczenia { get; set; }
         public Guid IdUslugi { get; set; }
         public string IdPracownika { get; set; }
 

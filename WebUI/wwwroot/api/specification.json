@@ -1437,11 +1437,13 @@
           },
           "dataRozpoczecia": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "dataZakonczenia": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "idUslugi": {
             "type": "string",

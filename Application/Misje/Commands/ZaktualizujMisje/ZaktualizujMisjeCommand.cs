@@ -106,12 +106,12 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
             {
                 sb.AppendLine("<ul>");
                 DateTime nowaDataRozpoczecia = ((long)operacje.Single(x => x.path == "/dataRozpoczecia").value).ToLocalDateTime();
-                sb.AppendLine($"<li>Data rozpoczęcia: <span style=\"text-decoration: line-through;\">{misja.DataRozpoczecia.ToString("f", polska)}</span> {nowaDataRozpoczecia.ToString("f", polska)}</li>");
+                sb.AppendLine($"<li>Data rozpoczęcia: <span style=\"text-decoration: line-through;\">{misja.DataRozpoczecia?.ToString("f", polska)}</span> {nowaDataRozpoczecia.ToString("f", polska)}</li>");
             }
             if (operacje.Any(x => x.path == "/dataZakonczenia"))
             {
                 DateTime nowaDataZakonczenia = ((long)operacje.Single(x => x.path == "/dataZakonczenia").value).ToLocalDateTime();
-                sb.AppendLine($"<li>Data zakończenia: <span style=\"text-decoration: line-through;\">{misja.DataZakonczenia.ToString("f", polska)}</span> {nowaDataZakonczenia.ToString("f", polska)}</li>");
+                sb.AppendLine($"<li>Data zakończenia: <span style=\"text-decoration: line-through;\">{misja.DataZakonczenia?.ToString("f", polska)}</span> {nowaDataZakonczenia.ToString("f", polska)}</li>");
             }
             if (operacje.Any(x => x.path == "/opis"))
             {

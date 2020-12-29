@@ -2294,8 +2294,8 @@ export class Misja implements IMisja {
     idTypuMisji?: string;
     maksymalnaWysokoscLotu?: number;
     idStatusuMisji?: string;
-    dataRozpoczecia?: Date;
-    dataZakonczenia?: Date;
+    dataRozpoczecia?: Date | undefined;
+    dataZakonczenia?: Date | undefined;
     idUslugi?: string;
     idPracownika?: string | undefined;
     szerokoscGeograficzna?: number;
@@ -2382,8 +2382,8 @@ export interface IMisja {
     idTypuMisji?: string;
     maksymalnaWysokoscLotu?: number;
     idStatusuMisji?: string;
-    dataRozpoczecia?: Date;
-    dataZakonczenia?: Date;
+    dataRozpoczecia?: Date | undefined;
+    dataZakonczenia?: Date | undefined;
     idUslugi?: string;
     idPracownika?: string | undefined;
     szerokoscGeograficzna?: number;
