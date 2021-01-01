@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FocusOnFlying.Application.Common.Interfaces;
+using FocusOnFlying.Application.Common.Models;
 using FocusOnFlying.Application.Extensions;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using MediatR;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi
 {
-    public class PobierzUslugiQuery : IRequest<Common.Models.PagedResult<UslugaDto>>, IStronnicowalne, ISortowalne
+    public class PobierzUslugiQuery : IRequest<PagedResult<UslugaDto>>, IStronnicowalne, ISortowalne
     {
         public long? DataPrzyjeciaZleceniaOd { get; set; }
         public long? DataPrzyjeciaZleceniaDo { get; set; }
@@ -20,23 +21,26 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi
         public string Sort { get; set; }
     }
 
-    public class PobierzUslugiQueryHandler : IRequestHandler<PobierzUslugiQuery, Common.Models.PagedResult<UslugaDto>>
+    public class PobierzUslugiQueryHandler : IRequestHandler<PobierzUslugiQuery, PagedResult<UslugaDto>>
     {
         private readonly IFocusOnFlyingContext _focusOnFlyingContext;
         private readonly IMapper _mapper;
         private readonly IPropertyMappingService _propertyMappingService;
+        private readonly ICurrentUserService _currentUserService;
 
         public PobierzUslugiQueryHandler(
             IFocusOnFlyingContext focusOnFlyingContext,
             IMapper mapper,
-            IPropertyMappingService propertyMappingService)
+            IPropertyMappingService propertyMappingService,
+            ICurrentUserService currentUserService)
         {
             _focusOnFlyingContext = focusOnFlyingContext;
             _mapper = mapper;
             _propertyMappingService = propertyMappingService;
+            _currentUserService = currentUserService;
         }
 
-        public async Task<Common.Models.PagedResult<UslugaDto>> Handle(PobierzUslugiQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResult<UslugaDto>> Handle(PobierzUslugiQuery request, CancellationToken cancellationToken)
         {
             var mapping = _propertyMappingService.GetPropertyMapping<UslugaDto, Usluga>();
 
@@ -51,7 +55,7 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi
                 query = query.Where(x => x.DataPrzyjeciaZlecenia >= request.DataPrzyjeciaZleceniaOd.ToLocalDateTime());
             }
 
-            Common.Models.PagedResult<UslugaDto> uslugi = await query
+            PagedResult<UslugaDto> uslugi = await query
                 .Include(x => x.Klient).ThenInclude(x => x.Kraj)
                 .Include(x => x.StatusUslugi)
                 .Include(x => x.Misje).ThenInclude(x => x.StatusMisji)

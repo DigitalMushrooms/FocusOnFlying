@@ -1,5 +1,4 @@
 ﻿using FocusOnFlying.Application.Kraje.Queries.PobierzKraje;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,7 +6,6 @@ using System.Threading.Tasks;
 namespace FocusOnFlying.WebUI.Controllers
 {
     [Route("api/kraje")]
-    [Authorize(Roles = "Pracownik")]
     public class KrajeController : ApiController
     {
         [HttpGet]

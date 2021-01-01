@@ -24,31 +24,32 @@ namespace IdentityServerHost.Quickstart.UI
                         Password = "12345",
                         Claims =
                         {
+                            new Claim(JwtClaimTypes.NickName, "fwojciechowska"),
                             new Claim(JwtClaimTypes.Name, "Franciszka Wojciechowska"),
                             new Claim(JwtClaimTypes.GivenName, "Franciszka"),
                             new Claim(JwtClaimTypes.FamilyName, "Wojciechowska"),
-                            new Claim(JwtClaimTypes.Email, "FranciszkaWojciechowska@armyspy.com"),
-                            new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
+                            new Claim(JwtClaimTypes.Email, "FranciszkaWojciechowska@email.com"),
                             new Claim("uprawnienia", "VLOS"),
                             new Claim("uprawnienia", "BVLOS"),
-                            new Claim(JwtClaimTypes.Role, "Kierownik"),
-                            new Claim(JwtClaimTypes.Role, "Pracownik")
+                            new Claim(JwtClaimTypes.Role, "USLUGA_TWORZENIE_EDYCJA"),
+                            new Claim(JwtClaimTypes.Role, "USLUGA_PODGLAD"),
+                            new Claim(JwtClaimTypes.Role, "DRON_TWORZENIE_EDYCJA"),
+                            new Claim(JwtClaimTypes.Role, "DRON_PODGLAD"),
                         }
                     },
                     new TestUser
                     {
                         SubjectId = "2",
-                        Username = "bob",
+                        Username = "tsobczak",
                         Password = "12345",
                         Claims =
                         {
-                            new Claim(JwtClaimTypes.Name, "Bob Smith"),
-                            new Claim(JwtClaimTypes.GivenName, "Bob"),
-                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                            new Claim(JwtClaimTypes.Email, "BobSmith@email.com"),
-                            new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-                            new Claim("uprawnienia", "VLOS"),
-                            new Claim(JwtClaimTypes.Role, "Pracownik")
+                            new Claim(JwtClaimTypes.NickName, "tsobczak"),
+                            new Claim(JwtClaimTypes.Name, "Tymoteusz Sobczak"),
+                            new Claim(JwtClaimTypes.GivenName, "Tymoteusz"),
+                            new Claim(JwtClaimTypes.FamilyName, "Sobczak"),
+                            new Claim(JwtClaimTypes.Email, "TymoteuszSobczak@email.com"),
+                            new Claim("uprawnienia", "VLOS")
                         }
                     }
                 };

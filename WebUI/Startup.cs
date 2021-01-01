@@ -29,7 +29,7 @@ namespace FocusOnFlying.WebUI
             services.AddApplication();
             services.AddInfrastructure();
 
-            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             services.Configure<MailConfiguration>(Configuration.GetSection("MailConfiguration"));
 

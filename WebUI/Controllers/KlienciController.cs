@@ -1,14 +1,12 @@
 ﻿using FocusOnFlying.Application.Common.Models;
 using FocusOnFlying.Application.Klienci.Commands.UtworzKlienta;
 using FocusOnFlying.Application.Klienci.Queries.PobierzKlientow;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace FocusOnFlying.WebUI.Controllers
 {
     [Route("api/klienci")]
-    [Authorize(Roles = "Pracownik")]
     public class KlienciController : ApiController
     {
         [HttpGet]
