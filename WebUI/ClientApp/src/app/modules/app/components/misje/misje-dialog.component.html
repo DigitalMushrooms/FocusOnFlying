@@ -30,5 +30,12 @@
             <td>{{misja.statusMisji.nazwa}}</td>
         </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td [attr.colspan]="6">
+                Brak danych
+            </td>
+        </tr>
+    </ng-template>
 </p-table>
 <p-contextMenu #contextMenuRef appendTo="body" [model]="kontekstoweMenu"></p-contextMenu>

@@ -46,15 +46,28 @@ export class ListaUslugComponent {
   }
 
   podejrzyjMisje(tableRef: Table): void {
+    this.utworzDialogMisji(tableRef, true, 'Wybór misji do podglądu', 'Podgląd misji');
+  }
+
+  edytujMisje(tableRef: Table): void {
+    this.utworzDialogMisji(tableRef, false, 'Wybór misji do edycji', 'Edycja misji');
+  }
+
+  utworzDialogMisji(tableRef: Table, doOdczytu: boolean, naglowekListyMisji: string, naglowekMisji: string): void {
     const misjeDialog = this.dialogService.open(MisjeDialogComponent, {
-      header: 'Wybór misji do podglądu',
+      header: naglowekListyMisji,
       width: '80%',
       data: { idUslugi: this.wybranaUsluga.id }
     });
 
     misjeDialog.onClose.subscribe(
       (misja: MisjaDto) => {
-        if (misja) {
+        if (misja === null) {
+          this.dodanieMisji();
+        } else if (misja === undefined) {
+          const event = tableRef.createLazyLoadMetadata();
+          this.pobierzUslugi(event);
+        } else {
           this.pracownicyService.pobierzPracownikow()
             .subscribe(
               (pracownicy: Pracownik[]) => {
@@ -71,12 +84,12 @@ export class ListaUslugComponent {
                   szerokoscGeograficzna: misja.szerokoscGeograficzna,
                   dlugoscGeograficzna: misja.dlugoscGeograficzna,
                   promien: misja.promien
-                }
+                };
 
                 const dialog = this.dialogService.open(MisjeComponent, {
-                  header: 'Podgląd misji',
+                  header: naglowekMisji,
                   width: '80%',
-                  data: { doOdczytu: true, misjaForm }
+                  data: { doOdczytu, misjaForm }
                 });
 
                 dialog.onClose.subscribe(
@@ -86,83 +99,37 @@ export class ListaUslugComponent {
                   }
                 );
               });
-        } else {
-          const event = tableRef.createLazyLoadMetadata();
-          this.pobierzUslugi(event);
         }
       }
     );
   }
 
-  edytujMisje(tableRef: Table): void {
-    const misjeDialog = this.dialogService.open(MisjeDialogComponent, {
-      header: 'Wybór misji do edycji',
-      width: '80%',
-      data: { idUslugi: this.wybranaUsluga.id }
+  dodanieMisji(): void {
+    const dialog = this.dialogService.open(MisjeComponent, {
+      header: 'Dodanie misji',
+      width: '80%'
     });
 
-    misjeDialog.onClose.subscribe(
-      (misja: MisjaDto) => {
-        if (misja === null) {
-          const dialog = this.dialogService.open(MisjeComponent, {
-            header: 'Dodanie misji',
-            width: '80%'
-          });
-
-          dialog.onClose.subscribe(
-            (misja: MisjaForm) => {
-              if (!misja)
-                return;
-              const command = {
-                nazwa: misja.nazwa,
-                opis: misja.opis,
-                idTypuMisji: misja.typ.id,
-                maksymalnaWysokoscLotu: misja.maksymalnaWysokoscLotu,
-                dataRozpoczecia: misja.dataRozpoczecia.getTime(),
-                dataZakonczenia: misja.dataRozpoczecia.getTime(),
-                idPracownika: misja.przypisanyPracownik.subjectId,
-                szerokoscGeograficzna: misja.szerokoscGeograficzna,
-                dlugoscGeograficzna: misja.dlugoscGeograficzna,
-                promien: misja.promien
-              } as UtworzMisjeUslugiCommand;
-              this.uslugiClient.utworzMisjeUslugi(this.wybranaUsluga.id, command).subscribe();
-            }
+    dialog.onClose.subscribe(
+      (misja: MisjaForm) => {
+        if (!misja)
+          return;
+        const command = {
+          nazwa: misja.nazwa,
+          opis: misja.opis,
+          idTypuMisji: misja.typ.id,
+          maksymalnaWysokoscLotu: misja.maksymalnaWysokoscLotu,
+          dataRozpoczecia: misja.dataRozpoczecia?.getTime(),
+          dataZakonczenia: misja.dataZakonczenia?.getTime(),
+          idPracownika: misja.przypisanyPracownik.subjectId,
+          szerokoscGeograficzna: misja.szerokoscGeograficzna,
+          dlugoscGeograficzna: misja.dlugoscGeograficzna,
+          promien: misja.promien
+        } as UtworzMisjeUslugiCommand;
+        this.uslugiClient.utworzMisjeUslugi(this.wybranaUsluga.id, command)
+          .subscribe(
+            () => this.messageToast.success('Dodano misję.')
           );
-        } else if (misja === undefined) {
-          const event = tableRef.createLazyLoadMetadata();
-          this.pobierzUslugi(event);
-        } else {
-          this.pracownicyService.pobierzPracownikow()
-            .subscribe((pracownicy: Pracownik[]) => {
-              const misjaForm: MisjaForm = {
-                id: misja.id,
-                nazwa: misja.nazwa,
-                dataRozpoczecia: misja.dataRozpoczecia ? new Date(misja.dataRozpoczecia) : null,
-                dataZakonczenia: misja.dataZakonczenia ? new Date(misja.dataZakonczenia) : null,
-                opis: misja.opis,
-                typ: misja.typMisji,
-                maksymalnaWysokoscLotu: misja.maksymalnaWysokoscLotu,
-                przypisanyPracownik: pracownicy.find(x => x.subjectId === misja.idPracownika),
-                drony: misja.misjeDrony.map(x => x.dron),
-                szerokoscGeograficzna: misja.szerokoscGeograficzna,
-                dlugoscGeograficzna: misja.dlugoscGeograficzna,
-                promien: misja.promien
-              }
-
-              const dialogEdycjiMisji = this.dialogService.open(MisjeComponent, {
-                header: 'Edycja misji',
-                width: '80%',
-                data: { doOdczytu: false, misjaForm }
-              });
-
-              dialogEdycjiMisji.onClose.subscribe(
-                () => {
-                  const event = tableRef.createLazyLoadMetadata();
-                  this.pobierzUslugi(event);
-                }
-              );
-            });
-        }
       }
     );
   }

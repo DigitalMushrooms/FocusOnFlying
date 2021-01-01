@@ -63,9 +63,9 @@
 </form>
 <div class="p-grid p-fluid p-jc-end p-mt-2">
     <div class="p-col-2">
-        <button pButton type="button" icon="pi pi-check" [label]="nazwaPrzycisku" [disabled]="misjaForm.invalid" (click)="zapiszMisjeOnClick()"></button>
+        <button pButton type="button" icon="pi pi-check" [label]="nazwaPrzycisku" [disabled]="misjaForm.invalid || misjaForm.disabled" (click)="zapiszMisjeOnClick()"></button>
     </div>
     <div class="p-col-2">
-        <button pButton type="button" icon="pi pi-times" label="Anuluj" (click)="anulujOnClick()"></button>
+        <button pButton type="button" icon="pi pi-times" [label]="misjaForm.enabled ? 'Anuluj' : 'Wyjdź'" (click)="anulujOnClick()"></button>
     </div>
 </div>
