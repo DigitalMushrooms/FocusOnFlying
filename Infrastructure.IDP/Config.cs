@@ -16,7 +16,8 @@ namespace FocusOnFlying.Infrastructure.IDP
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResources.Address()
+                new IdentityResources.Address(),
+                new IdentityResource{Name = "role", UserClaims={JwtClaimTypes.Role}}
             };
 
         public static IEnumerable<ApiResource> Apis =>
@@ -36,7 +37,7 @@ namespace FocusOnFlying.Infrastructure.IDP
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.Address
+                        IdentityServerConstants.StandardScopes.Address,
                     }
                 }
             };
@@ -67,7 +68,7 @@ namespace FocusOnFlying.Infrastructure.IDP
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Address,
-                        "FocusOnFlyingAPI"
+                        "role"
                     },
 
                     AllowAccessTokensViaBrowser = true,

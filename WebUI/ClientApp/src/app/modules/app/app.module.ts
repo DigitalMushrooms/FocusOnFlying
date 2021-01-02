@@ -48,7 +48,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
       redirectUrl: window.location.origin,
       postLogoutRedirectUri: window.location.origin,
       clientId: 'angular',
-      scope: 'openid profile address FocusOnFlyingAPI',
+      scope: 'openid profile address role',
       logLevel: LogLevel.Debug,
     });
 }

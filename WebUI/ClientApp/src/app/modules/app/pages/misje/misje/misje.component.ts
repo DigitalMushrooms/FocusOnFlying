@@ -60,9 +60,7 @@ export class MisjeComponent implements OnInit {
       .subscribe({
         next: ([typyMisji, pracownicy, drony]) => {
           this.typyMisji = typyMisji;
-
           this.pracownicy = pracownicy;
-
           this.drony = drony;
         },
         complete: () => this.wczytajPolaDoFormularza()
@@ -103,28 +101,30 @@ export class MisjeComponent implements OnInit {
   }
 
   typOnChange(): void {
-    this.misjaForm.controls.typ.valueChanges.subscribe(
-      typ => {
-        if (!this.misjaForm.value.przypisanyPracownik)
-          return;
-        const uprawnienia = this.misjaForm.value.przypisanyPracownik.claims.filter(x => x.type === 'uprawnienia').map(x => x.value);
-        this.pracownicy.forEach(pracownik => pracownik.disabled = false);
-        if (typ?.nazwa === 'VLOS') {
-          if (!uprawnienia.includes('VLOS')) {
-            this.misjaForm.controls.przypisanyPracownik.setValue(null);
+    this.misjaForm.controls.typ.valueChanges
+      .subscribe(
+        typ => {
+          if (!this.misjaForm.value.przypisanyPracownik)
+            return;
+          const uprawnienia = this.misjaForm.value.przypisanyPracownik.claims.filter(x => x.type === 'uprawnienia').map(x => x.value);
+          this.pracownicy.forEach(pracownik => pracownik.disabled = false);
+          if (typ?.nazwa === 'VLOS') {
+            if (!uprawnienia.includes('VLOS')) {
+              this.misjaForm.controls.przypisanyPracownik.setValue(null);
+            }
+            const pracownicyBezUprawnienia = this.pracownicy
+              .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').some(x => x.value === 'VLOS'));
+            pracownicyBezUprawnienia.forEach(pracownik => pracownik.disabled = true)
+          } else if (typ?.nazwa === 'BVLOS') {
+            if (!uprawnienia.includes('BVLOS')) {
+              this.misjaForm.controls.przypisanyPracownik.setValue(null);
+            }
+            const pracownicyBezUprawnienia = this.pracownicy
+              .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').some(x => x.value === 'BVLOS'));
+            pracownicyBezUprawnienia.forEach(pracownik => pracownik.disabled = true)
           }
-          const pracownicyBezUprawnienia = this.pracownicy
-            .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').some(x => x.value === 'VLOS'));
-          pracownicyBezUprawnienia.forEach(pracownik => pracownik.disabled = true)
-        } else if (typ?.nazwa === 'BVLOS') {
-          if (!uprawnienia.includes('BVLOS')) {
-            this.misjaForm.controls.przypisanyPracownik.setValue(null);
-          }
-          const pracownicyBezUprawnienia = this.pracownicy
-            .filter(x => !x.value.claims.filter(x => x.type === 'uprawnienia').some(x => x.value === 'BVLOS'));
-          pracownicyBezUprawnienia.forEach(pracownik => pracownik.disabled = true)
         }
-      });
+      );
   }
 
   promienOnChange(): void {
@@ -136,8 +136,13 @@ export class MisjeComponent implements OnInit {
 
   wczytajPolaDoFormularza(): void {
     const misja: MisjaForm = this.dynamicDialogConfig.data?.misjaForm;
-    if (!misja)
+    if (!this.pracownicyService.role.includes('PRACOWNIK_TWORZENIE_EDYCJA')) {
+      this.misjaForm.controls.przypisanyPracownik.disable();
+    }
+    if (!misja) {
+      this.misjaForm.controls.przypisanyPracownik.setValue(this.pracownicy.find(p => p.value.subjectId === this.pracownicyService.sub)[0]);
       return;
+    }
     this.nakladkiNaMape = [
       new google.maps.Circle({
         center: {
