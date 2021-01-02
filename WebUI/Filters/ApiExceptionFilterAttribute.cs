@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
+using System.Security.Authentication;
 
 namespace FocusOnFlying.WebUI.Filters
 {
@@ -17,6 +18,7 @@ namespace FocusOnFlying.WebUI.Filters
             // Register known exception types and handlers.
             _exceptionHandlers = new Dictionary<Type, Action<ExceptionContext>>
             {
+                { typeof(AuthenticationException), HandleAuthenticationException },
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
             };
@@ -60,6 +62,20 @@ namespace FocusOnFlying.WebUI.Filters
             {
                 StatusCode = StatusCodes.Status500InternalServerError
             };
+
+            context.ExceptionHandled = true;
+        }
+
+        private void HandleAuthenticationException(ExceptionContext context)
+        {
+            var details = new ProblemDetails
+            {
+                Status = StatusCodes.Status401Unauthorized,
+                Title = "Podczas przetwarzania wystąpił nieuatoryzowany dostęp.",
+                Type = "https://tools.ietf.org/html/rfc7235#section-3.1"
+            };
+
+            context.Result = new UnauthorizedObjectResult(details);
 
             context.ExceptionHandled = true;
         }

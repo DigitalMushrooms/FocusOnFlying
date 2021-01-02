@@ -26,18 +26,15 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi
         private readonly IFocusOnFlyingContext _focusOnFlyingContext;
         private readonly IMapper _mapper;
         private readonly IPropertyMappingService _propertyMappingService;
-        private readonly ICurrentUserService _currentUserService;
 
         public PobierzUslugiQueryHandler(
             IFocusOnFlyingContext focusOnFlyingContext,
             IMapper mapper,
-            IPropertyMappingService propertyMappingService,
-            ICurrentUserService currentUserService)
+            IPropertyMappingService propertyMappingService)
         {
             _focusOnFlyingContext = focusOnFlyingContext;
             _mapper = mapper;
             _propertyMappingService = propertyMappingService;
-            _currentUserService = currentUserService;
         }
 
         public async Task<PagedResult<UslugaDto>> Handle(PobierzUslugiQuery request, CancellationToken cancellationToken)
