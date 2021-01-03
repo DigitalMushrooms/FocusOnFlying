@@ -2054,9 +2054,11 @@ export interface IStatusUslugi {
 export class Usluga implements IUsluga {
     id?: string;
     dataPrzyjeciaZlecenia?: Date;
+    idFaktury?: string | undefined;
     idKlienta?: string;
     idStatusuUslugi?: string;
     klient?: Klient | undefined;
+    faktura?: Faktura | undefined;
     statusUslugi?: StatusUslugi | undefined;
     misje?: Misja[] | undefined;
 
@@ -2073,9 +2075,11 @@ export class Usluga implements IUsluga {
         if (_data) {
             this.id = _data["id"];
             this.dataPrzyjeciaZlecenia = _data["dataPrzyjeciaZlecenia"] ? new Date(_data["dataPrzyjeciaZlecenia"].toString()) : <any>undefined;
+            this.idFaktury = _data["idFaktury"];
             this.idKlienta = _data["idKlienta"];
             this.idStatusuUslugi = _data["idStatusuUslugi"];
             this.klient = _data["klient"] ? Klient.fromJS(_data["klient"]) : <any>undefined;
+            this.faktura = _data["faktura"] ? Faktura.fromJS(_data["faktura"]) : <any>undefined;
             this.statusUslugi = _data["statusUslugi"] ? StatusUslugi.fromJS(_data["statusUslugi"]) : <any>undefined;
             if (Array.isArray(_data["misje"])) {
                 this.misje = [] as any;
@@ -2096,9 +2100,11 @@ export class Usluga implements IUsluga {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["dataPrzyjeciaZlecenia"] = this.dataPrzyjeciaZlecenia ? this.dataPrzyjeciaZlecenia.toISOString() : <any>undefined;
+        data["idFaktury"] = this.idFaktury;
         data["idKlienta"] = this.idKlienta;
         data["idStatusuUslugi"] = this.idStatusuUslugi;
         data["klient"] = this.klient ? this.klient.toJSON() : <any>undefined;
+        data["faktura"] = this.faktura ? this.faktura.toJSON() : <any>undefined;
         data["statusUslugi"] = this.statusUslugi ? this.statusUslugi.toJSON() : <any>undefined;
         if (Array.isArray(this.misje)) {
             data["misje"] = [];
@@ -2112,9 +2118,11 @@ export class Usluga implements IUsluga {
 export interface IUsluga {
     id?: string;
     dataPrzyjeciaZlecenia?: Date;
+    idFaktury?: string | undefined;
     idKlienta?: string;
     idStatusuUslugi?: string;
     klient?: Klient | undefined;
+    faktura?: Faktura | undefined;
     statusUslugi?: StatusUslugi | undefined;
     misje?: Misja[] | undefined;
 }
@@ -2285,6 +2293,62 @@ export interface IKraj {
     nazwaKraju?: string | undefined;
     skrot?: string | undefined;
     klienci?: Klient[] | undefined;
+}
+
+export class Faktura implements IFaktura {
+    id?: string;
+    numerFaktury?: string | undefined;
+    wartoscNetto?: number;
+    wartoscBrutto?: number;
+    zaplaconaFaktura?: boolean;
+    usluga?: Usluga | undefined;
+
+    constructor(data?: IFaktura) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.numerFaktury = _data["numerFaktury"];
+            this.wartoscNetto = _data["wartoscNetto"];
+            this.wartoscBrutto = _data["wartoscBrutto"];
+            this.zaplaconaFaktura = _data["zaplaconaFaktura"];
+            this.usluga = _data["usluga"] ? Usluga.fromJS(_data["usluga"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Faktura {
+        data = typeof data === 'object' ? data : {};
+        let result = new Faktura();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["numerFaktury"] = this.numerFaktury;
+        data["wartoscNetto"] = this.wartoscNetto;
+        data["wartoscBrutto"] = this.wartoscBrutto;
+        data["zaplaconaFaktura"] = this.zaplaconaFaktura;
+        data["usluga"] = this.usluga ? this.usluga.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IFaktura {
+    id?: string;
+    numerFaktury?: string | undefined;
+    wartoscNetto?: number;
+    wartoscBrutto?: number;
+    zaplaconaFaktura?: boolean;
+    usluga?: Usluga | undefined;
 }
 
 export class Misja implements IMisja {

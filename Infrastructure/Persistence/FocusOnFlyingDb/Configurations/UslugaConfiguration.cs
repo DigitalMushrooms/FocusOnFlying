@@ -18,6 +18,11 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb.Configuration
                 .HasOne(x => x.StatusUslugi)
                 .WithMany(x => x.Uslugi)
                 .HasForeignKey(x => x.IdStatusuUslugi);
+
+            builder
+                .HasOne(x => x.Faktura)
+                .WithOne(x => x.Usluga)
+                .HasForeignKey<Usluga>(x => x.IdFaktury);
         }
     }
 }

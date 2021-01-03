@@ -1266,6 +1266,11 @@
             "type": "string",
             "format": "date-time"
           },
+          "idFaktury": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
           "idKlienta": {
             "type": "string",
             "format": "guid"
@@ -1279,6 +1284,14 @@
             "oneOf": [
               {
                 "$ref": "#/components/schemas/Klient"
+              }
+            ]
+          },
+          "faktura": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Faktura"
               }
             ]
           },
@@ -1406,6 +1419,39 @@
             "items": {
               "$ref": "#/components/schemas/Klient"
             }
+          }
+        }
+      },
+      "Faktura": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "numerFaktury": {
+            "type": "string",
+            "nullable": true
+          },
+          "wartoscNetto": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "wartoscBrutto": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "zaplaconaFaktura": {
+            "type": "boolean"
+          },
+          "usluga": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Usluga"
+              }
+            ]
           }
         }
       },

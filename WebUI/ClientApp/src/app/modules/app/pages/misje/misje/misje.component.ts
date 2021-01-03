@@ -140,7 +140,7 @@ export class MisjeComponent implements OnInit {
       this.misjaForm.controls.przypisanyPracownik.disable();
     }
     if (!misja) {
-      this.misjaForm.controls.przypisanyPracownik.setValue(this.pracownicy.find(p => p.value.subjectId === this.pracownicyService.sub)[0]);
+      this.misjaForm.controls.przypisanyPracownik.setValue(this.pracownicy.find(p => p.value.subjectId === this.pracownicyService.sub).value);
       return;
     }
     this.nakladkiNaMape = [
