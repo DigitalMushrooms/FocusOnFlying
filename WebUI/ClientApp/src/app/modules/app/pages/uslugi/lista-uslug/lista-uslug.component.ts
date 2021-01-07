@@ -8,6 +8,7 @@ import { PracownicyService } from 'src/app/core/services/pracownicy.service';
 import { MisjaForm } from 'src/app/shared/models/misje/misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
 import { MisjaDto, MisjeClient, Operation, PagedResultOfUslugaDto, StatusUslugiDto, StatusyUslugiClient, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
+import { FakturaDialogComponent } from '../../../components/faktura/faktura-dialog.component';
 import { MisjeDialogComponent } from '../../../components/misje/misje-dialog.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
 
@@ -43,14 +44,6 @@ export class ListaUslugComponent {
           this.liczbaRekordow = uslugi.rowCount;
         }
       );
-  }
-
-  podejrzyjMisje(tableRef: Table): void {
-    this.utworzDialogMisji(tableRef, true, 'Wybór misji do podglądu', 'Podgląd misji');
-  }
-
-  edytujMisje(tableRef: Table): void {
-    this.utworzDialogMisji(tableRef, false, 'Wybór misji do edycji', 'Edycja misji');
   }
 
   utworzDialogMisji(tableRef: Table, doOdczytu: boolean, naglowekListyMisji: string, naglowekMisji: string): void {
@@ -134,6 +127,28 @@ export class ListaUslugComponent {
     );
   }
 
+  naWybraniuUslugi(tableRef: Table): void {
+    this.kontekstoweMenu = [
+      { label: 'Podejrzyj misję', icon: 'pi pi-fw pi-star-o', command: () => this.podejrzyjMisje(tableRef) },
+      { label: 'Edytuj misję', icon: 'pi pi-fw pi-star', command: () => this.edytujMisje(tableRef), visible: this.edytujMisjeVisible() },
+      { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje(), visible: this.usunMisjeVisible() },
+      { label: 'Zmień status usługi na "Wykonana"', icon: 'pi pi-fw pi-star', command: () => this.zmienStatusUslugi(tableRef, 'Zakończona'), visible: this.zmienStatusUslugiNaWykonanaVisible() },
+      { label: 'Dodaj fakturę', icon: 'pi pi-fw pi-file', command: () => this.dodajFakture(tableRef), visible: this.dodajFaktureVisible() },
+    ];
+  }
+
+  podejrzyjMisje(tableRef: Table): void {
+    this.utworzDialogMisji(tableRef, true, 'Wybór misji do podglądu', 'Podgląd misji');
+  }
+
+  edytujMisje(tableRef: Table): void {
+    this.utworzDialogMisji(tableRef, false, 'Wybór misji do edycji', 'Edycja misji');
+  }
+
+  edytujMisjeVisible(): boolean {
+    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona';
+  }
+
   usunMisje(): void {
     const misjeDialog = this.dialogService.open(MisjeDialogComponent, {
       header: 'Wybór misji do usunięcia',
@@ -151,13 +166,8 @@ export class ListaUslugComponent {
       });
   }
 
-  naWybraniuUslugi(tableRef: Table): void {
-    this.kontekstoweMenu = [
-      { label: 'Podejrzyj misję', icon: 'pi pi-fw pi-star-o', command: () => this.podejrzyjMisje(tableRef) },
-      { label: 'Edytuj misję', icon: 'pi pi-fw pi-star', command: () => this.edytujMisje(tableRef), visible: this.edytujMisjeVisible() },
-      { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje(), visible: this.usunMisjeVisible() },
-      { label: 'Zmień status usługi na "Wykonana"', icon: 'pi pi-fw pi-star', command: () => this.zmienStatusUslugi(tableRef, 'Zakończona'), visible: this.zmienStatusUslugiNaWykonanaVisible() },
-    ];
+  usunMisjeVisible(): boolean {
+    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona';
   }
 
   zmienStatusUslugi(tableRef: Table, status: string): void {
@@ -177,18 +187,22 @@ export class ListaUslugComponent {
       );
   }
 
-  edytujMisjeVisible(): boolean {
-    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona';
-  }
-
-  usunMisjeVisible(): boolean {
-    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona';
-  }
-
   zmienStatusUslugiNaWykonanaVisible(): boolean {
     if (this.wybranaUsluga.statusUslugi.nazwa === 'Zakończona')
       return false;
     const wynik = this.wybranaUsluga.misje.every(x => x.statusMisji.nazwa === 'Wykonana' || x.statusMisji.nazwa === 'Anulowana')
     return wynik;
+  }
+
+  dodajFakture(tableRef: Table): void {
+    const fakturaDialog = this.dialogService.open(FakturaDialogComponent, {
+      header: 'Dodanie faktury',
+      width: '50%',
+      data: { idUslugi: this.wybranaUsluga.id }
+    });
+  }
+
+  dodajFaktureVisible(): boolean {
+    return true;
   }
 }

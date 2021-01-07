@@ -1,4 +1,5 @@
 ﻿using FocusOnFlying.Application.Common.Models;
+using FocusOnFlying.Application.Uslugi.Commands.UtworzFaktureUslugi;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzMisjeUslugi;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
 using FocusOnFlying.Application.Uslugi.Commands.ZaktualizujUsluge;
@@ -42,6 +43,13 @@ namespace FocusOnFlying.WebUI.Controllers
 
         [HttpPost("{id}/misje")]
         public async Task UtworzMisjeUslugi([FromRoute] Guid id, [FromBody] UtworzMisjeUslugiCommand command)
+        {
+            command.Id = id;
+            await Mediator.Send(command);
+        }
+
+        [HttpPost("{id}/faktury")]
+        public async Task UtworzFaktureUslugi([FromRoute] Guid id, [FromBody] UtworzFaktureUslugiCommand command)
         {
             command.Id = id;
             await Mediator.Send(command);

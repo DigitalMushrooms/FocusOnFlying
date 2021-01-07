@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
@@ -23,10 +24,12 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 import { HttpTokenInterceptor } from 'src/app/core/interceptors/http.token.interceptor';
 import { MomentPipe } from 'src/app/shared/pipes/moment.pipe';
 import { NazwaKlientaPipe } from 'src/app/shared/pipes/nazwa-klienta.pipe';
 import { AppRoutingModule } from './app-routing.module';
+import { FakturaDialogComponent } from './components/faktura/faktura-dialog.component';
 import { KlienciDialogComponent } from './components/klienci/klienci-dialog.component';
 import { MisjeDialogComponent } from './components/misje/misje-dialog.component';
 import { AppComponent } from './pages/app/app.component';
@@ -57,6 +60,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
   declarations: [
     AppComponent,
     DronComponent,
+    FakturaDialogComponent,
     HomeComponent,
     KlienciComponent,
     KlienciDialogComponent,
@@ -78,6 +82,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     ButtonModule,
     CalendarModule,
     CardModule,
+    CheckboxModule,
     CommonModule,
     ContextMenuModule,
     DropdownModule,
@@ -96,7 +101,8 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     ReactiveFormsModule,
     RippleModule,
     TableModule,
-    ToastModule
+    ToastModule,
+    ToggleButtonModule,
   ],
   providers: [
     OidcConfigService,

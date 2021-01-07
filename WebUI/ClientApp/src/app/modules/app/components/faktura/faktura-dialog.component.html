@@ -1,0 +1,25 @@
+<form [formGroup]="fakturaForm">
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12">
+            <label for="numerFaktury">Numer faktury</label>
+            <input formControlName="numerFaktury" id="numerFaktury" type="text" pInputText>
+        </div>
+        <div class="p-field p-col-12">
+            <label for="wartoscNetto">Wartość netto</label>
+            <p-inputNumber formControlName="wartoscNetto" inputId="wartoscNetto" [minFractionDigits]="2" [maxFractionDigits]="2"></p-inputNumber>
+        </div>
+        <div class="p-field p-col-12">
+            <label for="wartoscBrutto">Wartość brutto</label>
+            <p-inputNumber formControlName="wartoscBrutto" inputId="wartoscBrutto" [minFractionDigits]="2" [maxFractionDigits]="2"></p-inputNumber>
+        </div>
+        <div class="p-field p-col-4">
+            <p-toggleButton formControlName="zaplaconaFaktura" [onIcon]="'pi pi-check'" [offIcon]="'pi pi-times'" [onLabel]="'Zapłacona faktura'" [offLabel]="'Nie zapłacona faktura'">
+            </p-toggleButton>
+        </div>
+    </div>
+    <div class="p-d-flex p-jc-end">
+        <button pButton type="button" icon="pi pi-check" label="Zapisz fakturę" [disabled]="fakturaForm.invalid || fakturaForm.disabled" class="p-mr-2"
+            (click)="zapiszFaktureOnClick()"></button>
+        <button pButton type="button" icon="pi pi-times" label="Anuluj" (click)="anulujOnClick()"></button>
+    </div>
+</form>

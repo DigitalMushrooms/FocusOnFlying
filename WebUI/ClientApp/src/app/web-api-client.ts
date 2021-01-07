@@ -864,6 +864,7 @@ export interface IUslugiClient {
     utworzUsluge(command: UtworzUslugeCommand): Observable<void>;
     pobierzMisjeUslugi(id: string, statusy: string[] | null | undefined, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfMisjaDto>;
     utworzMisjeUslugi(id: string, command: UtworzMisjeUslugiCommand): Observable<void>;
+    utworzFaktureUslugi(id: string, command: UtworzFaktureUslugiCommand): Observable<void>;
     zaktualizujUsluge(id: string, patch: Operation[]): Observable<void>;
 }
 
@@ -1086,6 +1087,57 @@ export class UslugiClient implements IUslugiClient {
     }
 
     protected processUtworzMisjeUslugi(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    utworzFaktureUslugi(id: string, command: UtworzFaktureUslugiCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/uslugi/{id}/faktury";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUtworzFaktureUslugi(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUtworzFaktureUslugi(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUtworzFaktureUslugi(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3023,6 +3075,54 @@ export interface IUtworzMisjeUslugiCommand {
     szerokoscGeograficzna?: number;
     dlugoscGeograficzna?: number;
     promien?: number;
+}
+
+export class UtworzFaktureUslugiCommand implements IUtworzFaktureUslugiCommand {
+    numerFaktury?: string | undefined;
+    wartoscNetto?: number;
+    wartoscBrutto?: number;
+    zaplaconaFaktura?: boolean;
+
+    constructor(data?: IUtworzFaktureUslugiCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.numerFaktury = _data["numerFaktury"];
+            this.wartoscNetto = _data["wartoscNetto"];
+            this.wartoscBrutto = _data["wartoscBrutto"];
+            this.zaplaconaFaktura = _data["zaplaconaFaktura"];
+        }
+    }
+
+    static fromJS(data: any): UtworzFaktureUslugiCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UtworzFaktureUslugiCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["numerFaktury"] = this.numerFaktury;
+        data["wartoscNetto"] = this.wartoscNetto;
+        data["wartoscBrutto"] = this.wartoscBrutto;
+        data["zaplaconaFaktura"] = this.zaplaconaFaktura;
+        return data; 
+    }
+}
+
+export interface IUtworzFaktureUslugiCommand {
+    numerFaktury?: string | undefined;
+    wartoscNetto?: number;
+    wartoscBrutto?: number;
+    zaplaconaFaktura?: boolean;
 }
 
 export class SwaggerException extends Error {
