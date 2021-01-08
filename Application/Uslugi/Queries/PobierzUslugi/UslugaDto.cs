@@ -2,6 +2,7 @@
 using FocusOnFlying.Application.Common.Mappings;
 using FocusOnFlying.Application.Extensions;
 using FocusOnFlying.Application.Klienci.Queries.PobierzKlientow;
+using FocusOnFlying.Application.Uslugi.Commands.UtworzFaktureUslugi;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using System;
@@ -15,6 +16,7 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi
         public long DataPrzyjeciaZlecenia { get; set; }
 
         public KlientDto Klient { get; set; }
+        public FakturaDto Faktura { get; set; }
         public StatusUslugi StatusUslugi { get; set; }
         public List<MisjaDto> Misje { get; set; } = new List<MisjaDto>();
 

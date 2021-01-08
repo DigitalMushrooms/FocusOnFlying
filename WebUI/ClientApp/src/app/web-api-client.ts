@@ -139,6 +139,75 @@ export class DronyClient implements IDronyClient {
     }
 }
 
+export interface IFakturyClient {
+    zaktualizujFakture(id: string, patch: Operation[]): Observable<void>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class FakturyClient implements IFakturyClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    zaktualizujFakture(id: string, patch: Operation[]): Observable<void> {
+        let url_ = this.baseUrl + "/api/faktury/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(patch);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processZaktualizujFakture(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processZaktualizujFakture(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processZaktualizujFakture(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+}
+
 export interface IKlienciClient {
     pobierzKlientow(fraza: string | null | undefined, pesel: string | null | undefined, nip: string | null | undefined, regon: string | null | undefined, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfKlientDto>;
     utworzKlienta(command: UtworzKlientaCommand): Observable<void>;
@@ -1433,6 +1502,83 @@ export interface ITypDronaDto {
     nazwa?: string | undefined;
 }
 
+export class OperationBase implements IOperationBase {
+    path?: string | undefined;
+    op?: string | undefined;
+    from?: string | undefined;
+
+    constructor(data?: IOperationBase) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.path = _data["path"];
+            this.op = _data["op"];
+            this.from = _data["from"];
+        }
+    }
+
+    static fromJS(data: any): OperationBase {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperationBase();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["path"] = this.path;
+        data["op"] = this.op;
+        data["from"] = this.from;
+        return data; 
+    }
+}
+
+export interface IOperationBase {
+    path?: string | undefined;
+    op?: string | undefined;
+    from?: string | undefined;
+}
+
+export class Operation extends OperationBase implements IOperation {
+    value?: any | undefined;
+
+    constructor(data?: IOperation) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): Operation {
+        data = typeof data === 'object' ? data : {};
+        let result = new Operation();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IOperation extends IOperationBase {
+    value?: any | undefined;
+}
+
 export class PagedResultOfKlientDto extends PagedResultBase implements IPagedResultOfKlientDto {
     results?: KlientDto[] | undefined;
 
@@ -1995,6 +2141,7 @@ export class UslugaDto implements IUslugaDto {
     id?: string;
     dataPrzyjeciaZlecenia?: number;
     klient?: KlientDto | undefined;
+    faktura?: FakturaDto | undefined;
     statusUslugi?: StatusUslugi | undefined;
     misje?: MisjaDto[] | undefined;
 
@@ -2012,6 +2159,7 @@ export class UslugaDto implements IUslugaDto {
             this.id = _data["id"];
             this.dataPrzyjeciaZlecenia = _data["dataPrzyjeciaZlecenia"];
             this.klient = _data["klient"] ? KlientDto.fromJS(_data["klient"]) : <any>undefined;
+            this.faktura = _data["faktura"] ? FakturaDto.fromJS(_data["faktura"]) : <any>undefined;
             this.statusUslugi = _data["statusUslugi"] ? StatusUslugi.fromJS(_data["statusUslugi"]) : <any>undefined;
             if (Array.isArray(_data["misje"])) {
                 this.misje = [] as any;
@@ -2033,6 +2181,7 @@ export class UslugaDto implements IUslugaDto {
         data["id"] = this.id;
         data["dataPrzyjeciaZlecenia"] = this.dataPrzyjeciaZlecenia;
         data["klient"] = this.klient ? this.klient.toJSON() : <any>undefined;
+        data["faktura"] = this.faktura ? this.faktura.toJSON() : <any>undefined;
         data["statusUslugi"] = this.statusUslugi ? this.statusUslugi.toJSON() : <any>undefined;
         if (Array.isArray(this.misje)) {
             data["misje"] = [];
@@ -2047,8 +2196,61 @@ export interface IUslugaDto {
     id?: string;
     dataPrzyjeciaZlecenia?: number;
     klient?: KlientDto | undefined;
+    faktura?: FakturaDto | undefined;
     statusUslugi?: StatusUslugi | undefined;
     misje?: MisjaDto[] | undefined;
+}
+
+export class FakturaDto implements IFakturaDto {
+    id?: string;
+    numerFaktury?: string | undefined;
+    wartoscNetto?: number;
+    wartoscBrutto?: number;
+    zaplaconaFaktura?: boolean;
+
+    constructor(data?: IFakturaDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.numerFaktury = _data["numerFaktury"];
+            this.wartoscNetto = _data["wartoscNetto"];
+            this.wartoscBrutto = _data["wartoscBrutto"];
+            this.zaplaconaFaktura = _data["zaplaconaFaktura"];
+        }
+    }
+
+    static fromJS(data: any): FakturaDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FakturaDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["numerFaktury"] = this.numerFaktury;
+        data["wartoscNetto"] = this.wartoscNetto;
+        data["wartoscBrutto"] = this.wartoscBrutto;
+        data["zaplaconaFaktura"] = this.zaplaconaFaktura;
+        return data; 
+    }
+}
+
+export interface IFakturaDto {
+    id?: string;
+    numerFaktury?: string | undefined;
+    wartoscNetto?: number;
+    wartoscBrutto?: number;
+    zaplaconaFaktura?: boolean;
 }
 
 export class StatusUslugi implements IStatusUslugi {
@@ -2785,83 +2987,6 @@ export interface ITypDrona {
     id?: string;
     nazwa?: string | undefined;
     drony?: Dron[] | undefined;
-}
-
-export class OperationBase implements IOperationBase {
-    path?: string | undefined;
-    op?: string | undefined;
-    from?: string | undefined;
-
-    constructor(data?: IOperationBase) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.path = _data["path"];
-            this.op = _data["op"];
-            this.from = _data["from"];
-        }
-    }
-
-    static fromJS(data: any): OperationBase {
-        data = typeof data === 'object' ? data : {};
-        let result = new OperationBase();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["path"] = this.path;
-        data["op"] = this.op;
-        data["from"] = this.from;
-        return data; 
-    }
-}
-
-export interface IOperationBase {
-    path?: string | undefined;
-    op?: string | undefined;
-    from?: string | undefined;
-}
-
-export class Operation extends OperationBase implements IOperation {
-    value?: any | undefined;
-
-    constructor(data?: IOperation) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.value = _data["value"];
-        }
-    }
-
-    static fromJS(data: any): Operation {
-        data = typeof data === 'object' ? data : {};
-        let result = new Operation();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["value"] = this.value;
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IOperation extends IOperationBase {
-    value?: any | undefined;
 }
 
 export class StatusUslugiDto implements IStatusUslugiDto {

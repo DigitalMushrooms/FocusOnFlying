@@ -53,6 +53,7 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi
             }
 
             PagedResult<UslugaDto> uslugi = await query
+                .Include(x => x.Faktura)
                 .Include(x => x.Klient).ThenInclude(x => x.Kraj)
                 .Include(x => x.StatusUslugi)
                 .Include(x => x.Misje).ThenInclude(x => x.StatusMisji)

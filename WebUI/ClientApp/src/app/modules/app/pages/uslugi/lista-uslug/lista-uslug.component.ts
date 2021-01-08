@@ -58,8 +58,7 @@ export class ListaUslugComponent {
         if (misja === null) {
           this.dodanieMisji();
         } else if (misja === undefined) {
-          const event = tableRef.createLazyLoadMetadata();
-          this.pobierzUslugi(event);
+          this.odswiezTabele(tableRef);
         } else {
           this.pracownicyService.pobierzPracownikow()
             .subscribe(
@@ -87,11 +86,11 @@ export class ListaUslugComponent {
 
                 dialog.onClose.subscribe(
                   () => {
-                    const event = tableRef.createLazyLoadMetadata();
-                    this.pobierzUslugi(event);
+                    this.odswiezTabele(tableRef);
                   }
                 );
-              });
+              }
+            );
         }
       }
     );
@@ -134,6 +133,7 @@ export class ListaUslugComponent {
       { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje(), visible: this.usunMisjeVisible() },
       { label: 'Zmień status usługi na "Wykonana"', icon: 'pi pi-fw pi-star', command: () => this.zmienStatusUslugi(tableRef, 'Zakończona'), visible: this.zmienStatusUslugiNaWykonanaVisible() },
       { label: 'Dodaj fakturę', icon: 'pi pi-fw pi-file', command: () => this.dodajFakture(tableRef), visible: this.dodajFaktureVisible() },
+      { label: 'Edytuj fakturę', icon: 'pi pi-fw pi-file', command: () => this.edytujFakture(tableRef), visible: this.edytujFaktureVisible() },
     ];
   }
 
@@ -179,8 +179,7 @@ export class ListaUslugComponent {
             .subscribe(
               () => {
                 this.messageToast.success('Zaktualizowano status misji');
-                const event = tableRef.createLazyLoadMetadata();
-                this.pobierzUslugi(event);
+                this.odswiezTabele(tableRef);
               }
             );
         }
@@ -198,11 +197,35 @@ export class ListaUslugComponent {
     const fakturaDialog = this.dialogService.open(FakturaDialogComponent, {
       header: 'Dodanie faktury',
       width: '50%',
-      data: { idUslugi: this.wybranaUsluga.id }
+      data: { usluga: this.wybranaUsluga }
     });
+
+    fakturaDialog.onClose.subscribe(() => this.odswiezTabele(tableRef));
   }
 
   dodajFaktureVisible(): boolean {
-    return true;
+    return !this.wybranaUsluga.faktura;
+  }
+
+  edytujFakture(tableRef: Table): void {
+    const fakturaDialog = this.dialogService.open(FakturaDialogComponent, {
+      header: 'Edycja faktury',
+      width: '50%',
+      data: { usluga: this.wybranaUsluga }
+    });
+
+    fakturaDialog.onClose.subscribe(() => this.odswiezTabele(tableRef));
+
+    this.odswiezTabele(tableRef);
+  }
+
+  odswiezTabele(tableRef: Table): void {
+    const event = tableRef.createLazyLoadMetadata();
+    event.first = 0;
+    this.pobierzUslugi(event);
+  }
+
+  edytujFaktureVisible(): boolean {
+    return !!this.wybranaUsluga.faktura;
   }
 }

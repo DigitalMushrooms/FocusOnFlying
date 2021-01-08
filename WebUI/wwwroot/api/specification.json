@@ -78,6 +78,46 @@
         }
       }
     },
+    "/api/faktury/{id}": {
+      "patch": {
+        "tags": [
+          "Faktury"
+        ],
+        "operationId": "Faktury_ZaktualizujFakture",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "patch",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                }
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/klienci": {
       "get": {
         "tags": [
@@ -878,6 +918,40 @@
           }
         }
       },
+      "Operation": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OperationBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "OperationBase": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "nullable": true
+          },
+          "op": {
+            "type": "string",
+            "nullable": true
+          },
+          "from": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "PagedResultOfKlientDto": {
         "allOf": [
           {
@@ -1253,6 +1327,14 @@
               }
             ]
           },
+          "faktura": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FakturaDto"
+              }
+            ]
+          },
           "statusUslugi": {
             "nullable": true,
             "oneOf": [
@@ -1267,6 +1349,31 @@
             "items": {
               "$ref": "#/components/schemas/MisjaDto"
             }
+          }
+        }
+      },
+      "FakturaDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "numerFaktury": {
+            "type": "string",
+            "nullable": true
+          },
+          "wartoscNetto": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "wartoscBrutto": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "zaplaconaFaktura": {
+            "type": "boolean"
           }
         }
       },
@@ -1718,40 +1825,6 @@
             "items": {
               "$ref": "#/components/schemas/Dron"
             }
-          }
-        }
-      },
-      "Operation": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/OperationBase"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "value": {
-                "nullable": true
-              }
-            }
-          }
-        ]
-      },
-      "OperationBase": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "path": {
-            "type": "string",
-            "nullable": true
-          },
-          "op": {
-            "type": "string",
-            "nullable": true
-          },
-          "from": {
-            "type": "string",
-            "nullable": true
           }
         }
       },
