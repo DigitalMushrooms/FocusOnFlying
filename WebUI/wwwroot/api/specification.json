@@ -116,6 +116,29 @@
             "description": ""
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Faktury"
+        ],
+        "operationId": "Faktury_UsunFakture",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
       }
     },
     "/api/klienci": {

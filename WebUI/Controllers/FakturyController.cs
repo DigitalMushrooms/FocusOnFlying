@@ -1,4 +1,5 @@
-﻿using FocusOnFlying.Application.Faktury.Commands.ZaktualizujFakture;
+﻿using FocusOnFlying.Application.Faktury.Commands.UsunFakture;
+using FocusOnFlying.Application.Faktury.Commands.ZaktualizujFakture;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,13 @@ namespace FocusOnFlying.WebUI.Controllers
             [FromBody][JsonSchemaType(typeof(List<Operation>))] JsonPatchDocument<FakturaUpdateDto> patch)
         {
             var command = new ZaktualizujFaktureCommand { Id = id, Patch = patch };
+            await Mediator.Send(command);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task UsunFakture(Guid id)
+        {
+            var command = new UsunFaktureCommand { Id = id };
             await Mediator.Send(command);
         }
     }

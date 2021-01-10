@@ -7,7 +7,7 @@ import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { PracownicyService } from 'src/app/core/services/pracownicy.service';
 import { MisjaForm } from 'src/app/shared/models/misje/misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
-import { MisjaDto, MisjeClient, Operation, PagedResultOfUslugaDto, StatusUslugiDto, StatusyUslugiClient, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
+import { FakturyClient, MisjaDto, MisjeClient, Operation, PagedResultOfUslugaDto, StatusUslugiDto, StatusyUslugiClient, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
 import { FakturaDialogComponent } from '../../../components/faktura/faktura-dialog.component';
 import { MisjeDialogComponent } from '../../../components/misje/misje-dialog.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
@@ -31,7 +31,8 @@ export class ListaUslugComponent {
     private pracownicyService: PracownicyService,
     private misjeClient: MisjeClient,
     private messageToast: MessageToast,
-    private statusyUslugiClient: StatusyUslugiClient
+    private statusyUslugiClient: StatusyUslugiClient,
+    private fakturyClient: FakturyClient
   ) { }
 
   pobierzUslugi(event: LazyLoadEvent): void {
@@ -134,6 +135,7 @@ export class ListaUslugComponent {
       { label: 'Zmień status usługi na "Wykonana"', icon: 'pi pi-fw pi-star', command: () => this.zmienStatusUslugi(tableRef, 'Zakończona'), visible: this.zmienStatusUslugiNaWykonanaVisible() },
       { label: 'Dodaj fakturę', icon: 'pi pi-fw pi-file', command: () => this.dodajFakture(tableRef), visible: this.dodajFaktureVisible() },
       { label: 'Edytuj fakturę', icon: 'pi pi-fw pi-file', command: () => this.edytujFakture(tableRef), visible: this.edytujFaktureVisible() },
+      { label: 'Usuń fakturę', icon: 'pi pi-fw pi-times', command: () => this.usunFakture(tableRef), visible: this.usunFaktureVisible() },
     ];
   }
 
@@ -226,6 +228,20 @@ export class ListaUslugComponent {
   }
 
   edytujFaktureVisible(): boolean {
+    return !!this.wybranaUsluga.faktura;
+  }
+
+  usunFakture(tableRef: Table): void {
+    this.fakturyClient.usunFakture(this.wybranaUsluga.faktura.id)
+      .subscribe(
+        () => {
+          this.messageToast.success('Usunięto fakturę.');
+          this.odswiezTabele(tableRef);
+        }
+      );
+  }
+
+  usunFaktureVisible(): boolean {
     return !!this.wybranaUsluga.faktura;
   }
 }
