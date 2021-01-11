@@ -1,9 +1,11 @@
-﻿using System;
+﻿using FocusOnFlying.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
 {
-    public class Misja
+    public class Misja : IAudytowalnaTabela
     {
         public Guid Id { get; set; }
         public string Nazwa { get; set; }
@@ -19,10 +21,14 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public decimal SzerokoscGeograficzna { get; set; }
         public decimal DlugoscGeograficzna { get; set; }
         public int Promien { get; set; }
-
+        
+        [JsonIgnore]
         public TypMisji TypMisji { get; set; }
+        [JsonIgnore]
         public StatusMisji StatusMisji { get; set; }
+        [JsonIgnore]
         public Usluga Usluga { get; set; }
+        [JsonIgnore]
         public ICollection<MisjaDron> MisjeDrony { get; set; } = new List<MisjaDron>();
     }
 }

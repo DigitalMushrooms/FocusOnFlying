@@ -20,7 +20,7 @@ namespace FocusOnFlying.Application.Common.Interfaces
         DbSet<MisjaDron> MisjeDrony { get; set; }
         DbSet<Faktura> Faktury { get; set; }
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
         ChangeTracker ChangeTracker { get; }
     }

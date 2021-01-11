@@ -28,6 +28,7 @@ namespace FocusOnFlying.WebUI.Services
         }
 
         public string Login => _httpContextAccessor.HttpContext?.User?.FindFirstValue("nickname");
+        public string Id => _httpContextAccessor.HttpContext?.User?.FindFirstValue("sub");
 
         public async Task<UserDto> PobierzInformacje()
         {

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using FocusOnFlying.Domain.Interfaces;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
 {
-    public class Dron
+    public class Dron : IAudytowalnaTabela
     {
         public Guid Id { get; set; }
         public string Producent { get; set; }
@@ -12,7 +14,9 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public Guid IdTypuDrona { get; set; }
         public DateTime DataNastepnegoPrzegladu { get; set; }
 
+        [JsonIgnore]
         public TypDrona TypDrona { get; set; }
+        [JsonIgnore]
         public ICollection<MisjaDron> MisjeDrony { get; set; } = new List<MisjaDron>();
     }
 }

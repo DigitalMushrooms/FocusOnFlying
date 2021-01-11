@@ -1,9 +1,11 @@
-﻿using System;
+﻿using FocusOnFlying.Domain.Interfaces;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
 {
-    public class Klient
+    public class Klient : IAudytowalnaTabela
     {
         public Guid Id { get; set; }
         public string Imie { get; set; }
@@ -22,7 +24,9 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public Guid IdKraju { get; set; }
         public string Email { get; set; }
 
+        [JsonIgnore]
         public Kraj Kraj { get; set; }
+        [JsonIgnore]
         public ICollection<Usluga> Uslugi { get; set; } = new List<Usluga>();
     }
 }
