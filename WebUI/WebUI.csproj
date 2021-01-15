@@ -12,6 +12,7 @@
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
     <RootNamespace>FocusOnFlying.WebUI</RootNamespace>
     <AssemblyName>FocusOnFlying.WebUI</AssemblyName>
+    <UserSecretsId>d838dfb7-f6e5-417d-a184-bf1c8e090910</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
