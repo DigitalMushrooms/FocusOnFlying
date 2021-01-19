@@ -3,9 +3,10 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { SelectItem } from 'primeng/api';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MessageToast } from 'src/app/core/services/message-toast.service';
-import { NowyDronForm } from 'src/app/shared/models/dron/nowy-dron-form.model';
+import { DronForm } from 'src/app/shared/models/dron/dron-form.model';
 import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { DronyClient, TypDronaDto, TypyDronaClient, UtworzDronaCommand } from 'src/app/web-api-client';
 
@@ -15,11 +16,11 @@ import { DronyClient, TypDronaDto, TypyDronaClient, UtworzDronaCommand } from 's
   styleUrls: ['./dron.component.css']
 })
 export class DronComponent implements OnInit {
-  nowyDronForm: IFormGroup<NowyDronForm>;
+  nowyDronForm: IFormGroup<DronForm>;
   formBuilder: IFormBuilder;
   typyDrona: SelectItem<TypDronaDto>[];
   pl = Kalendarz.pl;
-  minimalnaData = new Date()
+  minimalnaData = new Date();
 
   constructor(
     formBuilder: FormBuilder,
@@ -33,11 +34,16 @@ export class DronComponent implements OnInit {
 
   ngOnInit(): void {
     this.zbudujFormularz();
-    this.pobierzTypyDrona();
+    const typDrona$ = this.pobierzTypyDrona();
+    typDrona$.subscribe(
+      (typyDrona: SelectItem<TypDronaDto>[]) => {
+        this.typyDrona = typyDrona;
+      }
+    );
   }
 
   zbudujFormularz(): void {
-    this.nowyDronForm = this.formBuilder.group<NowyDronForm>({
+    this.nowyDronForm = this.formBuilder.group<DronForm>({
       producent: [null, Validators.required],
       model: [null, Validators.required],
       numerSeryjny: [null, Validators.required],
@@ -46,14 +52,9 @@ export class DronComponent implements OnInit {
     });
   }
 
-  pobierzTypyDrona(): void {
-    this.typyDronaClient.pobierzTypyDrona()
-      .pipe(map(typyDrona => typyDrona.map(typDrona => ({ label: typDrona.nazwa, value: typDrona } as SelectItem<TypDronaDto>))))
-      .subscribe(
-        (typyDrona: SelectItem<TypDronaDto>[]) => {
-          this.typyDrona = typyDrona;
-        }
-      );
+  pobierzTypyDrona(): Observable<SelectItem<TypDronaDto>[]> {
+    return this.typyDronaClient.pobierzTypyDrona()
+      .pipe(map(typyDrona => typyDrona.map(typDrona => ({ label: typDrona.nazwa, value: typDrona } as SelectItem<TypDronaDto>))));
   }
 
   zapiszDronaOnClick(): void {

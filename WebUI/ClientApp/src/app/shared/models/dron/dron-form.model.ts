@@ -1,6 +1,6 @@
 import { TypDronaDto } from 'src/app/web-api-client';
 
-export interface NowyDronForm {
+export interface DronForm {
     producent: string;
     model: string;
     numerSeryjny: string;

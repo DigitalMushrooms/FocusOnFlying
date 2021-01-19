@@ -29,6 +29,7 @@ import { HttpTokenInterceptor } from 'src/app/core/interceptors/http.token.inter
 import { MomentPipe } from 'src/app/shared/pipes/moment.pipe';
 import { NazwaKlientaPipe } from 'src/app/shared/pipes/nazwa-klienta.pipe';
 import { AppRoutingModule } from './app-routing.module';
+import { DronDialogComponent } from './components/dron/dron-dialog.component';
 import { FakturaDialogComponent } from './components/faktura/faktura-dialog.component';
 import { KlienciDialogComponent } from './components/klienci/klienci-dialog.component';
 import { MisjeDialogComponent } from './components/misje/misje-dialog.component';
@@ -60,6 +61,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
   declarations: [
     AppComponent,
     DronComponent,
+    DronDialogComponent,
     FakturaDialogComponent,
     HomeComponent,
     KlienciComponent,

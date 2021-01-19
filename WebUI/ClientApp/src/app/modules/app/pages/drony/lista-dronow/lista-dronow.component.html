@@ -1,6 +1,7 @@
 <p-card header="Lista dronów">
     <p-table #tableRef [value]="drony" [lazy]="true" sortField="producent" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" selectionMode="single"
-        styleClass="p-datatable-striped p-datatable-gridlines" (onLazyLoad)="pobierzDrony($event)" (onRowSelect)="naWybraniuDrona($event)">
+        [(contextMenuSelection)]="wybranyDron" [contextMenu]="contextMenuRef" styleClass="p-datatable-striped p-datatable-gridlines"
+        (onLazyLoad)="pobierzDrony($event)" (onContextMenuSelect)="naWybraniuDrona(tableRef)">
         <ng-template pTemplate="header">
             <tr>
                 <th>Producent</th>
@@ -10,16 +11,17 @@
                 <th>Data następnego przeglądu</th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-klient>
-            <tr [pSelectableRow]="klient">
-                <td>{{klient.producent}}</td>
-                <td>{{klient.model}}</td>
-                <td>{{klient.numerSeryjny}}</td>
-                <td>{{klient.typDrona.nazwa}}</td>
-                <td [class.alert]="przekroczonyDzienPrzegladu(klient)">
-                    {{klient.dataNastepnegoPrzegladu | dateFormat: 'DD.MM.YYYY'}}
+        <ng-template pTemplate="body" let-dron>
+            <tr [pContextMenuRow]="dron">
+                <td>{{dron.producent}}</td>
+                <td>{{dron.model}}</td>
+                <td>{{dron.numerSeryjny}}</td>
+                <td>{{dron.typDrona.nazwa}}</td>
+                <td [class.alert]="przekroczonyDzienPrzegladu(dron)">
+                    {{dron.dataNastepnegoPrzegladu | dateFormat: 'DD.MM.YYYY'}}
                 </td>
             </tr>
         </ng-template>
     </p-table>
+    <p-contextMenu #contextMenuRef appendTo="body" [model]="kontekstoweMenu"></p-contextMenu>
 </p-card>

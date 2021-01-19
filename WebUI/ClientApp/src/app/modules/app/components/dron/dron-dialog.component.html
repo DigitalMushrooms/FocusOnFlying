@@ -1,0 +1,13 @@
+<form [formGroup]="dataNastepnegoPrzegladuForm">
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-5">
+            <label for="dataNastepnegoPrzegladu">Data następnego przeglądu</label>
+            <p-calendar formControlName="dataNastepnegoPrzegladu" [minDate]="minimalnaData" [locale]="pl" [dateFormat]="null" [showIcon]="true" appendTo="body"
+                inputId="dataNastepnegoPrzegladu">
+            </p-calendar>
+        </div>
+    </div>
+</form>
+<div class="p-d-flex p-jc-end">
+    <button pButton type="button" icon="pi pi-check" label="Zapisz datę" [disabled]="dataNastepnegoPrzegladuForm.invalid" class="p-mr-2" (click)="zapiszDateOnClick()"></button>
+</div>
