@@ -1,7 +1,7 @@
 <p-toast key="messageToast"></p-toast>
 <div class="p-d-flex">
   <div class="p-mr-2">
-    <p-menu [model]="items"></p-menu>
+    <p-menu [model]="items" (click)="activeMenu($event)"></p-menu>
   </div>
   <div class="p-mr-2" style="width: 100%">
     <router-outlet></router-outlet>

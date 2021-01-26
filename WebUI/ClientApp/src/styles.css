@@ -1,3 +1,11 @@
 .p-card .p-card {
     background-color: rgb(32 38 46);
 }
+
+.p-menuitem.active {
+    background-color: #c298d8;
+}
+
+.p-menuitem.active span {
+    color: #151515 !important;
+}

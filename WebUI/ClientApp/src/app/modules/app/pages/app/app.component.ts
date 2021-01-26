@@ -37,6 +37,12 @@ export class AppComponent {
       ]
     },
     {
+      label: 'Użytkownicy',
+      items: [
+        { label: 'Lista użytkowników', icon: 'pi pi-fw pi-users', routerLink: '/uzytkownicy' }
+      ]
+    },
+    {
       label: 'Raporty',
       items: [
         { label: 'Lista raportów', icon: 'pi pi-fw pi-list', routerLink: '/raporty/lista-raportow' },
@@ -46,5 +52,25 @@ export class AppComponent {
 
   ngOnInit(): void {
     moment.locale('pl');
+  }
+
+  activeMenu(event): void {
+    //console.log(event.target.classList);
+    let node;
+    if (event.target.classList.contains("p-submenu-header") == true) {
+      node = "submenu";
+    } else if (event.target.tagName === "SPAN") {
+      node = event.target.parentNode.parentNode;
+    } else {
+      node = event.target.parentNode;
+    }
+    //console.log(node);
+    if (node != "submenu") {
+      const menuitem = document.getElementsByClassName("p-menuitem");
+      for (let i = 0; i < menuitem.length; i++) {
+        menuitem[i].classList.remove("active");
+      }
+      node.classList.add("active");
+    }
   }
 }
