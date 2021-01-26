@@ -28,7 +28,7 @@ namespace IdentityServerHost.Quickstart.UI
                             new Claim(JwtClaimTypes.Name, "Franciszka Wojciechowska"),
                             new Claim(JwtClaimTypes.GivenName, "Franciszka"),
                             new Claim(JwtClaimTypes.FamilyName, "Wojciechowska"),
-                            new Claim(JwtClaimTypes.Email, "FranciszkaWojciechowska@email.com"),
+                            new Claim(JwtClaimTypes.Email, "franciszkawojciechowska@email.com"),
                             new Claim("uprawnienia", "VLOS"),
                             new Claim("uprawnienia", "BVLOS"),
                             new Claim(JwtClaimTypes.Role, "USLUGA_TWORZENIE_EDYCJA"),
@@ -52,7 +52,9 @@ namespace IdentityServerHost.Quickstart.UI
                             new Claim(JwtClaimTypes.Name, "Tymoteusz Sobczak"),
                             new Claim(JwtClaimTypes.GivenName, "Tymoteusz"),
                             new Claim(JwtClaimTypes.FamilyName, "Sobczak"),
-                            new Claim(JwtClaimTypes.Email, "TymoteuszSobczak@email.com"),
+                            new Claim(JwtClaimTypes.Email, "tymoteuszsobczak@email.com"),
+                            new Claim(JwtClaimTypes.Role, "USLUGA_TWORZENIE_EDYCJA"),
+                            new Claim(JwtClaimTypes.Role, "USLUGA_PODGLAD"),
                             new Claim("uprawnienia", "VLOS")
                         }
                     }

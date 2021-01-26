@@ -1,7 +1,7 @@
 <p-card header="Lista usług">
     <p-table #tableRef [value]="uslugi" [(contextMenuSelection)]="wybranaUsluga" [contextMenu]="contextMenuRef" selectionMode="single" [lazy]="true" [paginator]="true"
         [loading]="loading" [rows]="10" [totalRecords]="liczbaRekordow" sortField="dataPrzyjeciaZlecenia" styleClass="p-datatable-striped p-datatable-gridlines"
-        styleClass="p-datatable-striped p-datatable-gridlines" (onLazyLoad)="pobierzUslugi($event)" (onContextMenuSelect)="naWybraniuUslugi(tableRef)">
+        (onLazyLoad)="pobierzUslugi($event)" (onContextMenuSelect)="naWybraniuUslugi(tableRef)">
         <ng-template pTemplate="header">
             <tr>
                 <th pSortableColumn="dataPrzyjeciaZlecenia">Przyjęcie zlecenia<p-sortIcon field="dataPrzyjeciaZlecenia"></p-sortIcon>

@@ -1,0 +1,38 @@
+<p-card header="Lista użytkowników">
+    <p-table [value]="pracownicy" [lazy]="true" [paginator]="true" [loading]="loading" [rows]="10" [autoLayout]="true" styleClass="p-datatable-striped p-datatable-gridlines"
+        (onLazyLoad)="pobierzPracownikow($event)">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="name">Imie i nazwisko<p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="username">Login<p-sortIcon field="username"></p-sortIcon>
+                </th>
+                <th pSortableColumn="uprawnienia">Uprawnienia<p-sortIcon field="uprawnienia"></p-sortIcon>
+                </th>
+                <th pSortableColumn="role">Role<p-sortIcon field="role"></p-sortIcon>
+                </th>
+                <th pSortableColumn="email">Email<p-sortIcon field="email"></p-sortIcon>
+                </th>
+                <th pSortableColumn="isActive">Aktywny<p-sortIcon field="isActive"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-uzytkownik>
+            <tr [pContextMenuRow]="uzytkownik">
+                <td>{{pelnaNazwa(uzytkownik)}}</td>
+                <td>{{uzytkownik.username}}</td>
+                <td>{{uprawnienia(uzytkownik)}}</td>
+                <td>{{role(uzytkownik)}}</td>
+                <td>{{email(uzytkownik)}}</td>
+                <td>{{uzytkownik.isActive ? "Tak" : "Nie"}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td [attr.colspan]="6">
+                    Brak usług
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
