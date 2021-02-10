@@ -34,6 +34,7 @@ import { FakturaDialogComponent } from './components/faktura/faktura-dialog.comp
 import { KlienciDialogComponent } from './components/klienci/klienci-dialog.component';
 import { MisjeDialogComponent } from './components/misje/misje-dialog.component';
 import { AppComponent } from './pages/app/app.component';
+import { TabViewModule } from 'primeng/tabview';
 import { DronComponent } from './pages/drony/dron/dron.component';
 import { ListaDronowComponent } from './pages/drony/lista-dronow/lista-dronow.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -105,6 +106,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     ReactiveFormsModule,
     RippleModule,
     TableModule,
+    TabViewModule,
     ToastModule,
     ToggleButtonModule,
   ],

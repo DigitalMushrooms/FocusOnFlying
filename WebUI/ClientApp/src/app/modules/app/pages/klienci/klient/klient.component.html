@@ -1,39 +1,49 @@
 <p-card header="Dodanie nowego klienta">
     <form [formGroup]="nowyKlientForm">
+        <p-tabView (onClose)="naZamknieciuZakladki($event)">
+            <p-tabPanel header="Osoba fizyczna">
+                <div class="p-fluid p-formgrid p-grid" formGroupName="osobaFizyczna">
+                    <div class="p-field p-col-3">
+                        <label for="imie">Imię</label>
+                        <input formControlName="imie" id="imie" type="text" pInputText>
+                    </div>
+                    <div class="p-field p-col-3">
+                        <label for="nazwisko">Nazwisko</label>
+                        <input formControlName="nazwisko" id="nazwisko" type="text" pInputText>
+                    </div>
+                    <div class="p-field p-col-3">
+                        <label for="pesel">PESEL</label>
+                        <input formControlName="pesel" id="pesel" type="text" pInputText>
+                    </div>
+                    <div class="p-field p-col-3">
+                        <label for="numerPaszportu">Numer paszportu</label>
+                        <input formControlName="numerPaszportu" id="numerPaszportu" type="text" pInputText>
+                    </div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel header="Firma">
+                <div class="p-fluid p-formgrid p-grid" formGroupName="firma">
+                    <div class="p-field p-col-4">
+                        <label for="nazwa">Nazwa</label>
+                        <input formControlName="nazwa" id="nazwa" type="text" pInputText>
+                    </div>
+                    <div class="p-field p-col-4">
+                        <label for="regon">REGON</label>
+                        <input formControlName="regon" id="regon" type="text" pInputText>
+                    </div>
+                    <div class="p-field p-col-4">
+                        <label for="nip">NIP</label>
+                        <input formControlName="nip" id="nip" type="text" pInputText>
+                    </div>
+                </div>
+            </p-tabPanel>
+        </p-tabView>
         <div class="p-fluid p-formgrid p-grid">
-            <div class="p-field p-col-4">
-                <label for="imie">Imię</label>
-                <input formControlName="imie" id="imie" type="text" pInputText>
-            </div>
-            <div class="p-field p-col-4">
-                <label for="nazwisko">Nazwisko</label>
-                <input formControlName="nazwisko" id="nazwisko" type="text" pInputText>
-            </div>
-            <div class="p-field p-col-4">
-                <label for="nazwa">Nazwa</label>
-                <input formControlName="nazwa" id="nazwa" type="text" pInputText>
-            </div>
             <div class="p-field p-col-4">
                 <label for="kraj">Kraj</label>
                 <p-dropdown formControlName="kraj" id="kraj" [options]="kraje" [showClear]="true" [filter]="true" [autoDisplayFirst]="false" required filterBy="label"
                     placeholder="Wybierz kraj" emptyFilterMessage="Brak wyników.">
                 </p-dropdown>
-            </div>
-            <div class="p-field p-col-4">
-                <label for="pesel">PESEL</label>
-                <input formControlName="pesel" id="pesel" type="text" pInputText>
-            </div>
-            <div class="p-field p-col-4">
-                <label for="regon">REGON</label>
-                <input formControlName="regon" id="regon" type="text" pInputText>
-            </div>
-            <div class="p-field p-col-4">
-                <label for="nip">NIP</label>
-                <input formControlName="nip" id="nip" type="text" pInputText>
-            </div>
-            <div class="p-field p-col-4">
-                <label for="numerPaszportu">Numer paszportu</label>
-                <input formControlName="numerPaszportu" id="numerPaszportu" type="text" pInputText>
             </div>
             <div class="p-field p-col-4">
                 <label for="numerTelefonu">Numer telefonu</label>
@@ -64,10 +74,8 @@
                 <input formControlName="email" id="email" type="text" pInputText>
             </div>
         </div>
-        <div class="p-d-flex p-jc-end">
-            <div>
-                <button pButton type="button" icon="pi pi-check" class="p-ml-auto" label="Zapisz klienta" (click)="zapiszOnClick()"></button>
-            </div>
-        </div>
     </form>
+    <div class="p-d-flex p-jc-end">
+        <button pButton type="button" icon="pi pi-check" class="p-ml-auto" label="Zapisz klienta" (click)="zapiszOnClick()"></button>
+    </div>
 </p-card>

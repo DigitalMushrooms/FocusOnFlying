@@ -55,7 +55,6 @@ export class AppComponent {
   }
 
   activeMenu(event): void {
-    //console.log(event.target.classList);
     let node;
     if (event.target.classList.contains("p-submenu-header") == true) {
       node = "submenu";
@@ -64,7 +63,6 @@ export class AppComponent {
     } else {
       node = event.target.parentNode;
     }
-    //console.log(node);
     if (node != "submenu") {
       const menuitem = document.getElementsByClassName("p-menuitem");
       for (let i = 0; i < menuitem.length; i++) {
