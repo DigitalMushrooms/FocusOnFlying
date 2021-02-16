@@ -13,7 +13,7 @@ import { ListaUzytkownikowComponent } from './pages/uzytkownicy/lista-uzytkownik
 
 const routes: Routes = [
   { path: 'strona-glowna', component: HomeComponent, canActivate: [AuthorizationGuard] },
-  { path: 'klienci/klient', component: KlientComponent, canActivate: [AuthorizationGuard], data: { rola: 'KLIENT_TWORZENIE_EDYCJA' } },
+  { path: 'klienci/klient/:id', component: KlientComponent, canActivate: [AuthorizationGuard], data: { rola: 'KLIENT_TWORZENIE_EDYCJA' } },
   { path: 'klienci', component: KlienciComponent, canActivate: [AuthorizationGuard], data: { rola: 'KLIENT_PODGLAD' } },
   { path: 'uslugi/usluga', component: UslugaComponent, canActivate: [AuthorizationGuard], data: { rola: 'USLUGA_TWORZENIE_EDYCJA' } },
   { path: 'uslugi/lista-uslug', component: ListaUslugComponent, canActivate: [AuthorizationGuard], data: { rola: 'USLUGA_PODGLAD' } },

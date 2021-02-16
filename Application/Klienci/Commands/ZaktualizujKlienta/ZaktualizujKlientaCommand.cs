@@ -3,14 +3,18 @@ using FocusOnFlying.Application.Common.Interfaces;
 using FocusOnFlying.Application.Common.Mappings;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
+namespace FocusOnFlying.Application.Klienci.Commands.ZaktualizujKlienta
 {
-    public class UtworzKlientaCommand : IRequest, IMapFrom<Klient>
+    public class ZaktualizujKlientaCommand : IRequest, IMapFrom<Klient>
     {
+        [JsonIgnore]
+        public Guid Id { get; set; }
         public string Imie { get; set; }
         public string Nazwisko { get; set; }
         public string Nazwa { get; set; }
@@ -29,27 +33,28 @@ namespace FocusOnFlying.Application.Klienci.Commands.UtworzKlienta
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<UtworzKlientaCommand, Klient>().ReverseMap();
+            profile.CreateMap<ZaktualizujKlientaCommand, Klient>().ReverseMap();
         }
     }
 
-    public class UtworzKlientaCommandHandler : IRequestHandler<UtworzKlientaCommand>
+    public class ZaktualizujKlientaCommandHandler : IRequestHandler<ZaktualizujKlientaCommand>
     {
         private readonly IFocusOnFlyingContext _focusOnFlyingContext;
         private readonly IMapper _mapper;
 
-        public UtworzKlientaCommandHandler(IFocusOnFlyingContext focusOnFlyingContext, IMapper mapper)
+        public ZaktualizujKlientaCommandHandler(IFocusOnFlyingContext focusOnFlyingContext, IMapper mapper)
         {
             _focusOnFlyingContext = focusOnFlyingContext;
             _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(UtworzKlientaCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ZaktualizujKlientaCommand request, CancellationToken cancellationToken)
         {
-            var klient = _mapper.Map<Klient>(request);
-            _focusOnFlyingContext.Klienci.Add(klient);
+            var klientEncja = await _focusOnFlyingContext.Klienci.SingleAsync(x => x.Id == request.Id);
 
-            await _focusOnFlyingContext.SaveChangesAsync(cancellationToken);
+            _mapper.Map(request, klientEncja);
+
+            await _focusOnFlyingContext.SaveChangesAsync();
 
             return Unit.Value;
         }

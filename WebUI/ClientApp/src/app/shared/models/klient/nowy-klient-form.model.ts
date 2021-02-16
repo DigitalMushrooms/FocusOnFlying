@@ -3,6 +3,7 @@ import { FirmaForm } from "./firma-form.model";
 import { OsobaFizycznaForm } from "./osoba-fizyczna-form.model";
 
 export interface NowyKlientForm {
+    id: string,
     osobaFizyczna: OsobaFizycznaForm,
     firma: FirmaForm,
     kraj: KrajDto,

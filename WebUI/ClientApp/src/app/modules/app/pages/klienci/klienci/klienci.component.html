@@ -28,8 +28,8 @@
     </div>
     <div>
         <p-table #tableRef [value]="klienci" [lazy]="true" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" selectionMode="single"
-            [lazyLoadOnInit]="false" sortField="imie" styleClass="p-datatable-striped p-datatable-gridlines" (onLazyLoad)="pobierzKlientow($event)"
-            (onRowSelect)="naWybraniuKlienta($event)">
+            [(contextMenuSelection)]="wybranyKlient" [contextMenu]="contextMenuRef" [lazyLoadOnInit]="false" sortField="imie" styleClass="p-datatable-striped p-datatable-gridlines"
+            (onLazyLoad)="pobierzKlientow($event)" (onContextMenuSelect)="naWybraniuKlienta()">
             <ng-template pTemplate="header">
                 <tr>
                     <th pSortableColumn="imie">Imie<p-sortIcon field="imie"></p-sortIcon>
@@ -51,7 +51,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-klient>
-                <tr [pSelectableRow]="klient">
+                <tr [pContextMenuRow]="klient">
                     <td>{{klient.imie}}</td>
                     <td>{{klient.nazwisko}}</td>
                     <td>{{klient.pesel}}</td>
@@ -63,5 +63,6 @@
                 </tr>
             </ng-template>
         </p-table>
+        <p-contextMenu #contextMenuRef appendTo="body" [model]="kontekstoweMenu"></p-contextMenu>
     </div>
 </p-card>

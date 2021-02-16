@@ -1,4 +1,5 @@
-﻿using FocusOnFlying.Application.Common.Mappings;
+﻿using AutoMapper;
+using FocusOnFlying.Application.Common.Mappings;
 using FocusOnFlying.Application.Kraje.Queries.PobierzKraje;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using System;
@@ -26,5 +27,10 @@ namespace FocusOnFlying.Application.Klienci.Queries.PobierzKlientow
         public KrajDto Kraj { get; set; }
         public string ZagranicznyKodPocztowy { get; set; }
         public string Email { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Klient, KlientDto>().ReverseMap();
+        }
     }
 }

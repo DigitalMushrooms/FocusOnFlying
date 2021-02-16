@@ -311,6 +311,8 @@ export class FakturyClient implements IFakturyClient {
 export interface IKlienciClient {
     pobierzKlientow(fraza: string | null | undefined, pesel: string | null | undefined, nip: string | null | undefined, regon: string | null | undefined, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfKlientDto>;
     utworzKlienta(command: UtworzKlientaCommand): Observable<void>;
+    pobierzKlienta(id: string): Observable<KlientDto>;
+    zaktualizujKlienta(id: string, command: ZaktualizujKlientaCommand): Observable<void>;
 }
 
 @Injectable({
@@ -422,6 +424,108 @@ export class KlienciClient implements IKlienciClient {
     }
 
     protected processUtworzKlienta(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    pobierzKlienta(id: string): Observable<KlientDto> {
+        let url_ = this.baseUrl + "/api/klienci/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPobierzKlienta(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPobierzKlienta(<any>response_);
+                } catch (e) {
+                    return <Observable<KlientDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<KlientDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPobierzKlienta(response: HttpResponseBase): Observable<KlientDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = KlientDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<KlientDto>(<any>null);
+    }
+
+    zaktualizujKlienta(id: string, command: ZaktualizujKlientaCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/klienci/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processZaktualizujKlienta(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processZaktualizujKlienta(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processZaktualizujKlienta(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1947,6 +2051,98 @@ export class UtworzKlientaCommand implements IUtworzKlientaCommand {
 }
 
 export interface IUtworzKlientaCommand {
+    imie?: string | undefined;
+    nazwisko?: string | undefined;
+    nazwa?: string | undefined;
+    idKraju?: string;
+    pesel?: string | undefined;
+    regon?: string | undefined;
+    nip?: string | undefined;
+    numerPaszportu?: string | undefined;
+    numerTelefonu?: string | undefined;
+    kodPocztowy?: string | undefined;
+    ulica?: string | undefined;
+    numerDomu?: string | undefined;
+    numerLokalu?: string | undefined;
+    miejscowosc?: string | undefined;
+    email?: string | undefined;
+}
+
+export class ZaktualizujKlientaCommand implements IZaktualizujKlientaCommand {
+    imie?: string | undefined;
+    nazwisko?: string | undefined;
+    nazwa?: string | undefined;
+    idKraju?: string;
+    pesel?: string | undefined;
+    regon?: string | undefined;
+    nip?: string | undefined;
+    numerPaszportu?: string | undefined;
+    numerTelefonu?: string | undefined;
+    kodPocztowy?: string | undefined;
+    ulica?: string | undefined;
+    numerDomu?: string | undefined;
+    numerLokalu?: string | undefined;
+    miejscowosc?: string | undefined;
+    email?: string | undefined;
+
+    constructor(data?: IZaktualizujKlientaCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.imie = _data["imie"];
+            this.nazwisko = _data["nazwisko"];
+            this.nazwa = _data["nazwa"];
+            this.idKraju = _data["idKraju"];
+            this.pesel = _data["pesel"];
+            this.regon = _data["regon"];
+            this.nip = _data["nip"];
+            this.numerPaszportu = _data["numerPaszportu"];
+            this.numerTelefonu = _data["numerTelefonu"];
+            this.kodPocztowy = _data["kodPocztowy"];
+            this.ulica = _data["ulica"];
+            this.numerDomu = _data["numerDomu"];
+            this.numerLokalu = _data["numerLokalu"];
+            this.miejscowosc = _data["miejscowosc"];
+            this.email = _data["email"];
+        }
+    }
+
+    static fromJS(data: any): ZaktualizujKlientaCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ZaktualizujKlientaCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["imie"] = this.imie;
+        data["nazwisko"] = this.nazwisko;
+        data["nazwa"] = this.nazwa;
+        data["idKraju"] = this.idKraju;
+        data["pesel"] = this.pesel;
+        data["regon"] = this.regon;
+        data["nip"] = this.nip;
+        data["numerPaszportu"] = this.numerPaszportu;
+        data["numerTelefonu"] = this.numerTelefonu;
+        data["kodPocztowy"] = this.kodPocztowy;
+        data["ulica"] = this.ulica;
+        data["numerDomu"] = this.numerDomu;
+        data["numerLokalu"] = this.numerLokalu;
+        data["miejscowosc"] = this.miejscowosc;
+        data["email"] = this.email;
+        return data; 
+    }
+}
+
+export interface IZaktualizujKlientaCommand {
     imie?: string | undefined;
     nazwisko?: string | undefined;
     nazwa?: string | undefined;

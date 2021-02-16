@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { LazyLoadEvent } from 'primeng/api';
+import { LazyLoadEvent, MenuItem } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { finalize } from 'rxjs/operators';
 import { ListaKlientowForm } from 'src/app/shared/models/klient/lista-klientow.model';
@@ -16,12 +17,15 @@ export class KlienciComponent implements OnInit {
   listaKlientowForm: IFormGroup<ListaKlientowForm>;
   formBuilder: IFormBuilder;
   klienci: KlientDto[];
+  wybranyKlient: KlientDto;
   liczbaRekordow = 0;
   loading = false;
+  kontekstoweMenu: MenuItem[];
 
   constructor(
     formBuilder: FormBuilder,
-    private klienciClient: KlienciClient
+    private klienciClient: KlienciClient,
+    private router: Router
   ) {
     this.formBuilder = formBuilder;
   }
@@ -55,8 +59,14 @@ export class KlienciComponent implements OnInit {
       );
   }
 
-  naWybraniuKlienta(event): void {
+  naWybraniuKlienta(): void {
+    this.kontekstoweMenu = [
+      { label: 'Edytuj klienta', icon: 'pi pi-fw pi-user-edit', command: () => this.edytujKlienta(), visible: true },
+    ];
+  }
 
+  edytujKlienta(): void {
+    this.router.navigate(['/klienci/klient', this.wybranyKlient.id]);
   }
 
   wyszukajOnClick(tableRef: Table): void {

@@ -66,7 +66,12 @@ namespace FocusOnFlying.WebUI
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseOpenApi();
+                app.UseSwaggerUi3(settings =>
+                {
+                    settings.DocumentTitle = "API FocusOnFlying";
+                });
+                app.UseReDoc();
             }
             else
             {
@@ -80,12 +85,6 @@ namespace FocusOnFlying.WebUI
             {
                 app.UseSpaStaticFiles();
             }
-
-            app.UseSwaggerUi3(settings =>
-            {
-                settings.Path = "/api";
-                settings.DocumentPath = "/api/specification.json";
-            });
 
             app.UseRouting();
 

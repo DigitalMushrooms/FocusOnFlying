@@ -289,6 +289,73 @@
         }
       }
     },
+    "/api/klienci/{id}": {
+      "get": {
+        "tags": [
+          "Klienci"
+        ],
+        "operationId": "Klienci_PobierzKlienta",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KlientDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Klienci"
+        ],
+        "operationId": "Klienci_ZaktualizujKlienta",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ZaktualizujKlientaCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/kraje": {
       "get": {
         "tags": [
@@ -1140,6 +1207,72 @@
         }
       },
       "UtworzKlientaCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "imie": {
+            "type": "string",
+            "nullable": true
+          },
+          "nazwisko": {
+            "type": "string",
+            "nullable": true
+          },
+          "nazwa": {
+            "type": "string",
+            "nullable": true
+          },
+          "idKraju": {
+            "type": "string",
+            "format": "guid"
+          },
+          "pesel": {
+            "type": "string",
+            "nullable": true
+          },
+          "regon": {
+            "type": "string",
+            "nullable": true
+          },
+          "nip": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerPaszportu": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerTelefonu": {
+            "type": "string",
+            "nullable": true
+          },
+          "kodPocztowy": {
+            "type": "string",
+            "nullable": true
+          },
+          "ulica": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerDomu": {
+            "type": "string",
+            "nullable": true
+          },
+          "numerLokalu": {
+            "type": "string",
+            "nullable": true
+          },
+          "miejscowosc": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ZaktualizujKlientaCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

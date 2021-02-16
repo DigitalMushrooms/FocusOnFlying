@@ -1,6 +1,6 @@
 <p-card header="Dodanie nowego klienta">
     <form [formGroup]="nowyKlientForm">
-        <p-tabView (onClose)="naZamknieciuZakladki($event)">
+        <p-tabView (onClose)="naZamknieciuZakladki($event)" [activeIndex]="zakladka">
             <p-tabPanel header="Osoba fizyczna">
                 <div class="p-fluid p-formgrid p-grid" formGroupName="osobaFizyczna">
                     <div class="p-field p-col-3">
@@ -74,6 +74,7 @@
                 <input formControlName="email" id="email" type="text" pInputText>
             </div>
         </div>
+        <input formControlName="id" type="text" hidden>
     </form>
     <div class="p-d-flex p-jc-end">
         <button pButton type="button" icon="pi pi-check" class="p-ml-auto" label="Zapisz klienta" (click)="zapiszOnClick()"></button>
