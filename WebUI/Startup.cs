@@ -58,7 +58,7 @@ namespace FocusOnFlying.WebUI
 
             services.AddOpenApiDocument(configure =>
             {
-                configure.Title = "FocusOnFlying API";
+                configure.Title = "API FocusOnFlying";
             });
         }
 

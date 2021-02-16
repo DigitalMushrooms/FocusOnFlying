@@ -1,4 +1,5 @@
 ﻿using FocusOnFlying.Application.Common.Models;
+using FocusOnFlying.Application.Klienci.Commands.UsunKlienta;
 using FocusOnFlying.Application.Klienci.Commands.UtworzKlienta;
 using FocusOnFlying.Application.Klienci.Commands.ZaktualizujKlienta;
 using FocusOnFlying.Application.Klienci.Queries.PobierzKlienta;
@@ -37,6 +38,12 @@ namespace FocusOnFlying.WebUI.Controllers
         {
             command.Id = id;
             await Mediator.Send(command);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task UsunKlienta(Guid id)
+        {
+            await Mediator.Send(new UsunKlientaCommand { Id = id });
         }
     }
 }

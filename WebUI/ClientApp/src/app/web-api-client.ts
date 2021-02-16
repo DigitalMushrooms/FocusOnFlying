@@ -313,6 +313,7 @@ export interface IKlienciClient {
     utworzKlienta(command: UtworzKlientaCommand): Observable<void>;
     pobierzKlienta(id: string): Observable<KlientDto>;
     zaktualizujKlienta(id: string, command: ZaktualizujKlientaCommand): Observable<void>;
+    usunKlienta(id: string): Observable<void>;
 }
 
 @Injectable({
@@ -526,6 +527,53 @@ export class KlienciClient implements IKlienciClient {
     }
 
     protected processZaktualizujKlienta(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    usunKlienta(id: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/klienci/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUsunKlienta(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUsunKlienta(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUsunKlienta(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1844,6 +1892,7 @@ export class KlientDto implements IKlientDto {
     kraj?: KrajDto | undefined;
     zagranicznyKodPocztowy?: string | undefined;
     email?: string | undefined;
+    aktywny?: boolean;
 
     constructor(data?: IKlientDto) {
         if (data) {
@@ -1875,6 +1924,7 @@ export class KlientDto implements IKlientDto {
             this.kraj = _data["kraj"] ? KrajDto.fromJS(_data["kraj"]) : <any>undefined;
             this.zagranicznyKodPocztowy = _data["zagranicznyKodPocztowy"];
             this.email = _data["email"];
+            this.aktywny = _data["aktywny"];
         }
     }
 
@@ -1906,6 +1956,7 @@ export class KlientDto implements IKlientDto {
         data["kraj"] = this.kraj ? this.kraj.toJSON() : <any>undefined;
         data["zagranicznyKodPocztowy"] = this.zagranicznyKodPocztowy;
         data["email"] = this.email;
+        data["aktywny"] = this.aktywny;
         return data; 
     }
 }
@@ -1930,6 +1981,7 @@ export interface IKlientDto {
     kraj?: KrajDto | undefined;
     zagranicznyKodPocztowy?: string | undefined;
     email?: string | undefined;
+    aktywny?: boolean;
 }
 
 export class KrajDto implements IKrajDto {

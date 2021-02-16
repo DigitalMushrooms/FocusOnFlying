@@ -29,7 +29,7 @@
     <div>
         <p-table #tableRef [value]="klienci" [lazy]="true" [paginator]="true" [rows]="10" [totalRecords]="liczbaRekordow" [loading]="loading" selectionMode="single"
             [(contextMenuSelection)]="wybranyKlient" [contextMenu]="contextMenuRef" [lazyLoadOnInit]="false" sortField="imie" styleClass="p-datatable-striped p-datatable-gridlines"
-            (onLazyLoad)="pobierzKlientow($event)" (onContextMenuSelect)="naWybraniuKlienta()">
+            (onLazyLoad)="pobierzKlientow($event)" (onContextMenuSelect)="naWybraniuKlienta(tableRef)">
             <ng-template pTemplate="header">
                 <tr>
                     <th pSortableColumn="imie">Imie<p-sortIcon field="imie"></p-sortIcon>

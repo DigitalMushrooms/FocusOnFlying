@@ -23,6 +23,7 @@ namespace FocusOnFlying.Domain.Entities.FocusOnFlyingDb
         public string NumerLokalu { get; set; }
         public Guid IdKraju { get; set; }
         public string Email { get; set; }
+        public bool Aktywny { get; set; }
 
         [JsonIgnore]
         public Kraj Kraj { get; set; }

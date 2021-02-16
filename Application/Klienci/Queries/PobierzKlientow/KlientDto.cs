@@ -27,6 +27,7 @@ namespace FocusOnFlying.Application.Klienci.Queries.PobierzKlientow
         public KrajDto Kraj { get; set; }
         public string ZagranicznyKodPocztowy { get; set; }
         public string Email { get; set; }
+        public bool Aktywny { get; set; }
 
         public void Mapping(Profile profile)
         {
