@@ -45,6 +45,7 @@ import { ListaRaportowComponent } from './pages/raporty/lista-raportow/lista-rap
 import { ListaUslugComponent } from './pages/uslugi/lista-uslug/lista-uslug.component';
 import { UslugaComponent } from './pages/uslugi/usluga/usluga.component';
 import { ListaUzytkownikowComponent } from './pages/uzytkownicy/lista-uzytkownikow/lista-uzytkownikow.component';
+import { ListaAudytowComponent } from './pages/audyty/lista-audytow/lista-audytow.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
   return (): Promise<unknown> =>
@@ -78,6 +79,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     NazwaKlientaPipe,
     UslugaComponent,
     ListaUzytkownikowComponent,
+    ListaAudytowComponent,
   ],
   imports: [
     AppRoutingModule,

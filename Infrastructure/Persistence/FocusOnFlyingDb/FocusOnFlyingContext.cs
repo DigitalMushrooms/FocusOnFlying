@@ -39,6 +39,7 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb
         public DbSet<Dron> Drony { get; set; }
         public DbSet<MisjaDron> MisjeDrony { get; set; }
         public DbSet<Faktura> Faktury { get; set; }
+        public DbSet<Audyt> Audyty { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

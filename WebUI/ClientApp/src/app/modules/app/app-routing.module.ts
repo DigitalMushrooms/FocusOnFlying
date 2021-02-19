@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthorizationGuard } from 'src/app/core/guards/authorization.guard';
+import { ListaAudytowComponent } from './pages/audyty/lista-audytow/lista-audytow.component';
 import { DronComponent } from './pages/drony/dron/dron.component';
 import { ListaDronowComponent } from './pages/drony/lista-dronow/lista-dronow.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -19,8 +20,9 @@ const routes: Routes = [
   { path: 'uslugi/lista-uslug', component: ListaUslugComponent, canActivate: [AuthorizationGuard], data: { rola: 'USLUGA_PODGLAD' } },
   { path: 'drony/dron', component: DronComponent, canActivate: [AuthorizationGuard], data: { rola: 'DRON_TWORZENIE_EDYCJA' } },
   { path: 'drony/lista-dronow', component: ListaDronowComponent, canActivate: [AuthorizationGuard], data: { rola: 'DRON_PODGLAD' } },
-  { path: 'uzytkownicy', component: ListaUzytkownikowComponent, canActivate: [AuthorizationGuard] },
+  { path: 'uzytkownicy', component: ListaUzytkownikowComponent, canActivate: [AuthorizationGuard], data: { rola: 'UZYTKOWNIK_PODGLAD' } },
   { path: 'raporty/lista-raportow', component: ListaRaportowComponent, canActivate: [AuthorizationGuard], data: { rola: 'RAPORT_TWORZENIE_EDYCJA' } },
+  { path: 'audyty/lista-audytow', component: ListaAudytowComponent, canActivate: [AuthorizationGuard], data: { rola: 'AUDYT_PODGLAD' } },
   { path: '**', redirectTo: 'strona-glowna' }
 ];
 

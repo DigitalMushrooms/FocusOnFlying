@@ -6,6 +6,46 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/audyty": {
+      "get": {
+        "tags": [
+          "Audyty"
+        ],
+        "operationId": "Audyty_PobierzAudyty",
+        "parameters": [
+          {
+            "name": "Offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "Rows",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfAudytDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/drony": {
       "post": {
         "tags": [
@@ -967,6 +1007,70 @@
   },
   "components": {
     "schemas": {
+      "PagedResultOfAudytDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PagedResultBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "results": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/AudytDto"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "AudytDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "idAudytowanegoWiersza": {
+            "type": "string",
+            "format": "guid"
+          },
+          "nazwaTabeli": {
+            "type": "string",
+            "nullable": true
+          },
+          "dane": {
+            "type": "string",
+            "nullable": true
+          },
+          "dataAudytu": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uzytkownik": {
+            "type": "string",
+            "nullable": true
+          },
+          "typOperacji": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PagedResultBase": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rowCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "UtworzDronaCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -1058,16 +1162,6 @@
           "nazwa": {
             "type": "string",
             "nullable": true
-          }
-        }
-      },
-      "PagedResultBase": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "rowCount": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },

@@ -38,7 +38,9 @@ namespace IdentityServerHost.Quickstart.UI
                             new Claim(JwtClaimTypes.Role, "PRACOWNIK_TWORZENIE_EDYCJA"),
                             new Claim(JwtClaimTypes.Role, "KLIENT_TWORZENIE_EDYCJA"),
                             new Claim(JwtClaimTypes.Role, "KLIENT_PODGLAD"),
+                            new Claim(JwtClaimTypes.Role, "UZYTKOWNIK_PODGLAD"),
                             new Claim(JwtClaimTypes.Role, "RAPORT_TWORZENIE_EDYCJA"),
+                            new Claim(JwtClaimTypes.Role, "AUDYT_PODGLAD"),
                         }
                     },
                     new TestUser

@@ -47,6 +47,12 @@ export class AppComponent {
       items: [
         { label: 'Lista raportów', icon: 'pi pi-fw pi-list', routerLink: '/raporty/lista-raportow' },
       ]
+    },
+    {
+      label: 'Audyty',
+      items: [
+        { label: 'Lista audytów', icon: 'pi pi-fw pi-list', routerLink: '/audyty/lista-audytow' }
+      ]
     }
   ];
 

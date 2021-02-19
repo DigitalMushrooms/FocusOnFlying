@@ -14,6 +14,80 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
+export interface IAudytyClient {
+    pobierzAudyty(offset: number | undefined, rows: number | undefined): Observable<PagedResultOfAudytDto>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class AudytyClient implements IAudytyClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    pobierzAudyty(offset: number | undefined, rows: number | undefined): Observable<PagedResultOfAudytDto> {
+        let url_ = this.baseUrl + "/api/audyty?";
+        if (offset === null)
+            throw new Error("The parameter 'offset' cannot be null.");
+        else if (offset !== undefined)
+            url_ += "Offset=" + encodeURIComponent("" + offset) + "&";
+        if (rows === null)
+            throw new Error("The parameter 'rows' cannot be null.");
+        else if (rows !== undefined)
+            url_ += "Rows=" + encodeURIComponent("" + rows) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPobierzAudyty(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPobierzAudyty(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultOfAudytDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultOfAudytDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPobierzAudyty(response: HttpResponseBase): Observable<PagedResultOfAudytDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfAudytDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultOfAudytDto>(<any>null);
+    }
+}
+
 export interface IDronyClient {
     utworzDrona(command: UtworzDronaCommand): Observable<void>;
     pobierzDrony(offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfDronDto>;
@@ -1529,6 +1603,143 @@ export class UslugiClient implements IUslugiClient {
     }
 }
 
+export class PagedResultBase implements IPagedResultBase {
+    rowCount?: number;
+
+    constructor(data?: IPagedResultBase) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.rowCount = _data["rowCount"];
+        }
+    }
+
+    static fromJS(data: any): PagedResultBase {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultBase();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["rowCount"] = this.rowCount;
+        return data; 
+    }
+}
+
+export interface IPagedResultBase {
+    rowCount?: number;
+}
+
+export class PagedResultOfAudytDto extends PagedResultBase implements IPagedResultOfAudytDto {
+    results?: AudytDto[] | undefined;
+
+    constructor(data?: IPagedResultOfAudytDto) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(AudytDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfAudytDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfAudytDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IPagedResultOfAudytDto extends IPagedResultBase {
+    results?: AudytDto[] | undefined;
+}
+
+export class AudytDto implements IAudytDto {
+    id?: string;
+    idAudytowanegoWiersza?: string;
+    nazwaTabeli?: string | undefined;
+    dane?: string | undefined;
+    dataAudytu?: number;
+    uzytkownik?: string | undefined;
+    typOperacji?: string | undefined;
+
+    constructor(data?: IAudytDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.idAudytowanegoWiersza = _data["idAudytowanegoWiersza"];
+            this.nazwaTabeli = _data["nazwaTabeli"];
+            this.dane = _data["dane"];
+            this.dataAudytu = _data["dataAudytu"];
+            this.uzytkownik = _data["uzytkownik"];
+            this.typOperacji = _data["typOperacji"];
+        }
+    }
+
+    static fromJS(data: any): AudytDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AudytDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["idAudytowanegoWiersza"] = this.idAudytowanegoWiersza;
+        data["nazwaTabeli"] = this.nazwaTabeli;
+        data["dane"] = this.dane;
+        data["dataAudytu"] = this.dataAudytu;
+        data["uzytkownik"] = this.uzytkownik;
+        data["typOperacji"] = this.typOperacji;
+        return data; 
+    }
+}
+
+export interface IAudytDto {
+    id?: string;
+    idAudytowanegoWiersza?: string;
+    nazwaTabeli?: string | undefined;
+    dane?: string | undefined;
+    dataAudytu?: number;
+    uzytkownik?: string | undefined;
+    typOperacji?: string | undefined;
+}
+
 export class UtworzDronaCommand implements IUtworzDronaCommand {
     producent?: string | undefined;
     model?: string | undefined;
@@ -1579,42 +1790,6 @@ export interface IUtworzDronaCommand {
     numerSeryjny?: string | undefined;
     idTypuDrona?: string;
     dataNastepnegoPrzegladu?: number;
-}
-
-export class PagedResultBase implements IPagedResultBase {
-    rowCount?: number;
-
-    constructor(data?: IPagedResultBase) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.rowCount = _data["rowCount"];
-        }
-    }
-
-    static fromJS(data: any): PagedResultBase {
-        data = typeof data === 'object' ? data : {};
-        let result = new PagedResultBase();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["rowCount"] = this.rowCount;
-        return data; 
-    }
-}
-
-export interface IPagedResultBase {
-    rowCount?: number;
 }
 
 export class PagedResultOfDronDto extends PagedResultBase implements IPagedResultOfDronDto {
