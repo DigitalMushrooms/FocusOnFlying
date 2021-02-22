@@ -1,3 +1,48 @@
 <p-card header="Lista audytów">
-    
+    <p-table [value]="audyty" [rows]="10" [loading]="loading" [totalRecords]="liczbaRekordow" [scrollable]="true" [style]="{width:'1400px'}" scrollHeight="550px"
+        styleClass="p-datatable-striped p-datatable-gridlines">
+        <ng-template pTemplate="colgroup" let-columns>
+            <colgroup>
+                <col style="width:335px">
+                <col style="width:120px">
+                <col style="width:700px">
+                <col style="width:120px">
+                <col style="width:150px">
+                <col style="width:100px">
+            </colgroup>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="idAudytowanegoWiersza">Id audytowanego wiersza<p-sortIcon field="idAudytowanegoWiersza"></p-sortIcon>
+                </th>
+                <th pSortableColumn="nazwaTabeli">Nazwa tabeli<p-sortIcon field="nazwaTabeli"></p-sortIcon>
+                </th>
+                <th pSortableColumn="dane">Dane<p-sortIcon field="dane"></p-sortIcon>
+                </th>
+                <th pSortableColumn="dataAudytu">Data audytu<p-sortIcon field="dataAudytu"></p-sortIcon>
+                </th>
+                <th pSortableColumn="uzytkownik">Uzytkownik<p-sortIcon field="uzytkownik"></p-sortIcon>
+                </th>
+                <th pSortableColumn="typOperacji">Typ operacji<p-sortIcon field="typOperacji"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-audyt>
+            <tr [pContextMenuRow]="audyt">
+                <td>{{audyt.idAudytowanegoWiersza}}</td>
+                <td>{{audyt.nazwaTabeli}}</td>
+                <td>{{audyt.dane}}</td>
+                <td>{{audyt.dataAudytu | dateFormat: 'DD.MM.YYYY'}}</td>
+                <td>{{pobierzNazweUzytkownika(audyt.uzytkownik)}}</td>
+                <td>{{audyt.typOperacji}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td [attr.colspan]="6">
+                    Brak usług
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
 </p-card>

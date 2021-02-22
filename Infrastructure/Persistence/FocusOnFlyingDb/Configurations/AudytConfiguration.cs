@@ -8,6 +8,8 @@ namespace FocusOnFlying.Infrastructure.Persistence.FocusOnFlyingDb.Configuration
     {
         public void Configure(EntityTypeBuilder<Audyt> builder)
         {
+            builder.ToTable("Audyty");
+
             builder.Property(p => p.Id);
             builder.Property(p => p.IdAudytowanegoWiersza);
             builder.Property(p => p.NazwaTabeli).IsRequired();
