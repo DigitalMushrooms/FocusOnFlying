@@ -1,11 +1,10 @@
 <p-card header="Lista audytów">
-    <p-table [value]="audyty" [rows]="10" [loading]="loading" [totalRecords]="liczbaRekordow" [scrollable]="true" [style]="{width:'1400px'}" scrollHeight="550px"
-        styleClass="p-datatable-striped p-datatable-gridlines">
+    <p-table [value]="audyty" [rows]="10" [loading]="loading" [totalRecords]="liczbaRekordow" styleClass="p-datatable-striped p-datatable-gridlines">
         <ng-template pTemplate="colgroup" let-columns>
             <colgroup>
                 <col style="width:335px">
                 <col style="width:120px">
-                <col style="width:700px">
+                <col style="width:150px">
                 <col style="width:120px">
                 <col style="width:150px">
                 <col style="width:100px">
@@ -31,7 +30,9 @@
             <tr [pContextMenuRow]="audyt">
                 <td>{{audyt.idAudytowanegoWiersza}}</td>
                 <td>{{audyt.nazwaTabeli}}</td>
-                <td>{{audyt.dane}}</td>
+                <td>
+                    <p-button (click)="pokazZawartoscDanych(audyt.dane)" icon="pi pi-external-link" label="Zawartość wiersza"></p-button>
+                </td>
                 <td>{{audyt.dataAudytu | dateFormat: 'DD.MM.YYYY'}}</td>
                 <td>{{pobierzNazweUzytkownika(audyt.uzytkownik)}}</td>
                 <td>{{audyt.typOperacji}}</td>
@@ -46,3 +47,9 @@
         </ng-template>
     </p-table>
 </p-card>
+<p-dialog header="Zawartość w formie JSON" [(visible)]="wyswietlJsona" [style]="{width: '60vw'}" [modal]="true">
+    <p>{{ zawartoscDialogu }}</p>
+    <ng-template pTemplate="footer">
+        <button pButton type="button" icon="pi pi-times" label="Zamknij" (click)="wyswietlJsona = false"></button>
+    </ng-template>
+</p-dialog>

@@ -11,6 +11,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ContextMenuModule } from 'primeng/contextmenu';
+import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -23,6 +24,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
+import { TabViewModule } from 'primeng/tabview';
 import { ToastModule } from 'primeng/toast';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { HttpTokenInterceptor } from 'src/app/core/interceptors/http.token.interceptor';
@@ -34,7 +36,7 @@ import { FakturaDialogComponent } from './components/faktura/faktura-dialog.comp
 import { KlienciDialogComponent } from './components/klienci/klienci-dialog.component';
 import { MisjeDialogComponent } from './components/misje/misje-dialog.component';
 import { AppComponent } from './pages/app/app.component';
-import { TabViewModule } from 'primeng/tabview';
+import { ListaAudytowComponent } from './pages/audyty/lista-audytow/lista-audytow.component';
 import { DronComponent } from './pages/drony/dron/dron.component';
 import { ListaDronowComponent } from './pages/drony/lista-dronow/lista-dronow.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -45,7 +47,6 @@ import { ListaRaportowComponent } from './pages/raporty/lista-raportow/lista-rap
 import { ListaUslugComponent } from './pages/uslugi/lista-uslug/lista-uslug.component';
 import { UslugaComponent } from './pages/uslugi/usluga/usluga.component';
 import { ListaUzytkownikowComponent } from './pages/uzytkownicy/lista-uzytkownikow/lista-uzytkownikow.component';
-import { ListaAudytowComponent } from './pages/audyty/lista-audytow/lista-audytow.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
   return (): Promise<unknown> =>
@@ -92,6 +93,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     CheckboxModule,
     CommonModule,
     ContextMenuModule,
+    DialogModule,
     DropdownModule,
     DynamicDialogModule,
     FieldsetModule,

@@ -14,6 +14,8 @@ export class ListaAudytowComponent implements OnInit {
   liczbaRekordow: number;
   loading = true;
   pracownicy: Pracownik[];
+  wyswietlJsona = false;
+  zawartoscDialogu: string;
 
   constructor(
     private audytyClient: AudytyClient,
@@ -46,6 +48,11 @@ export class ListaAudytowComponent implements OnInit {
 
   pobierzNazweUzytkownika(idUzytkownika: string): string {
     return this.pracownicy.find(x => x.subjectId === idUzytkownika).username;
+  }
+
+  pokazZawartoscDanych(dane: string): void {
+    this.wyswietlJsona = true;
+    this.zawartoscDialogu = dane;
   }
 
 }
