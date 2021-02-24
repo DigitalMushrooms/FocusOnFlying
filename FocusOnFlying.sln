@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.IDP", "Infrastructure.IDP\Infrastructure.IDP.csproj", "{7E58BE58-1ABB-4C9A-A19D-6E064A6763DD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testy", "Testy", "{AA134F83-4640-4DBA-B830-E995C027F1F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.UnitTests", "Application.UnitTests\Application.UnitTests.csproj", "{903CF329-5B84-4FB6-8C49-460780EAE2F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,9 +43,16 @@ Global
 		{7E58BE58-1ABB-4C9A-A19D-6E064A6763DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E58BE58-1ABB-4C9A-A19D-6E064A6763DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E58BE58-1ABB-4C9A-A19D-6E064A6763DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{903CF329-5B84-4FB6-8C49-460780EAE2F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{903CF329-5B84-4FB6-8C49-460780EAE2F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{903CF329-5B84-4FB6-8C49-460780EAE2F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{903CF329-5B84-4FB6-8C49-460780EAE2F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{903CF329-5B84-4FB6-8C49-460780EAE2F7} = {AA134F83-4640-4DBA-B830-E995C027F1F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FDC0DF6F-78FB-4A5D-9506-2CD9EC9C3530}
