@@ -1,6 +1,39 @@
 <p-card header="Lista usług">
-    <p-table #tableRef [value]="uslugi" [(contextMenuSelection)]="wybranaUsluga" [contextMenu]="contextMenuRef" selectionMode="single" [lazy]="true" [paginator]="true"
-        [loading]="loading" [rows]="10" [totalRecords]="liczbaRekordow" sortField="dataPrzyjeciaZlecenia" styleClass="p-datatable-striped p-datatable-gridlines"
+    <p-fieldset legend="Filtr" [toggleable]="true" styleClass="p-mb-4">
+        <form [formGroup]="listaUslugForm">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-2">
+                    <label for="dataPrzyjeciaZleceniaOd">Przyjęcie zlecenia od</label>
+                    <p-calendar formControlName="dataPrzyjeciaZleceniaOd" [locale]="pl" [maxDate]="listaUslugForm.value.dataPrzyjeciaZleceniaDo" [dateFormat]="null" appendTo="body"
+                        [showIcon]="true" inputId="dataPrzyjeciaZleceniaOd">
+                    </p-calendar>
+                </div>
+                <div class="p-field p-col-2">
+                    <label for="dataPrzyjeciaZleceniaDo">Przyjęcie zlecenia do</label>
+                    <p-calendar formControlName="dataPrzyjeciaZleceniaDo" [locale]="pl" [minDate]="listaUslugForm.value.dataPrzyjeciaZleceniaOd" [dateFormat]="null" appendTo="body"
+                        [showIcon]="true" inputId="dataPrzyjeciaZleceniaDo">
+                    </p-calendar>
+                </div>
+                <div class="p-field p-col-4">
+                    <label for="klient">Klient</label>
+                    <p-dropdown formControlName="klient" id="klient" [options]="klienci" [filter]="true" [showClear]="true" [autoDisplayFirst]="false" filterBy="label"
+                        emptyFilterMessage="Brak wyników.">
+                    </p-dropdown>
+                </div>
+                <div class="p-field p-col-2">
+                    <label for="typ">Status usługi</label>
+                    <p-dropdown formControlName="statusyUslugi" id="statusyUslugi" [options]="statusyUslugi" [showClear]="true" [filter]="true" [autoDisplayFirst]="false"
+                        filterBy="label" emptyFilterMessage="Brak wyników.">
+                    </p-dropdown>
+                </div>
+                <div class="p-field p-col-2 p-mt-auto">
+                    <button pButton type="button" icon="pi pi-search" label="Wyszukaj" (click)="wyszukajOnClick(tableRef)"></button>
+                </div>
+            </div>
+        </form>
+    </p-fieldset>
+    <p-table #tableRef [value]="uslugi" [(contextMenuSelection)]="wybranaUsluga" [contextMenu]="contextMenuRef" selectionMode="single" [lazy]="true" [lazyLoadOnInit]="false"
+        [paginator]="true" [loading]="loading" [rows]="10" [totalRecords]="liczbaRekordow" sortField="dataPrzyjeciaZlecenia" styleClass="p-datatable-striped p-datatable-gridlines"
         (onLazyLoad)="pobierzUslugi($event)" (onContextMenuSelect)="naWybraniuUslugi(tableRef)">
         <ng-template pTemplate="header">
             <tr>

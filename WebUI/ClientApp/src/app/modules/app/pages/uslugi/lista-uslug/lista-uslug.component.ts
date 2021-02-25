@@ -1,13 +1,17 @@
-import { Component } from '@angular/core';
-import { LazyLoadEvent, MenuItem } from 'primeng/api';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { IFormBuilder, IFormGroup } from '@rxweb/types';
+import { LazyLoadEvent, MenuItem, SelectItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { MessageToast } from 'src/app/core/services/message-toast.service';
 import { PracownicyService } from 'src/app/core/services/pracownicy.service';
+import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { MisjaForm } from 'src/app/shared/models/misje/misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
-import { FakturyClient, MisjaDto, MisjeClient, Operation, PagedResultOfUslugaDto, StatusUslugiDto, StatusyUslugiClient, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
+import { ListaUslugForm } from 'src/app/shared/models/usluga/lista-uslug-form.model';
+import { FakturyClient, KlienciClient, KlientDto, MisjaDto, MisjeClient, Operation, PagedResultOfUslugaDto, StatusUslugiDto, StatusyUslugiClient, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
 import { FakturaDialogComponent } from '../../../components/faktura/faktura-dialog.component';
 import { MisjeDialogComponent } from '../../../components/misje/misje-dialog.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
@@ -18,26 +22,86 @@ import { MisjeComponent } from '../../misje/misje/misje.component';
   styleUrls: ['./lista-uslug.component.css'],
   providers: [DialogService]
 })
-export class ListaUslugComponent {
+export class ListaUslugComponent implements OnInit {
+  formBuilder: IFormBuilder;
+  listaUslugForm: IFormGroup<ListaUslugForm>;
   uslugi: UslugaDto[] = [];
-  loading = true;
+  loading = false;
   liczbaRekordow = 0;
   wybranaUsluga: UslugaDto;
   kontekstoweMenu: MenuItem[];
+  pl = Kalendarz.pl;
+  klienci: SelectItem<KlientDto>[];
+  statusyUslugi: SelectItem<StatusUslugiDto>[];
 
   constructor(
+    formBuilder: FormBuilder,
     private uslugiClient: UslugiClient,
     private dialogService: DialogService,
     private pracownicyService: PracownicyService,
     private misjeClient: MisjeClient,
     private messageToast: MessageToast,
     private statusyUslugiClient: StatusyUslugiClient,
-    private fakturyClient: FakturyClient
-  ) { }
+    private fakturyClient: FakturyClient,
+    private klienciClient: KlienciClient
+  ) {
+    this.formBuilder = formBuilder;
+  }
+
+  ngOnInit(): void {
+    this.zbudujFormularz();
+    this.pobierzKlientow();
+    this.pobierzStatusyUslugi();
+  }
+
+  pobierzKlientow(): void {
+    this.klienciClient.pobierzKlientow(null, null, null, null, 'imie 1', 0, 0)
+      .pipe(map(klienci => klienci.results.map(klient => {
+        if (klient.pesel) {
+          return { label: `${klient.imie} ${klient.nazwisko}, PESEL: ${klient.pesel}`, value: klient } as SelectItem<KlientDto>;
+        } else {
+          return { label: `${klient.nazwa}, NIP: ${klient.nip}, REGON: ${klient.regon}`, value: klient } as SelectItem<KlientDto>;
+        }
+      }
+      )))
+      .subscribe(
+        (klienci: SelectItem<KlientDto>[]) => this.klienci = klienci
+      );
+  }
+
+  pobierzStatusyUslugi(): void {
+    this.statusyUslugiClient.pobierzStatusyUslugi()
+      .pipe(map(statusyUslugi => statusyUslugi.map(statusUslugi => ({ label: statusUslugi.nazwa, value: statusUslugi } as SelectItem<StatusUslugiDto>))))
+      .subscribe(statusyUslugi => this.statusyUslugi = statusyUslugi);
+  }
+
+  wyszukajOnClick(tableRef: Table): void {
+    const event = tableRef.createLazyLoadMetadata() as LazyLoadEvent;
+    event.first = 0;
+    this.pobierzUslugi(event);
+  }
+
+  zbudujFormularz(): void {
+    this.listaUslugForm = this.formBuilder.group<ListaUslugForm>({
+      dataPrzyjeciaZleceniaOd: [null],
+      dataPrzyjeciaZleceniaDo: [null],
+      klient: [null],
+      statusyUslugi: [null]
+    });
+  }
 
   pobierzUslugi(event: LazyLoadEvent): void {
     this.loading = true;
-    this.uslugiClient.pobierzUslugi(null, null, event.first, event.rows, `${event.sortField} ${event.sortOrder}`)
+    const controls = this.listaUslugForm.controls;
+    this.uslugiClient.pobierzUslugi(
+      controls.dataPrzyjeciaZleceniaOd.value?.getTime(),
+      controls.dataPrzyjeciaZleceniaDo.value?.getTime(),
+      controls.klient.value?.id,
+      controls.statusyUslugi.value?.id,
+      event.first,
+      event.rows,
+      `${event.sortField} ${event.sortOrder}`
+    )
       .pipe(finalize(() => this.loading = false))
       .subscribe(
         (uslugi: PagedResultOfUslugaDto) => {

@@ -1047,6 +1047,7 @@ export class StatusyMisjiClient implements IStatusyMisjiClient {
 
 export interface IStatusyUslugiClient {
     pobierzStatusUslugi(nazwa: string | null): Observable<StatusUslugiDto>;
+    pobierzStatusyUslugi(): Observable<StatusUslugiDto[]>;
 }
 
 @Injectable({
@@ -1111,6 +1112,58 @@ export class StatusyUslugiClient implements IStatusyUslugiClient {
             }));
         }
         return _observableOf<StatusUslugiDto>(<any>null);
+    }
+
+    pobierzStatusyUslugi(): Observable<StatusUslugiDto[]> {
+        let url_ = this.baseUrl + "/api/statusyuslugi";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPobierzStatusyUslugi(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPobierzStatusyUslugi(<any>response_);
+                } catch (e) {
+                    return <Observable<StatusUslugiDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatusUslugiDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPobierzStatusyUslugi(response: HttpResponseBase): Observable<StatusUslugiDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(StatusUslugiDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatusUslugiDto[]>(<any>null);
     }
 }
 
@@ -1255,7 +1308,7 @@ export class TypyMisjiClient implements ITypyMisjiClient {
 }
 
 export interface IUslugiClient {
-    pobierzUslugi(dataPrzyjeciaZleceniaOd: number | null | undefined, dataPrzyjeciaZleceniaDo: number | null | undefined, offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfUslugaDto>;
+    pobierzUslugi(dataPrzyjeciaZleceniaOd: number | null | undefined, dataPrzyjeciaZleceniaDo: number | null | undefined, idKlienta: string | null | undefined, idStatusuUslugi: string | null | undefined, offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfUslugaDto>;
     utworzUsluge(command: UtworzUslugeCommand): Observable<void>;
     pobierzMisjeUslugi(id: string, statusy: string[] | null | undefined, sort: string | null | undefined, offset: number | undefined, rows: number | undefined): Observable<PagedResultOfMisjaDto>;
     utworzMisjeUslugi(id: string, command: UtworzMisjeUslugiCommand): Observable<void>;
@@ -1276,12 +1329,16 @@ export class UslugiClient implements IUslugiClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    pobierzUslugi(dataPrzyjeciaZleceniaOd: number | null | undefined, dataPrzyjeciaZleceniaDo: number | null | undefined, offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfUslugaDto> {
+    pobierzUslugi(dataPrzyjeciaZleceniaOd: number | null | undefined, dataPrzyjeciaZleceniaDo: number | null | undefined, idKlienta: string | null | undefined, idStatusuUslugi: string | null | undefined, offset: number | undefined, rows: number | undefined, sort: string | null | undefined): Observable<PagedResultOfUslugaDto> {
         let url_ = this.baseUrl + "/api/uslugi?";
         if (dataPrzyjeciaZleceniaOd !== undefined && dataPrzyjeciaZleceniaOd !== null)
             url_ += "DataPrzyjeciaZleceniaOd=" + encodeURIComponent("" + dataPrzyjeciaZleceniaOd) + "&";
         if (dataPrzyjeciaZleceniaDo !== undefined && dataPrzyjeciaZleceniaDo !== null)
             url_ += "DataPrzyjeciaZleceniaDo=" + encodeURIComponent("" + dataPrzyjeciaZleceniaDo) + "&";
+        if (idKlienta !== undefined && idKlienta !== null)
+            url_ += "IdKlienta=" + encodeURIComponent("" + idKlienta) + "&";
+        if (idStatusuUslugi !== undefined && idStatusuUslugi !== null)
+            url_ += "IdStatusuUslugi=" + encodeURIComponent("" + idStatusuUslugi) + "&";
         if (offset === null)
             throw new Error("The parameter 'offset' cannot be null.");
         else if (offset !== undefined)

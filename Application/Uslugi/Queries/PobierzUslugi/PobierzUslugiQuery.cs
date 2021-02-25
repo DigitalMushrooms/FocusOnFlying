@@ -6,6 +6,7 @@ using FocusOnFlying.Application.Extensions;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,8 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi
     {
         public long? DataPrzyjeciaZleceniaOd { get; set; }
         public long? DataPrzyjeciaZleceniaDo { get; set; }
+        public Guid? IdKlienta { get; set; }
+        public Guid? IdStatusuUslugi { get; set; }
         public int Offset { get; set; }
         public int Rows { get; set; }
         public string Sort { get; set; }
@@ -50,6 +53,14 @@ namespace FocusOnFlying.Application.Uslugi.Queries.PobierzUslugi
             if (request.DataPrzyjeciaZleceniaDo.HasValue)
             {
                 query = query.Where(x => x.DataPrzyjeciaZlecenia >= request.DataPrzyjeciaZleceniaOd.ToLocalDateTime());
+            }
+            if (request.IdStatusuUslugi.HasValue)
+            {
+                query = query.Where(x => x.StatusUslugi.Id == request.IdStatusuUslugi);
+            }
+            if (request.IdKlienta.HasValue)
+            {
+                query = query.Where(x => x.Klient.Id == request.IdKlienta);
             }
 
             PagedResult<UslugaDto> uslugi = await query
