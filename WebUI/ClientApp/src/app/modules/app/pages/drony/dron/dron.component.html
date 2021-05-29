@@ -15,13 +15,13 @@
             </div>
         </div>
         <div class="p-fluid p-formgrid p-grid">
-            <div class="p-field p-col-2">
+            <div class="p-field p-col-4">
                 <label for="typ">Typ</label>
                 <p-dropdown formControlName="typ" id="typ" [options]="typyDrona" [showClear]="true" [filter]="true" [autoDisplayFirst]="false" required filterBy="label"
                     placeholder="Wybierz typ drona" emptyFilterMessage="Brak wyników.">
                 </p-dropdown>
             </div>
-            <div class="p-field p-col-2">
+            <div class="p-field p-col-4">
                 <label for="dataNastepnegoPrzegladu">Data następnego przeglądu</label>
                 <p-calendar formControlName="dataNastepnegoPrzegladu" [minDate]="minimalnaData" [locale]="pl" [dateFormat]="null" [showIcon]="true" appendTo="body"
                     inputId="dataNastepnegoPrzegladu">

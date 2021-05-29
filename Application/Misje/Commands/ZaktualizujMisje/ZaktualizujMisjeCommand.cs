@@ -6,10 +6,9 @@ using FocusOnFlying.Application.Extensions;
 using FocusOnFlying.Domain.Entities.FocusOnFlyingDb;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -31,7 +30,13 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
         private readonly IMapper _mapper;
         private readonly IValidator<MisjaUpdateDto> _validator;
         private readonly IMailService _mailService;
-        private ZaktualizujMisjeCommand _request;
+        private readonly CultureInfo _polishCultureInfo = new CultureInfo("pl-pl", false);
+        private Misja misjaEntity;
+        private readonly StringBuilder _stringBuilder = new StringBuilder(
+            @"Dzień dobry,<br/>
+            Pragniemy poinformować o zmianie misji w Twojej usłudze.<br/>
+            Podsumowanie zmian:<br/>"
+        );
 
         public ZaktualizujMisjeCommandHandler(
             IFocusOnFlyingContext focusOnFlyingContext,
@@ -47,15 +52,15 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
 
         public async Task<Unit> Handle(ZaktualizujMisjeCommand request, CancellationToken cancellationToken)
         {
-            _request = request;
-
-            Misja misjaEntity = await _focusOnFlyingContext.Misje
+            misjaEntity = await _focusOnFlyingContext.Misje
                 .Include(x => x.MisjeDrony)
                 .SingleAsync(x => x.Id == request.Id);
 
             var misja = _mapper.Map<MisjaUpdateDto>(misjaEntity);
 
+            misja.PropertyChanged += MisjaPropertyChanged;
             request.Patch.ApplyTo(misja);
+            misja.PropertyChanged -= MisjaPropertyChanged;
 
             ValidationResult validationResult = await _validator.ValidateAsync(misja);
             if (!validationResult.IsValid)
@@ -63,7 +68,6 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
                 throw new ValidationException(validationResult.Errors.ToList());
             }
 
-            string opisWiadomosci = WygenerujOpisWiadomosci(misjaEntity);
             await NadajStatusMisji(misja);
 
             _mapper.Map(misja, misjaEntity);
@@ -74,9 +78,55 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
                 .Include(x => x.Usluga)
                 .ThenInclude(x => x.Klient)
                 .SingleAsync(x => x.Id == request.Id)).Usluga.Klient;
-            await _mailService.WyslijWadomoscEmail(klient.Email, "Zaktualizowano misję", opisWiadomosci);
+            await _mailService.WyslijWadomoscEmail(klient.Email, "Zaktualizowano misję", _stringBuilder.ToString());
 
             return Unit.Value;
+        }
+
+        private void MisjaPropertyChanged(object sender, PropertyChangedEventArgs property)
+        {
+            var misja = sender as MisjaUpdateDto;
+            if (property.PropertyName == nameof(misja.Nazwa))
+            {
+                _stringBuilder.AppendLine(
+                    $"Misja: <span style=\"text-decoration: line-through;\">{misjaEntity.Nazwa}</span> {misja.Nazwa}"
+                );
+            }
+            if (property.PropertyName == nameof(misja.DataRozpoczecia))
+            {
+                if (!_stringBuilder.ToString().Contains("<ul>"))
+                {
+                    _stringBuilder.AppendLine("<ul>");
+                }
+                _stringBuilder.AppendLine(
+                    $"<li>Data rozpoczęcia: <span style=\"text-decoration: line-through;\">{misjaEntity.DataRozpoczecia?.ToString("f", _polishCultureInfo)}</span> {misja.DataRozpoczecia.ToLocalDateTime()?.ToString("f", _polishCultureInfo) ?? "N/D"}</li>");
+            }
+            if (property.PropertyName == nameof(misja.DataZakonczenia))
+            {
+                if (!_stringBuilder.ToString().Contains("<ul>"))
+                {
+                    _stringBuilder.AppendLine("<ul>");
+                }
+                _stringBuilder.AppendLine(
+                    $"<li>Data zakończenia: <span style=\"text-decoration: line-through;\">{misjaEntity.DataZakonczenia?.ToString("f", _polishCultureInfo)}</span> {misja.DataZakonczenia.ToLocalDateTime()?.ToString("f", _polishCultureInfo) ?? "N/D"}</li>");
+            }
+            if (property.PropertyName == nameof(misja.Opis))
+            {
+                if (!_stringBuilder.ToString().Contains("<ul>"))
+                {
+                    _stringBuilder.AppendLine("<ul>");
+                }
+                _stringBuilder.AppendLine(
+                    $"<li>Opis: <span style=\"text-decoration: line-through;\">{misjaEntity.Opis}</span> {misja.Opis}</li>");
+            }
+            if (property.PropertyName == nameof(misja.SzerokoscGeograficzna) || property.PropertyName == nameof(misja.DlugoscGeograficzna))
+            {
+                if (!_stringBuilder.ToString().Contains("<ul>"))
+                {
+                    _stringBuilder.AppendLine("<ul>");
+                }
+                _stringBuilder.AppendLine($"<li>Lokalizacja miejsca: <span style=\"text-decoration: line-through;\"><a href=\"https://www.google.com/maps/@{misjaEntity.SzerokoscGeograficzna},{misjaEntity.DlugoscGeograficzna},16z\" target=\"_blank\">Mapa Google</a></span> <a href=\"https://www.google.com/maps/@{misja.SzerokoscGeograficzna},{misja.DlugoscGeograficzna},16z\" target=\"_blank\">Mapa Google</a></li>");
+            }
         }
 
         private async Task NadajStatusMisji(MisjaUpdateDto misja)
@@ -89,61 +139,6 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
                     misja.IdStatusuMisji = (await _focusOnFlyingContext.StatusyMisji.SingleAsync(x => x.Nazwa == "Zaplanowana")).Id;
                 }
             }
-        }
-
-        private string WygenerujOpisWiadomosci(Misja misja)
-        {
-            List<Operation<MisjaUpdateDto>> operacje = _request.Patch.Operations;
-            var listaObserwowanychOperacji = new[] {
-                "/nazwa", "/dataRozpoczecia", "/dataZakonczenia", "/opis", "/szerokoscGeograficzna", "/dlugoscGeograficzna"
-            };
-            if (!operacje.Any(x => listaObserwowanychOperacji.Contains(x.path)))
-                return string.Empty;
-
-            CultureInfo polska = new CultureInfo("pl-pl", false);
-
-            StringBuilder sb = new StringBuilder(
-                $@"Dzień dobry,<br/>
-                Pragniemy poinformować o zmianie misji w Twojej usłudze.<br/>
-                Podsumowanie zmian:<br/>");
-
-            if (operacje.Any(x => x.path == "/nazwa"))
-            {
-                string nowaNazwa = (string)operacje.Single(x => x.path == "/nazwa").value;
-                sb.AppendLine($"Misja <span style=\"text-decoration: line-through;\">{misja.Nazwa}</span> {nowaNazwa}");
-            }
-            else
-            {
-                sb.AppendLine($"Misja {misja.Nazwa}");
-            }
-            if (operacje.Any(x => x.path == "/dataRozpoczecia"))
-            {
-                sb.AppendLine("<ul>");
-                DateTime nowaDataRozpoczecia = ((long)operacje.Single(x => x.path == "/dataRozpoczecia").value).ToLocalDateTime();
-                sb.AppendLine($"<li>Data rozpoczęcia: <span style=\"text-decoration: line-through;\">{misja.DataRozpoczecia?.ToString("f", polska)}</span> {nowaDataRozpoczecia.ToString("f", polska)}</li>");
-            }
-            if (operacje.Any(x => x.path == "/dataZakonczenia"))
-            {
-                DateTime nowaDataZakonczenia = ((long)operacje.Single(x => x.path == "/dataZakonczenia").value).ToLocalDateTime();
-                sb.AppendLine($"<li>Data zakończenia: <span style=\"text-decoration: line-through;\">{misja.DataZakonczenia?.ToString("f", polska)}</span> {nowaDataZakonczenia.ToString("f", polska)}</li>");
-            }
-            if (operacje.Any(x => x.path == "/opis"))
-            {
-                string nowyOpis = (string)operacje.Single(x => x.path == "/opis").value;
-                sb.AppendLine($"<li>Opis: <span style=\"text-decoration: line-through;\">{misja.Opis}</span> {nowyOpis}</li>");
-            }
-            if (operacje.Any(x => x.path == "/szerokoscGeograficzna" || x.path == "/dlugoscGeograficzna"))
-            {
-                double nowaSzerokoscGeograficzna = (double)operacje.Single(x => x.path == "/szerokoscGeograficzna").value;
-                double nowaDlugoscGeograficzna = (double)operacje.Single(x => x.path == "/dlugoscGeograficzna").value;
-                sb.AppendLine($"<li>Lokalizacja miejsca: <span style=\"text-decoration: line-through;\"><a href=\"https://www.google.com/maps/@{misja.SzerokoscGeograficzna},{misja.DlugoscGeograficzna},16z\" target=\"_blank\">Mapa Google</a></span> <a href=\"https://www.google.com/maps/@{nowaSzerokoscGeograficzna},{nowaDlugoscGeograficzna},16z\" target=\"_blank\">Mapa Google</a></li>");
-            }
-            if (operacje.Any(x => x.path != "/nazwa"))
-            {
-                sb.Append("</ul>");
-            }
-
-            return sb.ToString();
         }
     }
 }
