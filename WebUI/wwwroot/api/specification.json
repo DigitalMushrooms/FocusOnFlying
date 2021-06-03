@@ -1803,45 +1803,13 @@
             "type": "string",
             "format": "guid"
           },
-          "nazwa": {
-            "type": "string",
-            "nullable": true
-          },
-          "opis": {
-            "type": "string",
-            "nullable": true
-          },
-          "idTypuMisji": {
-            "type": "string",
-            "format": "guid"
-          },
-          "maksymalnaWysokoscLotu": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "dataRozpoczecia": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "dataZakonczenia": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "idPracownika": {
-            "type": "string",
-            "nullable": true
-          },
-          "szerokoscGeograficzna": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "dlugoscGeograficzna": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "promien": {
-            "type": "integer",
-            "format": "int32"
+          "misja": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MisjaDto"
+              }
+            ]
           }
         }
       },

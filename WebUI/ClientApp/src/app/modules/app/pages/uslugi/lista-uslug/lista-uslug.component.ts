@@ -11,7 +11,7 @@ import { Kalendarz } from 'src/app/shared/models/localization.model';
 import { MisjaForm } from 'src/app/shared/models/misje/misja-form.model';
 import { Pracownik } from 'src/app/shared/models/misje/pracownik.model';
 import { ListaUslugForm } from 'src/app/shared/models/usluga/lista-uslug-form.model';
-import { FakturyClient, KlienciClient, KlientDto, MisjaDto, MisjeClient, Operation, PagedResultOfUslugaDto, StatusUslugiDto, StatusyUslugiClient, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
+import { FakturyClient, KlienciClient, KlientDto, MisjaDronDto, MisjaDto, MisjeClient, Operation, PagedResultOfUslugaDto, StatusUslugiDto, StatusyUslugiClient, UslugaDto, UslugiClient, UtworzMisjeUslugiCommand } from 'src/app/web-api-client';
 import { FakturaDialogComponent } from '../../../components/faktura/faktura-dialog.component';
 import { MisjeDialogComponent } from '../../../components/misje/misje-dialog.component';
 import { MisjeComponent } from '../../misje/misje/misje.component';
@@ -172,16 +172,22 @@ export class ListaUslugComponent implements OnInit {
         if (!misja)
           return;
         const command = {
-          nazwa: misja.nazwa,
-          opis: misja.opis,
-          idTypuMisji: misja.typ.id,
-          maksymalnaWysokoscLotu: misja.maksymalnaWysokoscLotu,
-          dataRozpoczecia: misja.dataRozpoczecia?.getTime(),
-          dataZakonczenia: misja.dataZakonczenia?.getTime(),
-          idPracownika: misja.przypisanyPracownik.subjectId,
-          szerokoscGeograficzna: misja.szerokoscGeograficzna,
-          dlugoscGeograficzna: misja.dlugoscGeograficzna,
-          promien: misja.promien
+          id: this.wybranaUsluga.id,
+          misja: {
+            id: '00000000-0000-0000-0000-000000000000',
+            nazwa: misja.nazwa,
+            dataRozpoczecia: misja.dataRozpoczecia?.getTime() ?? null,
+            dataZakonczenia: misja.dataZakonczenia?.getTime() ?? null,
+            opis: misja.opis,
+            maksymalnaWysokoscLotu: misja.maksymalnaWysokoscLotu,
+            idPracownika: misja.przypisanyPracownik.subjectId,
+            misjeDrony: misja.drony?.map(d => ({ idDrona: d.id } as MisjaDronDto)) ?? null,
+            szerokoscGeograficzna: misja.szerokoscGeograficzna,
+            dlugoscGeograficzna: misja.dlugoscGeograficzna,
+            promien: misja.promien,
+            idStatusuMisji: '00000000-0000-0000-0000-000000000000',
+            idTypuMisji: misja.typ.id,
+          } as MisjaDto
         } as UtworzMisjeUslugiCommand;
         this.uslugiClient.utworzMisjeUslugi(this.wybranaUsluga.id, command)
           .subscribe(

@@ -2972,16 +2972,7 @@ export interface IUtworzUslugeCommand {
 
 export class UtworzMisjeUslugiCommand implements IUtworzMisjeUslugiCommand {
     id?: string;
-    nazwa?: string | undefined;
-    opis?: string | undefined;
-    idTypuMisji?: string;
-    maksymalnaWysokoscLotu?: number;
-    dataRozpoczecia?: number;
-    dataZakonczenia?: number;
-    idPracownika?: string | undefined;
-    szerokoscGeograficzna?: number;
-    dlugoscGeograficzna?: number;
-    promien?: number;
+    misja?: MisjaDto | undefined;
 
     constructor(data?: IUtworzMisjeUslugiCommand) {
         if (data) {
@@ -2995,16 +2986,7 @@ export class UtworzMisjeUslugiCommand implements IUtworzMisjeUslugiCommand {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.nazwa = _data["nazwa"];
-            this.opis = _data["opis"];
-            this.idTypuMisji = _data["idTypuMisji"];
-            this.maksymalnaWysokoscLotu = _data["maksymalnaWysokoscLotu"];
-            this.dataRozpoczecia = _data["dataRozpoczecia"];
-            this.dataZakonczenia = _data["dataZakonczenia"];
-            this.idPracownika = _data["idPracownika"];
-            this.szerokoscGeograficzna = _data["szerokoscGeograficzna"];
-            this.dlugoscGeograficzna = _data["dlugoscGeograficzna"];
-            this.promien = _data["promien"];
+            this.misja = _data["misja"] ? MisjaDto.fromJS(_data["misja"]) : <any>undefined;
         }
     }
 
@@ -3018,32 +3000,14 @@ export class UtworzMisjeUslugiCommand implements IUtworzMisjeUslugiCommand {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["nazwa"] = this.nazwa;
-        data["opis"] = this.opis;
-        data["idTypuMisji"] = this.idTypuMisji;
-        data["maksymalnaWysokoscLotu"] = this.maksymalnaWysokoscLotu;
-        data["dataRozpoczecia"] = this.dataRozpoczecia;
-        data["dataZakonczenia"] = this.dataZakonczenia;
-        data["idPracownika"] = this.idPracownika;
-        data["szerokoscGeograficzna"] = this.szerokoscGeograficzna;
-        data["dlugoscGeograficzna"] = this.dlugoscGeograficzna;
-        data["promien"] = this.promien;
+        data["misja"] = this.misja ? this.misja.toJSON() : <any>undefined;
         return data; 
     }
 }
 
 export interface IUtworzMisjeUslugiCommand {
     id?: string;
-    nazwa?: string | undefined;
-    opis?: string | undefined;
-    idTypuMisji?: string;
-    maksymalnaWysokoscLotu?: number;
-    dataRozpoczecia?: number;
-    dataZakonczenia?: number;
-    idPracownika?: string | undefined;
-    szerokoscGeograficzna?: number;
-    dlugoscGeograficzna?: number;
-    promien?: number;
+    misja?: MisjaDto | undefined;
 }
 
 export class UtworzFaktureUslugiCommand implements IUtworzFaktureUslugiCommand {
