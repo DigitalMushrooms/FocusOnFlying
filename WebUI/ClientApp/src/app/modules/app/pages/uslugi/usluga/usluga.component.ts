@@ -110,7 +110,7 @@ export class UslugaComponent implements OnInit {
     const dialog = this.dialogService.open(MisjeComponent, {
       header: 'Edycja misji',
       width: '80%',
-      data: { doOdczytu: true, misjaForm: this.wybranaMisja } 
+      data: { doOdczytu: true, misjaForm: this.wybranaMisja }
     });
 
     dialog.onClose.subscribe(
@@ -152,6 +152,15 @@ export class UslugaComponent implements OnInit {
         () => {
           this.messageToast.success('Utworzono usługę.');
           this.router.navigate(['/strona-glowna']);
+        },
+        (error) => {
+          const response = JSON.parse(error.response);
+          const errors = response.errors;
+          if (errors?.Id) {
+            this.messageToast.warning(errors.Misje[0]);
+          } else {
+            this.messageToast.warning('Nie udało się dodać misji.');
+          }
         }
       );
   }

@@ -191,7 +191,16 @@ export class ListaUslugComponent implements OnInit {
         } as UtworzMisjeUslugiCommand;
         this.uslugiClient.utworzMisjeUslugi(this.wybranaUsluga.id, command)
           .subscribe(
-            () => this.messageToast.success('Dodano misję.')
+            () => this.messageToast.success('Dodano misję.'),
+            (error) => {
+              const response = JSON.parse(error.response);
+              const errors = response.errors;
+              if (errors?.Id) {
+                this.messageToast.warning(errors.Id[0]);
+              } else {
+                this.messageToast.warning('Nie udało się dodać misji.');
+              }
+            }
           );
       }
     );

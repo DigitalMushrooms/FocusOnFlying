@@ -33,17 +33,19 @@ namespace FocusOnFlying.Application.Misje.Commands.ZaktualizujMisje
 
             foreach (MisjaDronDto misjaDron in misjaUpdateDto.MisjeDrony)
             {
-                bool wynik = await _focusOnFlyingContext.MisjeDrony
+                bool istniejeTakiDron = await _focusOnFlyingContext.MisjeDrony
                 .Include(x => x.Misja)
                 .Include(x => x.Dron)
                 .AnyAsync(x =>
                     x.Misja.Id != misjaDron.IdMisji &&
                     x.Dron.Id == misjaDron.IdDrona &&
-                    (dataRozpoczeciaDateTime >= x.Misja.DataRozpoczecia && dataRozpoczeciaDateTime <= x.Misja.DataZakonczenia ||
-                    dataZakonczeniaDateTime >= x.Misja.DataRozpoczecia && dataZakonczeniaDateTime <= x.Misja.DataZakonczenia));
+                    (dataRozpoczeciaDateTime >= x.Misja.DataRozpoczecia && 
+                    dataRozpoczeciaDateTime <= x.Misja.DataZakonczenia 
+                    ||
+                    dataZakonczeniaDateTime >= x.Misja.DataRozpoczecia && 
+                    dataZakonczeniaDateTime <= x.Misja.DataZakonczenia));
 
-                if (wynik == true)
-                    return false;
+                return !istniejeTakiDron;
             }
 
             return true;
