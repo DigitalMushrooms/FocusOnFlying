@@ -5,11 +5,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthModule, LogLevel, OidcConfigService } from 'angular-auth-oidc-client';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
@@ -92,6 +93,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     CardModule,
     CheckboxModule,
     CommonModule,
+    ConfirmDialogModule,
     ContextMenuModule,
     DialogModule,
     DropdownModule,
@@ -127,7 +129,8 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
       useClass: HttpTokenInterceptor,
       multi: true
     },
-    MessageService
+    MessageService,
+    ConfirmationService
   ],
   bootstrap: [AppComponent]
 })

@@ -156,10 +156,10 @@ export class UslugaComponent implements OnInit {
         (error) => {
           const response = JSON.parse(error.response);
           const errors = response.errors;
-          if (errors?.Id) {
+          if (errors?.Misje) {
             this.messageToast.warning(errors.Misje[0]);
           } else {
-            this.messageToast.warning('Nie udało się dodać misji.');
+            this.messageToast.warning('Nie udało się dodać usługi.');
           }
         }
       );

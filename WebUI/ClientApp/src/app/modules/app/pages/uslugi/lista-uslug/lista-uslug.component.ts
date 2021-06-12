@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { LazyLoadEvent, MenuItem, SelectItem } from 'primeng/api';
+import { ConfirmationService, LazyLoadEvent, MenuItem, SelectItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
 import { finalize, map } from 'rxjs/operators';
@@ -36,9 +36,10 @@ export class ListaUslugComponent implements OnInit {
 
   constructor(
     formBuilder: FormBuilder,
-    private uslugiClient: UslugiClient,
     private dialogService: DialogService,
     private pracownicyService: PracownicyService,
+    private confirmationService: ConfirmationService,
+    private uslugiClient: UslugiClient,
     private misjeClient: MisjeClient,
     private messageToast: MessageToast,
     private statusyUslugiClient: StatusyUslugiClient,
@@ -211,11 +212,29 @@ export class ListaUslugComponent implements OnInit {
       { label: 'Podejrzyj misję', icon: 'pi pi-fw pi-star-o', command: () => this.podejrzyjMisje(tableRef) },
       { label: 'Edytuj misję', icon: 'pi pi-fw pi-star', command: () => this.edytujMisje(tableRef), visible: this.edytujMisjeVisible() },
       { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje(), visible: this.usunMisjeVisible() },
+      { label: 'Usuń usługę', icon: 'pi pi-fw pi-times', command: () => this.usunUsluge(tableRef) },
       { label: 'Zmień status usługi na "Wykonana"', icon: 'pi pi-fw pi-star', command: () => this.zmienStatusUslugi(tableRef, 'Zakończona'), visible: this.zmienStatusUslugiNaWykonanaVisible() },
       { label: 'Dodaj fakturę', icon: 'pi pi-fw pi-file', command: () => this.dodajFakture(tableRef), visible: this.dodajFaktureVisible() },
       { label: 'Edytuj fakturę', icon: 'pi pi-fw pi-file', command: () => this.edytujFakture(tableRef), visible: this.edytujFaktureVisible() },
       { label: 'Usuń fakturę', icon: 'pi pi-fw pi-times', command: () => this.usunFakture(tableRef), visible: this.usunFaktureVisible() },
     ];
+  }
+
+  usunUsluge(tableRef: Table): void {
+    this.confirmationService.confirm({
+      message: 'Czy na pewno chcesz usunąć usługę?',
+      acceptLabel: 'Tak',
+      rejectLabel: 'Nie',
+      accept: () => {
+        this.uslugiClient.usunUsluge(this.wybranaUsluga.id)
+          .subscribe(
+            () => {
+              this.messageToast.success('Usunięto usługę.');
+              this.odswiezTabele(tableRef);
+            }
+          );
+      }
+    });
   }
 
   podejrzyjMisje(tableRef: Table): void {

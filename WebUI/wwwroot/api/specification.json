@@ -1045,6 +1045,29 @@
             "description": ""
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Uslugi"
+        ],
+        "operationId": "Uslugi_UsunUsluge",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
       }
     }
   },

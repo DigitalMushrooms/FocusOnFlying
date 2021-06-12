@@ -1,4 +1,5 @@
 ﻿using FocusOnFlying.Application.Common.Models;
+using FocusOnFlying.Application.Uslugi.Commands.UsunUsluge;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzFaktureUslugi;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzMisjeUslugi;
 using FocusOnFlying.Application.Uslugi.Commands.UtworzUsluge;
@@ -61,6 +62,13 @@ namespace FocusOnFlying.WebUI.Controllers
             [FromBody][JsonSchemaType(typeof(List<Operation>))] JsonPatchDocument<UslugaUpdateDto> patch)
         {
             var command = new ZaktualizujUslugeCommand { Id = id, Patch = patch };
+            await Mediator.Send(command);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task UsunUsluge([FromRoute] Guid id)
+        {
+            var command = new UsunUslugeCommand { Id = id };
             await Mediator.Send(command);
         }
     }
