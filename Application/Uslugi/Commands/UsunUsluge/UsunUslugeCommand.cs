@@ -29,8 +29,10 @@ namespace FocusOnFlying.Application.Uslugi.Commands.UsunUsluge
         {
             Usluga usluga = await _focusOnFlyingContext.Uslugi.SingleAsync(x => x.Id == request.Id);
             Klient klient = await _focusOnFlyingContext.Klienci.SingleAsync(x => x.Id == usluga.IdKlienta);
+            StatusUslugi anulowanaUsluga = await _focusOnFlyingContext.StatusyUslugi
+                .SingleAsync(x => x.Nazwa == "Anulowana");
 
-            _focusOnFlyingContext.Uslugi.Remove(usluga);
+            usluga.IdStatusuUslugi = anulowanaUsluga.Id;
 
             await _focusOnFlyingContext.SaveChangesAsync();
 
