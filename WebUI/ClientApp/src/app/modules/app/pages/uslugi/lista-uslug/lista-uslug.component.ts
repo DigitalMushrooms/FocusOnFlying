@@ -212,7 +212,7 @@ export class ListaUslugComponent implements OnInit {
       { label: 'Podejrzyj misję', icon: 'pi pi-fw pi-star-o', command: () => this.podejrzyjMisje(tableRef) },
       { label: 'Edytuj misję', icon: 'pi pi-fw pi-star', command: () => this.edytujMisje(tableRef), visible: this.edytujMisjeVisible() },
       { label: 'Usuń misję', icon: 'pi pi-fw pi-times', command: () => this.usunMisje(), visible: this.usunMisjeVisible() },
-      { label: 'Usuń usługę', icon: 'pi pi-fw pi-times', command: () => this.usunUsluge(tableRef) },
+      { label: 'Usuń usługę', icon: 'pi pi-fw pi-times', command: () => this.usunUsluge(tableRef), visible: this.usunUslugeVisible() },
       { label: 'Zmień status usługi na "Wykonana"', icon: 'pi pi-fw pi-star', command: () => this.zmienStatusUslugi(tableRef, 'Zakończona'), visible: this.zmienStatusUslugiNaWykonanaVisible() },
       { label: 'Dodaj fakturę', icon: 'pi pi-fw pi-file', command: () => this.dodajFakture(tableRef), visible: this.dodajFaktureVisible() },
       { label: 'Edytuj fakturę', icon: 'pi pi-fw pi-file', command: () => this.edytujFakture(tableRef), visible: this.edytujFaktureVisible() },
@@ -237,6 +237,10 @@ export class ListaUslugComponent implements OnInit {
     });
   }
 
+  usunUslugeVisible(): boolean {
+    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona' && this.wybranaUsluga.statusUslugi.nazwa !== 'Anulowana';
+  }
+
   podejrzyjMisje(tableRef: Table): void {
     this.utworzDialogMisji(tableRef, true, 'Wybór misji do podglądu', 'Podgląd misji');
   }
@@ -246,7 +250,7 @@ export class ListaUslugComponent implements OnInit {
   }
 
   edytujMisjeVisible(): boolean {
-    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona';
+    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona' && this.wybranaUsluga.statusUslugi.nazwa !== 'Anulowana';
   }
 
   usunMisje(): void {
@@ -267,7 +271,7 @@ export class ListaUslugComponent implements OnInit {
   }
 
   usunMisjeVisible(): boolean {
-    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona';
+    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona' && this.wybranaUsluga.statusUslugi.nazwa !== 'Anulowana';
   }
 
   zmienStatusUslugi(tableRef: Table, status: string): void {
@@ -304,7 +308,7 @@ export class ListaUslugComponent implements OnInit {
   }
 
   dodajFaktureVisible(): boolean {
-    return !this.wybranaUsluga.faktura;
+    return this.wybranaUsluga.statusUslugi.nazwa !== 'Zakończona' && this.wybranaUsluga.statusUslugi.nazwa !== 'Anulowana' && !this.wybranaUsluga.faktura;
   }
 
   edytujFakture(tableRef: Table): void {
